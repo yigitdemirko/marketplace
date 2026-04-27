@@ -19,7 +19,9 @@
     <name>Marketplace Parent</name>
 
     <modules>
-        <module>shared/common-lib</module>
+        <module>infrastructure/config-server</module>
+        <module>infrastructure/discovery-server</module>
+        <module>infrastructure/api-gateway</module>
     </modules>
 
     <properties>
@@ -27,7 +29,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud.version>2025.0.2</spring-cloud.version>
         <mapstruct.version>1.6.2</mapstruct.version>
         <lombok.version>1.18.34</lombok.version>
         <jjwt.version>0.12.6</jjwt.version>
