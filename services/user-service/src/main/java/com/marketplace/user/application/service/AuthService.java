@@ -30,7 +30,7 @@ public class AuthService {
     @Transactional
     public AuthResponse registerBuyer(BuyerRegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Bu e-posta adresi zaten kayıtlı");
+            throw new RuntimeException("Email already exists");
         }
 
         User user = User.create(
@@ -50,7 +50,7 @@ public class AuthService {
     @Transactional
     public AuthResponse registerSeller(SellerRegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Bu e-posta adresi zaten kayıtlı");
+            throw new RuntimeException("Email already exists");
         }
 
         User user = User.create(
@@ -74,10 +74,10 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("E-posta veya şifre hatalı"));
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new RuntimeException("E-posta veya şifre hatalı");
+            throw new RuntimeException("Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getAccountType());
