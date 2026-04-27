@@ -15,6 +15,28 @@ services:
       timeout: 5s
       retries: 5
 
+  mongodb:
+    image: mongo:7-jammy
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   config-server:
     image: eclipse-temurin:21-jre-alpine
     working_dir: /app
@@ -52,10 +74,10 @@ services:
     volumes:
       - ./infrastructure/api-gateway/target:/app
     command: java -jar api-gateway-1.0.0-SNAPSHOT.jar
-    environment:
-      EUREKA_HOST: discovery-server
     ports:
       - "8080:8080"
+    environment:
+      EUREKA_HOST: discovery-server
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -84,5 +106,26 @@ services:
       timeout: 5s
       retries: 5
 
+  product-service:
+    image: eclipse-temurin:21-jre-alpine
+    working_dir: /app
+    volumes:
+      - ./services/product-service/target:/app
+    command: java -jar product-service-1.0.0-SNAPSHOT.jar
+    ports:
+      - "8082:8082"
+    environment:
+      MONGODB_HOST: mongodb
+      REDIS_HOST: redis
+      EUREKA_HOST: discovery-server
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+
 volumes:
   postgres-data:
+  mongo-data:
