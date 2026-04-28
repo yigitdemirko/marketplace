@@ -1,0 +1,24 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: search-service
+  config:
+    import: optional:configserver:http://localhost:8888
+  elasticsearch:
+    uris: http://${ELASTICSEARCH_HOST:localhost}:9200
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
