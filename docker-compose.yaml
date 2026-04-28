@@ -222,6 +222,30 @@ services:
       discovery-server:
         condition: service_healthy
 
+  payment-service:
+    image: eclipse-temurin:21-jre-alpine
+    working_dir: /app
+    volumes:
+      - ./services/payment-service/target:/app
+    command: java -jar payment-service-1.0.0-SNAPSHOT.jar
+    ports:
+      - "8085:8085"
+    environment:
+      DB_HOST: postgres
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      EUREKA_HOST: discovery-server
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      IYZICO_API_KEY: ${IYZICO_API_KEY}
+      IYZICO_SECRET_KEY: ${IYZICO_SECRET_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+
 volumes:
   postgres-data:
   mongo-data:
