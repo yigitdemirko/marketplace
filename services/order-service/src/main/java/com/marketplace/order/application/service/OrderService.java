@@ -5,7 +5,9 @@ import com.marketplace.order.api.v1.dto.response.OrderItemResponse;
 import com.marketplace.order.api.v1.dto.response.OrderResponse;
 import com.marketplace.order.domain.model.Order;
 import com.marketplace.order.domain.model.OrderItem;
+import com.marketplace.order.domain.model.OrderStatus;
 import com.marketplace.order.domain.repository.OrderRepository;
+import com.marketplace.order.infrastructure.messaging.OrderEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderEventPublisher eventPublisher;
 
     @Transactional
     public OrderResponse createOrder(String userId, CreateOrderRequest request) {
@@ -41,25 +44,53 @@ public class OrderService {
         });
 
         order.calculateTotal();
-        order.setStatus(com.marketplace.order.domain.model.OrderStatus.STOCK_RESERVING);
-
+        order.setStatus(OrderStatus.STOCK_RESERVING);
         Order saved = orderRepository.save(order);
-        log.info("Order created: orderId={}, userId={}", saved.getId(), userId);
 
+        eventPublisher.publishOrderCreated(saved);
+        log.info("Order created: orderId={}, userId={}", saved.getId(), userId);
         return toResponse(saved);
     }
 
+    @Transactional
+    public void confirmStock(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.confirmStock();
+        orderRepository.save(order);
+        log.info("Stock confirmed for orderId={}", orderId);
+    }
+
+    @Transactional
+    public void confirmPayment(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.confirmPayment();
+        orderRepository.save(order);
+        log.info("Payment confirmed for orderId={}", orderId);
+    }
+
+    @Transactional
+    public void cancelOrderBySaga(String orderId, String reason) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.cancel(reason);
+        orderRepository.save(order);
+        eventPublisher.publishOrderCancelled(order);
+        log.info("Order cancelled by saga: orderId={}, reason={}", orderId, reason);
+    }
+
+    @Transactional(readOnly = true)
     public OrderResponse getOrder(String orderId, String userId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-
         if (!order.getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized");
         }
-
         return toResponse(order);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> getUserOrders(String userId) {
         return orderRepository.findByUserId(userId)
                 .stream()
@@ -71,13 +102,13 @@ public class OrderService {
     public OrderResponse cancelOrder(String orderId, String userId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-
         if (!order.getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized");
         }
-
         order.cancel("Cancelled by user");
-        return toResponse(orderRepository.save(order));
+        Order saved = orderRepository.save(order);
+        eventPublisher.publishOrderCancelled(saved);
+        return toResponse(saved);
     }
 
     private OrderResponse toResponse(Order order) {
