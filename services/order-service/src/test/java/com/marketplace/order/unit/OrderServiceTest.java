@@ -1,0 +1,105 @@
+package com.marketplace.order.unit;
+
+import com.marketplace.order.api.v1.dto.request.CreateOrderRequest;
+import com.marketplace.order.api.v1.dto.request.OrderItemRequest;
+import com.marketplace.order.api.v1.dto.response.OrderResponse;
+import com.marketplace.order.application.service.OrderService;
+import com.marketplace.order.domain.model.Order;
+import com.marketplace.order.domain.model.OrderStatus;
+import com.marketplace.order.domain.repository.OrderRepository;
+import com.marketplace.order.infrastructure.messaging.OrderEventPublisher;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class OrderServiceTest {
+
+    @Mock
+    private OrderRepository orderRepository;
+
+    @Mock
+    private OrderEventPublisher eventPublisher;
+
+    @InjectMocks
+    private OrderService orderService;
+
+    @Test
+    void should_CreateOrder_Successfully() {
+        CreateOrderRequest request = new CreateOrderRequest(
+                List.of(new OrderItemRequest("prod-001", "seller-123", 2, BigDecimal.valueOf(99.99))),
+                "Test Address",
+                "idem-key-001"
+        );
+
+        when(orderRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
+        when(orderRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        OrderResponse response = orderService.createOrder("user-123", request);
+
+        assertThat(response.userId()).isEqualTo("user-123");
+        assertThat(response.status()).isEqualTo(OrderStatus.STOCK_RESERVING.name());
+        assertThat(response.totalAmount()).isEqualByComparingTo(BigDecimal.valueOf(199.98));
+        verify(eventPublisher).publishOrderCreated(any());
+    }
+
+    @Test
+    void should_ThrowException_When_IdempotencyKeyExists() {
+        CreateOrderRequest request = new CreateOrderRequest(
+                List.of(new OrderItemRequest("prod-001", "seller-123", 2, BigDecimal.valueOf(99.99))),
+                "Test Address",
+                "idem-key-001"
+        );
+
+        Order existing = Order.create("user-123", "Test Address", "idem-key-001");
+        when(orderRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.of(existing));
+
+        assertThatThrownBy(() -> orderService.createOrder("user-123", request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Order already exists with this idempotency key");
+    }
+
+    @Test
+    void should_ThrowException_When_OrderNotFound() {
+        when(orderRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> orderService.getOrder("non-existent", "user-123"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Order not found");
+    }
+
+    @Test
+    void should_ThrowException_When_UnauthorizedUser() {
+        Order order = Order.create("user-123", "Test Address", "idem-key-001");
+        when(orderRepository.findById(anyString())).thenReturn(Optional.of(order));
+
+        assertThatThrownBy(() -> orderService.getOrder("order-id", "other-user"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Unauthorized");
+    }
+
+    @Test
+    void should_CancelOrder_Successfully() {
+        Order order = Order.create("user-123", "Test Address", "idem-key-001");
+        order.setStatus(OrderStatus.STOCK_RESERVING);
+        when(orderRepository.findById(anyString())).thenReturn(Optional.of(order));
+        when(orderRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        OrderResponse response = orderService.cancelOrder("order-id", "user-123");
+
+        assertThat(response.status()).isEqualTo(OrderStatus.CANCELLED.name());
+        verify(eventPublisher).publishOrderCancelled(any());
+    }
+}

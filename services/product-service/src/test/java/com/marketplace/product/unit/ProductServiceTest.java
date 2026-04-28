@@ -5,6 +5,7 @@ import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.application.service.ProductService;
 import com.marketplace.product.domain.model.Product;
 import com.marketplace.product.domain.repository.ProductRepository;
+import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +29,9 @@ class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private ProductEventPublisher eventPublisher;
 
     @InjectMocks
     private ProductService productService;

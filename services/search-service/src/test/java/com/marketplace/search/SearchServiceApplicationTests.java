@@ -1,0 +1,12 @@
+package com.marketplace.search;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+class SearchServiceApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}

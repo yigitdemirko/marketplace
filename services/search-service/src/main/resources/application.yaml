@@ -8,6 +8,16 @@ spring:
     import: optional:configserver:http://localhost:8888
   elasticsearch:
     uris: http://${ELASTICSEARCH_HOST:localhost}:9200
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: search-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: java.util.HashMap
 
 eureka:
   client:
