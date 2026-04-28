@@ -5,6 +5,7 @@ import com.marketplace.product.api.v1.dto.request.UpdateProductRequest;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.domain.model.Product;
 import com.marketplace.product.domain.repository.ProductRepository;
+import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductEventPublisher eventPublisher;
 
     public ProductResponse createProduct(String sellerId, CreateProductRequest request) {
         Product product = Product.create(
@@ -29,7 +31,9 @@ public class ProductService {
         if (request.images() != null) product.setImages(request.images());
         if (request.attributes() != null) product.setAttributes(request.attributes());
 
-        return toResponse(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventPublisher.publishProductUpdated(saved);
+        return toResponse(saved);
     }
 
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
@@ -66,7 +70,9 @@ public class ProductService {
         if (request.images() != null) product.setImages(request.images());
         if (request.attributes() != null) product.setAttributes(request.attributes());
 
-        return toResponse(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventPublisher.publishProductUpdated(saved);
+        return toResponse(saved);
     }
 
     public void deleteProduct(String id, String sellerId) {
@@ -78,7 +84,8 @@ public class ProductService {
         }
 
         product.setActive(false);
-        productRepository.save(product);
+        Product saved = productRepository.save(product);
+        eventPublisher.publishProductUpdated(saved);
     }
 
     private ProductResponse toResponse(Product product) {
