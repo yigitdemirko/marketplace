@@ -80,6 +80,7 @@ public class OrderService {
         log.info("Order cancelled by saga: orderId={}, reason={}", orderId, reason);
     }
 
+    @Transactional(readOnly = true)
     public OrderResponse getOrder(String orderId, String userId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -89,6 +90,7 @@ public class OrderService {
         return toResponse(order);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> getUserOrders(String userId) {
         return orderRepository.findByUserId(userId)
                 .stream()
