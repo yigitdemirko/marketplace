@@ -37,6 +37,22 @@ services:
       timeout: 5s
       retries: 5
 
+  elasticsearch:
+    image: elasticsearch:8.15.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
   config-server:
     image: eclipse-temurin:21-jre-alpine
     working_dir: /app
@@ -106,6 +122,23 @@ services:
       timeout: 5s
       retries: 5
 
+  search-service:
+    image: eclipse-temurin:21-jre-alpine
+    working_dir: /app
+    volumes:
+      - ./services/search-service/target:/app
+    command: java -jar search-service-1.0.0-SNAPSHOT.jar
+    ports:
+      - "8083:8083"
+    environment:
+      ELASTICSEARCH_HOST: elasticsearch
+      EUREKA_HOST: discovery-server
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+
   product-service:
     image: eclipse-temurin:21-jre-alpine
     working_dir: /app
@@ -129,3 +162,4 @@ services:
 volumes:
   postgres-data:
   mongo-data:
+  elasticsearch-data:
