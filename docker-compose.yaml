@@ -164,8 +164,11 @@ services:
     environment:
       ELASTICSEARCH_HOST: elasticsearch
       EUREKA_HOST: discovery-server
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       elasticsearch:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
       discovery-server:
         condition: service_healthy
@@ -182,10 +185,13 @@ services:
       MONGODB_HOST: mongodb
       REDIS_HOST: redis
       EUREKA_HOST: discovery-server
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       mongodb:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
       discovery-server:
         condition: service_healthy
