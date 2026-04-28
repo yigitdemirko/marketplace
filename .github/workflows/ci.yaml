@@ -24,4 +24,4 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Run tests
-        run: mvn test -pl services/user-service,services/product-service,services/search-service
+        run: mvn test -pl services/user-service,services/product-service,services/search-service -e
