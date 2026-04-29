@@ -3,8 +3,6 @@ package com.marketplace.user.domain.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -31,11 +29,21 @@ public class SellerProfile {
 
     private LocalDateTime approvedAt;
 
-    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     public static SellerProfile create(User user, String storeName, String taxNumber, String phone) {
         SellerProfile profile = new SellerProfile();
@@ -44,6 +52,8 @@ public class SellerProfile {
         profile.storeName = storeName;
         profile.taxNumber = taxNumber;
         profile.phone = phone;
+        profile.createdAt = LocalDateTime.now();
+        profile.updatedAt = LocalDateTime.now();
         return profile;
     }
 }

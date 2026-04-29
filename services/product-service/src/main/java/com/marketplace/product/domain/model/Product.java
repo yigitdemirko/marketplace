@@ -50,6 +50,8 @@ public class Product {
                 .stock(stock)
                 .categoryId(categoryId)
                 .active(true)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 }
