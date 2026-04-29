@@ -8,6 +8,7 @@ import com.marketplace.payment.domain.model.PaymentStatus;
 import com.marketplace.payment.domain.repository.PaymentRepository;
 import com.marketplace.payment.infrastructure.iyzico.IyzicoPaymentService;
 import com.marketplace.payment.infrastructure.messaging.PaymentEventPublisher;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
 

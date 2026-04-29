@@ -10,6 +10,7 @@ import com.marketplace.user.domain.model.User;
 import com.marketplace.user.domain.repository.BuyerProfileRepository;
 import com.marketplace.user.domain.repository.UserRepository;
 import com.marketplace.user.infrastructure.security.JwtUtil;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
