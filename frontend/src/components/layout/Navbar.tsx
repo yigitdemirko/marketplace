@@ -1,13 +1,14 @@
 import { Link } from '@tanstack/react-router'
-import { ShoppingCart, User, LogOut } from 'lucide-react'
+import { ShoppingCart, User, LogOut, Package } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/store/authStore'
 import { useCartStore } from '@/store/cartStore'
+import { useNavigate } from '@tanstack/react-router'
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore()
   const totalItems = useCartStore((state) => state.totalItems())
-
+  const navigate = useNavigate()
   return (
     <nav className="border-b bg-background sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -24,14 +25,13 @@ export function Navbar() {
 
           {isAuthenticated ? (
             <>
-              {/* {user?.accountType === 'SELLER' && (
-                <Link to="/seller/products">
-                  <Button variant="ghost" size="sm">
-                    <Package className="h-4 w-4 mr-1" />
-                    My Products
-                  </Button>
-                </Link>
-              )} */}
+              {user?.accountType === 'SELLER' && (
+                <Button
+                  variant="ghost" size="sm" onClick={() => navigate({ to: '/seller/products' })}>
+                  <Package className="h-4 w-4 mr-1" />
+                  My Products
+                </Button>
+              )}
 
               {user?.accountType === 'BUYER' && (
                 <Link to="/cart">
