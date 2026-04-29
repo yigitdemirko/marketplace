@@ -24,14 +24,14 @@ export function Navbar() {
 
           {isAuthenticated ? (
             <>
-              {user?.accountType === 'SELLER' && (
+              {/* {user?.accountType === 'SELLER' && (
                 <Link to="/seller/products">
                   <Button variant="ghost" size="sm">
                     <Package className="h-4 w-4 mr-1" />
                     My Products
                   </Button>
                 </Link>
-              )}
+              )} */}
 
               {user?.accountType === 'BUYER' && (
                 <Link to="/cart">
