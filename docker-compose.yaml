@@ -137,11 +137,7 @@ services:
         condition: service_healthy
 
   user-service:
-    image: eclipse-temurin:21-jre-alpine
-    working_dir: /app
-    volumes:
-      - ./services/user-service/target:/app
-    command: java -jar user-service-1.0.0-SNAPSHOT.jar
+    image: ghcr.io/yigitdemirko/marketplace/user-service:latest
     ports:
       - "8081:8081"
     environment:
@@ -155,7 +151,7 @@ services:
       discovery-server:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health || exit 1"]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 10
