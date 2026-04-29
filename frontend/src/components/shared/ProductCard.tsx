@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useCartStore } from '@/store/cartStore'
-import { useAuthStore } from '@/store/authStore'
 import type { Product } from '@/types'
 
 interface ProductCardProps {
@@ -13,7 +12,6 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem)
-  const { user } = useAuthStore()
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -54,19 +52,17 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
           ₺{product.price.toFixed(2)}
         </p>
       </CardContent>
-      {user?.accountType === 'BUYER' && (
-        <CardFooter>
-          <Button
-            className="w-full"
-            size="sm"
-            onClick={handleAddToCart}
-            disabled={product.stock === 0}
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            Add to Cart
-          </Button>
-        </CardFooter>
-      )}
+      <CardFooter>
+        <Button
+          className="w-full"
+          size="sm"
+          onClick={handleAddToCart}
+          disabled={product.stock === 0}
+        >
+          <ShoppingCart className="h-4 w-4 mr-2" />
+          Add to Cart
+        </Button>
+      </CardFooter>
     </Card>
   )
 }

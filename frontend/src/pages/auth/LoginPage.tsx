@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,7 +15,7 @@ export function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
@@ -24,7 +24,10 @@ export function LoginPage() {
       const user = await authApi.login({ email, password })
       localStorage.setItem('token', user.token)
       setAuth(user)
-      navigate({ to: '/' })
+
+      const params = new URLSearchParams(window.location.search)
+      const redirect = params.get('redirect')
+      navigate({ to: redirect ?? '/' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {
