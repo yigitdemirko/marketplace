@@ -54,12 +54,10 @@ public class PaymentService {
                 payment.complete(result.getPaymentId());
                 paymentRepository.save(payment);
                 eventPublisher.publishPaymentCompleted(payment);
-                log.info("Payment completed: orderId={}", request.orderId());
             } else {
                 payment.fail(result.getErrorMessage());
                 paymentRepository.save(payment);
                 eventPublisher.publishPaymentFailed(payment);
-                log.warn("Payment failed: orderId={}, reason={}", request.orderId(), result.getErrorMessage());
             }
         } catch (Exception e) {
             payment.fail(e.getMessage());

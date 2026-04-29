@@ -3,7 +3,6 @@ package com.marketplace.order.domain.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -28,14 +27,20 @@ public class OutboxEvent {
 
     private LocalDateTime processedAt;
 
-    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public static OutboxEvent create(String eventType, String payload) {
         OutboxEvent event = new OutboxEvent();
         event.id = UUID.randomUUID().toString();
         event.eventType = eventType;
         event.payload = payload;
+        event.createdAt = LocalDateTime.now();
         return event;
     }
 }

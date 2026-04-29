@@ -50,7 +50,6 @@ class PaymentServiceTest {
 
         Payment mockIyzicoPayment = mock(Payment.class);
         when(mockIyzicoPayment.getStatus()).thenReturn("success");
-        when(mockIyzicoPayment.getPaymentId()).thenReturn("iyzico-pay-123");
 
         when(paymentRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
         when(iyzicoPaymentService.processPayment(anyString(), anyString(), any(), any()))
@@ -74,7 +73,6 @@ class PaymentServiceTest {
 
         Payment mockIyzicoPayment = mock(Payment.class);
         when(mockIyzicoPayment.getStatus()).thenReturn("failure");
-        when(mockIyzicoPayment.getErrorMessage()).thenReturn("Insufficient funds");
 
         when(paymentRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
         when(iyzicoPaymentService.processPayment(anyString(), anyString(), any(), any()))

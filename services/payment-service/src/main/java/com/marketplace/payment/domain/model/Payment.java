@@ -3,8 +3,6 @@ package com.marketplace.payment.domain.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -38,12 +36,22 @@ public class Payment {
     private String iyzicoPaymentId;
     private String failureReason;
 
-    @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
 
     public static Payment create(String orderId, String userId,
                                  BigDecimal amount, String idempotencyKey) {
@@ -54,6 +62,8 @@ public class Payment {
         payment.amount = amount;
         payment.idempotencyKey = idempotencyKey;
         payment.status = PaymentStatus.PENDING;
+        payment.createdAt = LocalDateTime.now();
+        payment.updatedAt = LocalDateTime.now();
         return payment;
     }
 

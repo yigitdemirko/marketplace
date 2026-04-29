@@ -3,8 +3,6 @@ package com.marketplace.order.domain.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,12 +37,21 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItem> items = new ArrayList<>();
 
-    @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     public static Order create(String userId, String shippingAddress, String idempotencyKey) {
         Order order = new Order();
@@ -54,6 +61,8 @@ public class Order {
         order.totalAmount = BigDecimal.ZERO;
         order.shippingAddress = shippingAddress;
         order.idempotencyKey = idempotencyKey;
+        order.createdAt = LocalDateTime.now();
+        order.updatedAt = LocalDateTime.now();
         return order;
     }
 
