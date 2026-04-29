@@ -6,6 +6,7 @@ import com.marketplace.product.application.service.ProductService;
 import com.marketplace.product.domain.model.Product;
 import com.marketplace.product.domain.repository.ProductRepository;
 import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
