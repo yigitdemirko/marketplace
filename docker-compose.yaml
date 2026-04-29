@@ -82,18 +82,14 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_HEAP_OPTS: "-Xmx256m -Xms128m"
     healthcheck:
-      test: [ "CMD", "kafka-topics", "--bootstrap-server", "kafka:29092", "--list" ]
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "kafka:29092", "--list"]
       interval: 10s
       timeout: 10s
       retries: 10
       start_period: 30s
 
   config-server:
-    image: eclipse-temurin:21-jre-alpine
-    working_dir: /app
-    volumes:
-      - ./infrastructure/config-server/target:/app
-    command: java -jar config-server-1.0.0-SNAPSHOT.jar
+    image: ghcr.io/yigitdemirko/marketplace/config-server:latest
     ports:
       - "8888:8888"
     healthcheck:
@@ -104,11 +100,7 @@ services:
       start_period: 60s
 
   discovery-server:
-    image: eclipse-temurin:21-jre-alpine
-    working_dir: /app
-    volumes:
-      - ./infrastructure/discovery-server/target:/app
-    command: java -jar discovery-server-1.0.0-SNAPSHOT.jar
+    image: ghcr.io/yigitdemirko/marketplace/discovery-server:latest
     ports:
       - "8761:8761"
     depends_on:
@@ -122,11 +114,7 @@ services:
       start_period: 60s
 
   api-gateway:
-    image: eclipse-temurin:21-jre-alpine
-    working_dir: /app
-    volumes:
-      - ./infrastructure/api-gateway/target:/app
-    command: java -jar api-gateway-1.0.0-SNAPSHOT.jar
+    image: ghcr.io/yigitdemirko/marketplace/api-gateway:latest
     ports:
       - "8080:8080"
     environment:
@@ -151,38 +139,14 @@ services:
       discovery-server:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health || exit 1" ]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 60s
 
-  search-service:
-    image: eclipse-temurin:21-jre-alpine
-    working_dir: /app
-    volumes:
-      - ./services/search-service/target:/app
-    command: java -jar search-service-1.0.0-SNAPSHOT.jar
-    ports:
-      - "8083:8083"
-    environment:
-      ELASTICSEARCH_HOST: elasticsearch
-      EUREKA_HOST: discovery-server
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-
   product-service:
-    image: eclipse-temurin:21-jre-alpine
-    working_dir: /app
-    volumes:
-      - ./services/product-service/target:/app
-    command: java -jar product-service-1.0.0-SNAPSHOT.jar
+    image: ghcr.io/yigitdemirko/marketplace/product-service:latest
     ports:
       - "8082:8082"
     environment:
@@ -200,12 +164,24 @@ services:
       discovery-server:
         condition: service_healthy
 
+  search-service:
+    image: ghcr.io/yigitdemirko/marketplace/search-service:latest
+    ports:
+      - "8083:8083"
+    environment:
+      ELASTICSEARCH_HOST: elasticsearch
+      EUREKA_HOST: discovery-server
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+
   order-service:
-    image: eclipse-temurin:21-jre-alpine
-    working_dir: /app
-    volumes:
-      - ./services/order-service/target:/app
-    command: java -jar order-service-1.0.0-SNAPSHOT.jar
+    image: ghcr.io/yigitdemirko/marketplace/order-service:latest
     ports:
       - "8084:8084"
     environment:
@@ -226,11 +202,7 @@ services:
         condition: service_healthy
 
   payment-service:
-    image: eclipse-temurin:21-jre-alpine
-    working_dir: /app
-    volumes:
-      - ./services/payment-service/target:/app
-    command: java -jar payment-service-1.0.0-SNAPSHOT.jar
+    image: ghcr.io/yigitdemirko/marketplace/payment-service:latest
     ports:
       - "8085:8085"
     environment:
@@ -250,11 +222,7 @@ services:
         condition: service_healthy
 
   notification-service:
-    image: eclipse-temurin:21-jre-alpine
-    working_dir: /app
-    volumes:
-      - ./services/notification-service/target:/app
-    command: java -jar notification-service-1.0.0-SNAPSHOT.jar
+    image: ghcr.io/yigitdemirko/marketplace/notification-service:latest
     ports:
       - "8086:8086"
     environment:

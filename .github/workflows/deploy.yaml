@@ -8,6 +8,8 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
+      config-server: ${{ steps.changes.outputs.config-server }}
+      discovery-server: ${{ steps.changes.outputs.discovery-server }}
       user-service: ${{ steps.changes.outputs.user-service }}
       product-service: ${{ steps.changes.outputs.product-service }}
       search-service: ${{ steps.changes.outputs.search-service }}
@@ -22,6 +24,10 @@ jobs:
         id: changes
         with:
           filters: |
+            config-server:
+              - 'infrastructure/config-server/**'
+            discovery-server:
+              - 'infrastructure/discovery-server/**'
             user-service:
               - 'services/user-service/**'
             product-service:
@@ -39,6 +45,60 @@ jobs:
             frontend:
               - 'frontend/**'
 
+  deploy-config-server:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.config-server == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Build and push image
+        run: |
+          mvn compile jib:build -pl infrastructure/config-server --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/config-server:latest \
+            -Djib.to.auth.username=${{ github.actor }} \
+            -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker compose pull config-server
+            docker compose up -d --no-deps config-server
+
+  deploy-discovery-server:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.discovery-server == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Build and push image
+        run: |
+          mvn compile jib:build -pl infrastructure/discovery-server --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/discovery-server:latest \
+            -Djib.to.auth.username=${{ github.actor }} \
+            -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker compose pull discovery-server
+            docker compose up -d --no-deps discovery-server
+
   deploy-user-service:
     needs: detect-changes
     if: needs.detect-changes.outputs.user-service == 'true'
@@ -52,6 +112,7 @@ jobs:
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/user-service --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/user-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
       - name: Deploy to server
@@ -78,6 +139,7 @@ jobs:
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/product-service --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/product-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
       - name: Deploy to server
@@ -104,6 +166,7 @@ jobs:
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/search-service --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/search-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
       - name: Deploy to server
@@ -130,6 +193,8 @@ jobs:
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/order-service --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/order-service:latest \
+            -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
@@ -155,6 +220,7 @@ jobs:
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/payment-service --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/payment-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
       - name: Deploy to server
@@ -181,6 +247,7 @@ jobs:
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/notification-service --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/notification-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
       - name: Deploy to server
@@ -207,6 +274,7 @@ jobs:
       - name: Build and push image
         run: |
           mvn compile jib:build -pl infrastructure/api-gateway --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/api-gateway:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
       - name: Deploy to server
