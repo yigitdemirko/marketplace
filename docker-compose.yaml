@@ -246,6 +246,26 @@ services:
       discovery-server:
         condition: service_healthy
 
+  notification-service:
+    image: eclipse-temurin:21-jre-alpine
+    working_dir: /app
+    volumes:
+      - ./services/notification-service/target:/app
+    command: java -jar notification-service-1.0.0-SNAPSHOT.jar
+    ports:
+      - "8086:8086"
+    environment:
+      EUREKA_HOST: discovery-server
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      MAIL_HOST: smtp.gmail.com
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    depends_on:
+      kafka:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+
 volumes:
   postgres-data:
   mongo-data:
