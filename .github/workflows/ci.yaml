@@ -3,13 +3,10 @@ name: CI
 on:
   pull_request:
     branches: [main]
-    paths:
-      - 'services/**'
-      - 'infrastructure/**'
-      - 'pom.xml'
 
 jobs:
   unit-tests:
+    if: contains(github.event.pull_request.labels.*.name, 'backend')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,6 +28,7 @@ jobs:
         run: mvn test -pl services/user-service,services/product-service,services/search-service,services/order-service,services/payment-service -Dgroups=unit
 
   integration-tests:
+    if: contains(github.event.pull_request.labels.*.name, 'backend')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
