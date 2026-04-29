@@ -88,6 +88,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull config-server
             docker compose up -d --no-deps config-server
@@ -118,6 +119,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull discovery-server
             docker compose up -d --no-deps discovery-server
@@ -148,6 +150,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull api-gateway
             docker compose up -d --no-deps api-gateway
@@ -178,6 +181,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull user-service
             docker compose up -d --no-deps user-service
@@ -208,6 +212,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull product-service
             docker compose up -d --no-deps product-service
@@ -238,6 +243,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull search-service
             docker compose up -d --no-deps search-service
@@ -268,6 +274,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull order-service
             docker compose up -d --no-deps order-service
@@ -298,6 +305,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull payment-service
             docker compose up -d --no-deps payment-service
@@ -328,6 +336,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
+            cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull notification-service
             docker compose up -d --no-deps notification-service
@@ -347,7 +356,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            cd /root/marketplace/frontend
+            cd ${{ secrets.DEPLOY_PATH }}/frontend
             git pull origin main
             pnpm install
             pnpm build
