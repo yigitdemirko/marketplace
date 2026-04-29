@@ -52,16 +52,16 @@ public class PaymentService {
 
             if ("success".equals(result.getStatus())) {
                 payment.complete(result.getPaymentId());
-                paymentRepository.saveAndFlush(payment);
+                paymentRepository.save(payment);
                 eventPublisher.publishPaymentCompleted(payment);
             } else {
                 payment.fail(result.getErrorMessage());
-                paymentRepository.saveAndFlush(payment);
+                paymentRepository.save(payment);
                 eventPublisher.publishPaymentFailed(payment);
             }
         } catch (Exception e) {
             payment.fail(e.getMessage());
-            paymentRepository.saveAndFlush(payment);
+            paymentRepository.save(payment);
             eventPublisher.publishPaymentFailed(payment);
             log.error("Payment error: orderId={}", request.orderId(), e);
         }
