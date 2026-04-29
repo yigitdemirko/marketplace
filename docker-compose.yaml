@@ -131,6 +131,7 @@ services:
       - "8080:8080"
     environment:
       EUREKA_HOST: discovery-server
+      FRONTEND_URL: ${FRONTEND_URL}
     depends_on:
       discovery-server:
         condition: service_healthy
