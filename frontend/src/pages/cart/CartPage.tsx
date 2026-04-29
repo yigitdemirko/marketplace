@@ -3,9 +3,21 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { useCartStore } from '@/store/cartStore'
+import { useAuthStore } from '@/store/authStore'
+import { useNavigate } from '@tanstack/react-router'
 
 export function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, totalAmount, totalItems } = useCartStore()
+  const { isAuthenticated } = useAuthStore()
+  const navigate = useNavigate()
+
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      navigate({ to: '/login' })
+    } else {
+      navigate({ to: '/checkout' })
+    }
+  }
 
   if (items.length === 0) {
     return (
@@ -13,7 +25,7 @@ export function CartPage() {
         <ShoppingBag className="h-16 w-16 text-muted-foreground" />
         <h2 className="text-xl font-semibold">Your cart is empty</h2>
         <p className="text-muted-foreground">Add some products to get started</p>
-        <Button onClick={() => window.location.href = '/'}>
+        <Button onClick={() => navigate({ to: '/' })}>
           Continue Shopping
         </Button>
       </div>
@@ -92,10 +104,7 @@ export function CartPage() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button
-            className="w-full"
-            onClick={() => window.location.href = '/checkout'}
-          >
+          <Button className="w-full" onClick={handleCheckout}>
             Proceed to Checkout
           </Button>
         </CardFooter>

@@ -19,7 +19,7 @@ export function ProductsPage() {
         : productsApi.getAll(page),
   })
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.SyntheticEvent) => {
     e.preventDefault()
     setSearchQuery(query)
     setPage(0)

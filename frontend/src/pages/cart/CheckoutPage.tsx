@@ -25,7 +25,7 @@ export function CheckoutPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
 
-  const handleCheckout = async (e: React.FormEvent) => {
+  const handleCheckout = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     if (!user) return
     setError('')

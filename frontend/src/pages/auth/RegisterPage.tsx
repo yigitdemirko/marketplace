@@ -22,7 +22,7 @@ export function RegisterPage() {
     email: '', password: '', storeName: '', taxNumber: '', phone: '',
   })
 
-  const handleBuyerRegister = async (e: React.FormEvent) => {
+  const handleBuyerRegister = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
@@ -30,7 +30,9 @@ export function RegisterPage() {
       const user = await authApi.registerBuyer(buyerForm)
       localStorage.setItem('token', user.token)
       setAuth(user)
-      navigate({ to: '/' })
+      const params = new URLSearchParams(window.location.search)
+      const redirect = params.get('redirect')
+      navigate({ to: redirect ?? '/' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {
@@ -38,7 +40,7 @@ export function RegisterPage() {
     }
   }
 
-  const handleSellerRegister = async (e: React.FormEvent) => {
+  const handleSellerRegister = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
@@ -46,7 +48,9 @@ export function RegisterPage() {
       const user = await authApi.registerSeller(sellerForm)
       localStorage.setItem('token', user.token)
       setAuth(user)
-      navigate({ to: '/' })
+      const params = new URLSearchParams(window.location.search)
+      const redirect = params.get('redirect')
+      navigate({ to: redirect ?? '/' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {
@@ -62,11 +66,11 @@ export function RegisterPage() {
           <CardDescription>Create your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="buyer">
-            <TabsList className="w-full">
-              <TabsTrigger value="buyer" className="flex-1">Buyer</TabsTrigger>
-              <TabsTrigger value="seller" className="flex-1">Seller</TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="buyer" className="w-full flex flex-col">
+          <TabsList className="grid w-full grid-cols-2 mb-4 ">
+              <TabsTrigger value="buyer">Buyer</TabsTrigger>
+              <TabsTrigger value="seller">Seller</TabsTrigger>
+          </TabsList>
 
             <TabsContent value="buyer">
               <form onSubmit={handleBuyerRegister} className="space-y-4 mt-4">
