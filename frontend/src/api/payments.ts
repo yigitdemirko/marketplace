@@ -1,0 +1,22 @@
+import { apiClient } from './client'
+import type { Payment } from '@/types'
+
+export interface ProcessPaymentRequest {
+  orderId: string
+  userId: string
+  amount: number
+  idempotencyKey: string
+  cardHolderName: string
+  cardNumber: string
+  expireMonth: string
+  expireYear: string
+  cvc: string
+}
+
+export const paymentsApi = {
+  process: (data: ProcessPaymentRequest) =>
+    apiClient.post<Payment>('/api/v1/payments', data),
+
+  getByOrderId: (orderId: string) =>
+    apiClient.get<Payment>(`/api/v1/payments/order/${orderId}`),
+}
