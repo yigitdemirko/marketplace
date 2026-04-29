@@ -19,6 +19,7 @@ on:
           - order-service
           - payment-service
           - notification-service
+          - frontend
           - all
 
 jobs:
