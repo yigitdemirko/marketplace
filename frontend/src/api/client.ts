@@ -38,7 +38,10 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
 export const apiClient = {
   get: <T>(endpoint: string) => request<T>(endpoint),
-  post: <T>(endpoint: string, body: unknown) => request<T>(endpoint, { method: 'POST', body }),
-  put: <T>(endpoint: string, body: unknown) => request<T>(endpoint, { method: 'PUT', body }),
-  delete: <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }),
+  post: <T>(endpoint: string, body: unknown, headers?: Record<string, string>) =>
+    request<T>(endpoint, { method: 'POST', body, headers }),
+  put: <T>(endpoint: string, body: unknown, headers?: Record<string, string>) =>
+    request<T>(endpoint, { method: 'PUT', body, headers }),
+  delete: <T>(endpoint: string, headers?: Record<string, string>) =>
+    request<T>(endpoint, { method: 'DELETE', headers }),
 }
