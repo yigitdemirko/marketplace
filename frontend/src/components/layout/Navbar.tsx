@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { ShoppingCart, User, LogOut, Package } from 'lucide-react'
+import { ShoppingCart, User, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/store/authStore'
 import { useCartStore } from '@/store/cartStore'
