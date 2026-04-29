@@ -37,7 +37,8 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 }
 
 export const apiClient = {
-  get: <T>(endpoint: string) => request<T>(endpoint),
+  get: <T>(endpoint: string, headers?: Record<string, string>) =>
+    request<T>(endpoint, { headers }),
   post: <T>(endpoint: string, body: unknown, headers?: Record<string, string>) =>
     request<T>(endpoint, { method: 'POST', body, headers }),
   put: <T>(endpoint: string, body: unknown, headers?: Record<string, string>) =>
