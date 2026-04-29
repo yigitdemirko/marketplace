@@ -2,15 +2,49 @@ name: Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  deploy:
+  detect-changes:
     runs-on: ubuntu-latest
+    outputs:
+      user-service: ${{ steps.changes.outputs.user-service }}
+      product-service: ${{ steps.changes.outputs.product-service }}
+      search-service: ${{ steps.changes.outputs.search-service }}
+      order-service: ${{ steps.changes.outputs.order-service }}
+      payment-service: ${{ steps.changes.outputs.payment-service }}
+      notification-service: ${{ steps.changes.outputs.notification-service }}
+      api-gateway: ${{ steps.changes.outputs.api-gateway }}
+      frontend: ${{ steps.changes.outputs.frontend }}
     steps:
       - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            user-service:
+              - 'services/user-service/**'
+            product-service:
+              - 'services/product-service/**'
+            search-service:
+              - 'services/search-service/**'
+            order-service:
+              - 'services/order-service/**'
+            payment-service:
+              - 'services/payment-service/**'
+            notification-service:
+              - 'services/notification-service/**'
+            api-gateway:
+              - 'infrastructure/api-gateway/**'
+            frontend:
+              - 'frontend/**'
 
-      - name: Deploy to server
+  deploy-user-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.user-service == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy user-service
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -19,5 +53,125 @@ jobs:
           script: |
             cd /root/marketplace
             git pull origin main
-            mvn clean package -DskipTests
-            docker-compose up -d
+            mvn clean package -DskipTests -pl services/user-service --also-make
+            docker-compose restart user-service
+
+  deploy-product-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.product-service == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy product-service
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /root/marketplace
+            git pull origin main
+            mvn clean package -DskipTests -pl services/product-service --also-make
+            docker-compose restart product-service
+
+  deploy-search-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.search-service == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy search-service
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /root/marketplace
+            git pull origin main
+            mvn clean package -DskipTests -pl services/search-service --also-make
+            docker-compose restart search-service
+
+  deploy-order-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.order-service == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy order-service
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /root/marketplace
+            git pull origin main
+            mvn clean package -DskipTests -pl services/order-service --also-make
+            docker-compose restart order-service
+
+  deploy-payment-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.payment-service == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy payment-service
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /root/marketplace
+            git pull origin main
+            mvn clean package -DskipTests -pl services/payment-service --also-make
+            docker-compose restart payment-service
+
+  deploy-notification-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.notification-service == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy notification-service
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /root/marketplace
+            git pull origin main
+            mvn clean package -DskipTests -pl services/notification-service --also-make
+            docker-compose restart notification-service
+
+  deploy-api-gateway:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.api-gateway == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy api-gateway
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /root/marketplace
+            git pull origin main
+            mvn clean package -DskipTests -pl infrastructure/api-gateway --also-make
+            docker-compose restart api-gateway
+
+  deploy-frontend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy frontend
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /root/marketplace/frontend
+            git pull origin main
+            pnpm install
+            pnpm build
+            cp -r dist/* /var/www/html/
