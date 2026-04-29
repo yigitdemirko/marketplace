@@ -82,10 +82,11 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_HEAP_OPTS: "-Xmx256m -Xms128m"
     healthcheck:
-      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list || exit 1"]
+      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 30s
 
   config-server:
     image: eclipse-temurin:21-jre-alpine
