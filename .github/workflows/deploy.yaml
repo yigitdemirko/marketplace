@@ -3,6 +3,23 @@ name: Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service to deploy'
+        required: true
+        type: choice
+        options:
+          - config-server
+          - discovery-server
+          - api-gateway
+          - user-service
+          - product-service
+          - search-service
+          - order-service
+          - payment-service
+          - notification-service
+          - all
 
 jobs:
   detect-changes:
@@ -47,7 +64,10 @@ jobs:
 
   deploy-config-server:
     needs: detect-changes
-    if: needs.detect-changes.outputs.config-server == 'true'
+    if: |
+      needs.detect-changes.outputs.config-server == 'true' ||
+      github.event.inputs.service == 'config-server' ||
+      github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +94,10 @@ jobs:
 
   deploy-discovery-server:
     needs: detect-changes
-    if: needs.detect-changes.outputs.discovery-server == 'true'
+    if: |
+      needs.detect-changes.outputs.discovery-server == 'true' ||
+      github.event.inputs.service == 'discovery-server' ||
+      github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -99,9 +122,42 @@ jobs:
             docker compose pull discovery-server
             docker compose up -d --no-deps discovery-server
 
+  deploy-api-gateway:
+    needs: detect-changes
+    if: |
+      needs.detect-changes.outputs.api-gateway == 'true' ||
+      github.event.inputs.service == 'api-gateway' ||
+      github.event.inputs.service == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Build and push image
+        run: |
+          mvn compile jib:build -pl infrastructure/api-gateway --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/api-gateway:latest \
+            -Djib.to.auth.username=${{ github.actor }} \
+            -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker compose pull api-gateway
+            docker compose up -d --no-deps api-gateway
+
   deploy-user-service:
     needs: detect-changes
-    if: needs.detect-changes.outputs.user-service == 'true'
+    if: |
+      needs.detect-changes.outputs.user-service == 'true' ||
+      github.event.inputs.service == 'user-service' ||
+      github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -128,7 +184,10 @@ jobs:
 
   deploy-product-service:
     needs: detect-changes
-    if: needs.detect-changes.outputs.product-service == 'true'
+    if: |
+      needs.detect-changes.outputs.product-service == 'true' ||
+      github.event.inputs.service == 'product-service' ||
+      github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -155,7 +214,10 @@ jobs:
 
   deploy-search-service:
     needs: detect-changes
-    if: needs.detect-changes.outputs.search-service == 'true'
+    if: |
+      needs.detect-changes.outputs.search-service == 'true' ||
+      github.event.inputs.service == 'search-service' ||
+      github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -182,7 +244,10 @@ jobs:
 
   deploy-order-service:
     needs: detect-changes
-    if: needs.detect-changes.outputs.order-service == 'true'
+    if: |
+      needs.detect-changes.outputs.order-service == 'true' ||
+      github.event.inputs.service == 'order-service' ||
+      github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -209,7 +274,10 @@ jobs:
 
   deploy-payment-service:
     needs: detect-changes
-    if: needs.detect-changes.outputs.payment-service == 'true'
+    if: |
+      needs.detect-changes.outputs.payment-service == 'true' ||
+      github.event.inputs.service == 'payment-service' ||
+      github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -236,7 +304,10 @@ jobs:
 
   deploy-notification-service:
     needs: detect-changes
-    if: needs.detect-changes.outputs.notification-service == 'true'
+    if: |
+      needs.detect-changes.outputs.notification-service == 'true' ||
+      github.event.inputs.service == 'notification-service' ||
+      github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -261,36 +332,12 @@ jobs:
             docker compose pull notification-service
             docker compose up -d --no-deps notification-service
 
-  deploy-api-gateway:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.api-gateway == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-      - name: Build and push image
-        run: |
-          mvn compile jib:build -pl infrastructure/api-gateway --also-make \
-            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/api-gateway:latest \
-            -Djib.to.auth.username=${{ github.actor }} \
-            -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: root
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker compose pull api-gateway
-            docker compose up -d --no-deps api-gateway
-
   deploy-frontend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.frontend == 'true'
+    if: |
+      needs.detect-changes.outputs.frontend == 'true' ||
+      github.event.inputs.service == 'frontend' ||
+      github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy frontend
