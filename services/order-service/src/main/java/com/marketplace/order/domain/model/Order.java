@@ -80,8 +80,15 @@ public class Order {
         this.status = OrderStatus.CONFIRMED;
     }
 
+    public void markAsShipped() {
+        if (this.status != OrderStatus.CONFIRMED) {
+            throw new RuntimeException("Order must be CONFIRMED to mark as shipped");
+        }
+        this.status = OrderStatus.SHIPPED;
+    }
+
     public void cancel(String reason) {
-        if (this.status == OrderStatus.CONFIRMED || this.status == OrderStatus.DELIVERED) {
+        if (this.status == OrderStatus.CONFIRMED || this.status == OrderStatus.SHIPPED || this.status == OrderStatus.DELIVERED) {
             throw new RuntimeException("Order cannot be cancelled");
         }
         this.status = OrderStatus.CANCELLED;
