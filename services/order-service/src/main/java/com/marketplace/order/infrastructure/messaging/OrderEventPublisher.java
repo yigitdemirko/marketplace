@@ -7,7 +7,6 @@ import com.marketplace.order.domain.model.OutboxEvent;
 import com.marketplace.order.domain.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -18,7 +17,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OrderEventPublisher {
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OutboxEventRepository outboxEventRepository;
     private final ObjectMapper objectMapper;
 
@@ -36,18 +34,8 @@ public class OrderEventPublisher {
         }).toList());
         event.put("totalAmount", order.getTotalAmount());
 
-        try {
-            OutboxEvent outboxEvent = OutboxEvent.create(
-                    "order.created",
-                    objectMapper.writeValueAsString(event)
-            );
-            outboxEventRepository.save(outboxEvent);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to serialize order event", e);
-        }
-
-        kafkaTemplate.send("order.created", order.getId(), event);
-        log.info("Order created event published: orderId={}", order.getId());
+        saveOutbox("order.created", order.getId(), event);
+        log.info("Order created event queued: orderId={}", order.getId());
     }
 
     public void publishOrderCancelled(Order order) {
@@ -55,7 +43,16 @@ public class OrderEventPublisher {
         event.put("orderId", order.getId());
         event.put("userId", order.getUserId());
 
-        kafkaTemplate.send("order.cancelled", order.getId(), event);
-        log.info("Order cancelled event published: orderId={}", order.getId());
+        saveOutbox("order.cancelled", order.getId(), event);
+        log.info("Order cancelled event queued: orderId={}", order.getId());
+    }
+
+    private void saveOutbox(String eventType, String aggregateId, Map<String, Object> payload) {
+        try {
+            String json = objectMapper.writeValueAsString(payload);
+            outboxEventRepository.save(OutboxEvent.create(eventType, aggregateId, json));
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Failed to serialize outbox event", e);
+        }
     }
 }
