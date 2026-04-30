@@ -42,4 +42,7 @@ export const ordersApi = {
 
   markAsShipped: (orderId: string, sellerId: string) =>
     apiClient.patch<Order>(`/api/v1/orders/${orderId}/ship`, {}, { 'X-Seller-Id': sellerId }),
+
+  markAsDelivered: (orderId: string, sellerId: string) =>
+    apiClient.patch<Order>(`/api/v1/orders/${orderId}/deliver`, {}, { 'X-Seller-Id': sellerId }),
 }

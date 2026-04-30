@@ -136,6 +136,16 @@ public class OrderService {
         return toResponse(orderRepository.save(order));
     }
 
+    public OrderResponse markOrderAsDelivered(String orderId, String sellerId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        boolean sellerOwns = order.getItems().stream()
+                .anyMatch(item -> item.getSellerId().equals(sellerId));
+        if (!sellerOwns) throw new RuntimeException("Unauthorized");
+        order.markAsDelivered();
+        return toResponse(orderRepository.save(order));
+    }
+
     @Transactional(readOnly = true)
     public SellerStatsResponse getSellerStats(String sellerId) {
         List<Order> orders = orderRepository.findBySellerIdOrderByCreatedAtDesc(sellerId);

@@ -87,6 +87,13 @@ public class Order {
         this.status = OrderStatus.SHIPPED;
     }
 
+    public void markAsDelivered() {
+        if (this.status != OrderStatus.SHIPPED) {
+            throw new RuntimeException("Order must be SHIPPED to mark as delivered");
+        }
+        this.status = OrderStatus.DELIVERED;
+    }
+
     public void cancel(String reason) {
         if (this.status == OrderStatus.CONFIRMED || this.status == OrderStatus.SHIPPED || this.status == OrderStatus.DELIVERED) {
             throw new RuntimeException("Order cannot be cancelled");
