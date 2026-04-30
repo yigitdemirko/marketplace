@@ -19,6 +19,9 @@ public class OutboxEvent {
     @Column(nullable = false)
     private String eventType;
 
+    @Column(nullable = false)
+    private String aggregateId;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String payload;
 
@@ -35,12 +38,18 @@ public class OutboxEvent {
         createdAt = LocalDateTime.now();
     }
 
-    public static OutboxEvent create(String eventType, String payload) {
+    public static OutboxEvent create(String eventType, String aggregateId, String payload) {
         OutboxEvent event = new OutboxEvent();
         event.id = UUID.randomUUID().toString();
         event.eventType = eventType;
+        event.aggregateId = aggregateId;
         event.payload = payload;
         event.createdAt = LocalDateTime.now();
         return event;
+    }
+
+    public void markProcessed() {
+        this.processed = true;
+        this.processedAt = LocalDateTime.now();
     }
 }
