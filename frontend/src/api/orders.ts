@@ -12,6 +12,12 @@ export interface CreateOrderRequest {
   idempotencyKey: string
 }
 
+export interface SellerStats {
+  totalOrders: number
+  grossRevenue: number
+  pendingShipment: number
+}
+
 export const ordersApi = {
   create: (data: CreateOrderRequest, userId: string) =>
     apiClient.post<Order>('/api/v1/orders', data, { 'X-User-Id': userId }),
@@ -24,4 +30,16 @@ export const ordersApi = {
 
   cancel: (orderId: string, userId: string) =>
     apiClient.delete<Order>(`/api/v1/orders/${orderId}`, { 'X-User-Id': userId }),
+
+  getSellerOrders: (sellerId: string, status?: string) =>
+    apiClient.get<Order[]>(
+      status ? `/api/v1/orders/seller?status=${status}` : '/api/v1/orders/seller',
+      { 'X-Seller-Id': sellerId },
+    ),
+
+  getSellerStats: (sellerId: string) =>
+    apiClient.get<SellerStats>('/api/v1/orders/seller/stats', { 'X-Seller-Id': sellerId }),
+
+  markAsShipped: (orderId: string, sellerId: string) =>
+    apiClient.patch<Order>(`/api/v1/orders/${orderId}/ship`, {}, { 'X-Seller-Id': sellerId }),
 }
