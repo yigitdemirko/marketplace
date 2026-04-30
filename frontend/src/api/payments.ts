@@ -3,8 +3,6 @@ import type { Payment } from '@/types'
 
 export interface ProcessPaymentRequest {
   orderId: string
-  userId: string
-  amount: number
   idempotencyKey: string
   cardHolderName: string
   cardNumber: string
