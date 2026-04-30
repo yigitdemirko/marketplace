@@ -1,11 +1,9 @@
 import { HeroSection } from '@/pages/home/sections/HeroSection'
 import { FlashSalesSection } from '@/pages/home/sections/FlashSalesSection'
-import { CategoriesSection } from '@/pages/home/sections/CategoriesSection'
-import { BestsellerSection } from '@/pages/home/sections/BestsellerSection'
-import { DealsSection } from '@/pages/home/sections/DealsSection'
-import { ExploreProductsSection } from '@/pages/home/sections/ExploreProductsSection'
-import { NewArrivalSection } from '@/pages/home/sections/NewArrivalSection'
-import { FeaturesSection } from '@/pages/home/sections/FeaturesSection'
+import { HomeOutdoorSection, ElectronicsSection } from '@/pages/home/sections/CategoriesSection'
+import { RecommendedSection } from '@/pages/home/sections/BestsellerSection'
+import { SellerCTASection } from '@/pages/home/sections/DealsSection'
+import { FeaturesSection } from '@/pages/home/sections/ExploreProductsSection'
 import { Footer } from '@/components/layout/Footer'
 
 export function HomePage() {
@@ -13,11 +11,10 @@ export function HomePage() {
     <div>
       <HeroSection />
       <FlashSalesSection />
-      <CategoriesSection />
-      <BestsellerSection />
-      <DealsSection />
-      <ExploreProductsSection />
-      <NewArrivalSection />
+      <HomeOutdoorSection />
+      <ElectronicsSection />
+      <RecommendedSection />
+      <SellerCTASection />
       <FeaturesSection />
       <Footer />
     </div>

@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { ShoppingCart, User, LogOut, Package, Search } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { ClipboardList, Heart, ShoppingBag, UserCircle, LogOut } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { useCartStore } from '@/store/cartStore'
 
@@ -11,6 +9,7 @@ export function Navbar() {
   const totalItems = useCartStore((state) => state.totalItems())
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('All category')
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,73 +21,104 @@ export function Navbar() {
   }
 
   return (
-    <nav className="border-b bg-background sticky top-0 z-50">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 h-16 flex items-center gap-4">
+    <nav className="bg-white border-b border-[#dce0e5] sticky top-0 z-50 h-[64px]">
+      <div className="max-w-[1280px] mx-auto px-8 h-full flex items-center gap-6">
         {/* Logo */}
-        <Link to="/" className="text-xl font-bold shrink-0">
-          Marketplace
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center">
+            <span className="text-white font-bold text-sm">B</span>
+          </div>
+          <span className="font-bold text-[#14181f] text-[16px]">Brandname</span>
         </Link>
 
         {/* Search bar */}
-        <form onSubmit={handleSearch} className="flex flex-1 max-w-2xl">
-          <Input
+        <form
+          onSubmit={handleSearch}
+          className="flex flex-1 border border-[#3348ff] rounded-[6px] h-10 overflow-hidden"
+        >
+          <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search products, brands, categories..."
-            className="flex-1 h-10 rounded-r-none rounded-l-[10px] border-r-0 focus-visible:ring-0 text-sm"
+            placeholder="Find product"
+            className="flex-1 px-3 text-[15px] text-[#14181f] placeholder:text-[#6f7c8e] outline-none border-none bg-transparent"
           />
-          <Button
-            type="submit"
-            className="h-10 px-4 rounded-l-none rounded-r-[10px] bg-primary hover:bg-primary/90 text-white shrink-0"
+          <div className="w-px bg-[#dce0e5] self-stretch" />
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="border-l border-[#dce0e5] px-3 text-[15px] text-[#525e6f] bg-transparent outline-none cursor-pointer"
           >
-            <Search className="h-4 w-4" />
-          </Button>
+            <option>All category</option>
+            <option>Electronics</option>
+            <option>Clothing</option>
+            <option>Home &amp; Outdoor</option>
+            <option>Books</option>
+            <option>Sports</option>
+          </select>
+          <button
+            type="submit"
+            className="bg-[#3348ff] hover:bg-[#2236e0] text-white px-5 h-full text-[15px] font-medium transition-colors"
+          >
+            Search
+          </button>
         </form>
 
-        {/* Actions */}
-        <div className="flex items-center gap-1 shrink-0 ml-auto">
+        {/* Right icons */}
+        <div className="flex items-center gap-5 ml-auto shrink-0">
+          {/* Orders */}
           {isAuthenticated ? (
-            <>
-              {user?.accountType === 'SELLER' && (
-                <Button variant="ghost" size="sm" onClick={() => navigate({ to: '/seller/products' })}>
-                  <Package className="h-4 w-4 mr-1" />
-                  My Products
-                </Button>
-              )}
-
-              {user?.accountType === 'BUYER' && (
-                <Link to="/cart">
-                  <Button variant="ghost" size="sm" className="relative">
-                    <ShoppingCart className="h-4 w-4" />
-                    {totalItems > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                        {totalItems}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
-              )}
-
-              <Link to="/orders">
-                <Button variant="ghost" size="sm">
-                  <User className="h-4 w-4 mr-1" />
-                  Orders
-                </Button>
-              </Link>
-
-              <Button variant="ghost" size="sm" onClick={logout}>
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </>
+            <Link to="/orders" className="flex flex-col items-center gap-0.5 cursor-pointer">
+              <ClipboardList className="h-5 w-5 text-[#6f7c8e]" />
+              <span className="text-[11px] text-[#6f7c8e]">Orders</span>
+            </Link>
           ) : (
-            <>
-              <Link to="/login">
-                <Button variant="ghost" size="sm">Login</Button>
-              </Link>
-              <Link to="/register">
-                <Button size="sm">Register</Button>
-              </Link>
-            </>
+            <div className="flex flex-col items-center gap-0.5">
+              <ClipboardList className="h-5 w-5 text-[#6f7c8e]" />
+              <span className="text-[11px] text-[#6f7c8e]">Orders</span>
+            </div>
+          )}
+
+          {/* Saved */}
+          <div className="flex flex-col items-center gap-0.5 cursor-pointer">
+            <Heart className="h-5 w-5 text-[#6f7c8e]" />
+            <span className="text-[11px] text-[#6f7c8e]">Saved</span>
+          </div>
+
+          {/* Cart */}
+          <Link to="/cart" className="flex flex-col items-center gap-0.5 relative">
+            <div className="relative">
+              <ShoppingBag className="h-5 w-5 text-[#6f7c8e]" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-[#fa3434] text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none">
+                  {totalItems}
+                </span>
+              )}
+            </div>
+            <span className="text-[11px] text-[#6f7c8e]">My cart</span>
+          </Link>
+
+          {/* Account */}
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col items-center gap-0.5">
+                <UserCircle className="h-5 w-5 text-[#6f7c8e]" />
+                <span className="text-[11px] text-[#6f7c8e] max-w-[64px] truncate">
+                  {user?.email?.substring(0, 8)}
+                </span>
+              </div>
+              <button
+                onClick={logout}
+                className="flex flex-col items-center gap-0.5 cursor-pointer"
+              >
+                <LogOut className="h-5 w-5 text-[#6f7c8e]" />
+                <span className="text-[11px] text-[#6f7c8e]">Logout</span>
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="flex flex-col items-center gap-0.5">
+              <UserCircle className="h-5 w-5 text-[#6f7c8e]" />
+              <span className="text-[11px] text-[#6f7c8e]">Sign in</span>
+            </Link>
           )}
         </div>
       </div>
