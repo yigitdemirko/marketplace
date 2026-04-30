@@ -57,7 +57,7 @@ export function RegisterPage() {
       localStorage.setItem('token', user.token)
       setAuth(user)
       const params = new URLSearchParams(window.location.search)
-      navigate({ to: params.get('redirect') ?? '/' })
+      navigate({ to: params.get('redirect') ?? '/seller' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {

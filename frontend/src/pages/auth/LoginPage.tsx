@@ -29,7 +29,7 @@ export function LoginPage() {
 
       const params = new URLSearchParams(window.location.search)
       const redirect = params.get('redirect')
-      navigate({ to: redirect ?? '/' })
+      navigate({ to: redirect ?? (user.accountType === 'SELLER' ? '/seller' : '/') })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {
