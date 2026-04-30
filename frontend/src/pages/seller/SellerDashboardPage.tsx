@@ -24,8 +24,6 @@ const MOCK_ORDERS = [
 const CHART_DATA = [42, 68, 55, 90, 72, 110, 95, 130, 88, 115, 145, 160]
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-type OrderStatus = 'CONFIRMED' | 'DELIVERED' | 'PENDING' | 'CANCELLED'
-
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { label: string; className: string; icon: React.ReactNode }> = {
     CONFIRMED: { label: 'Confirmed', className: 'bg-[#e6f7ee] text-[#00a81c]', icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
