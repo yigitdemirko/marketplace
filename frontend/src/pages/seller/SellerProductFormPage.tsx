@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, X, Plus } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
+import { CATEGORIES } from '@/constants/categories'
 
 export function SellerProductFormPage() {
   const { productId } = useParams({ strict: false })
@@ -65,7 +66,7 @@ export function SellerProductFormPage() {
     description: form.description,
     price: parseFloat(form.price),
     stock: parseInt(form.stock),
-    categoryId: form.categoryId,
+    category: form.categoryId,
     images: imageUrls,
     active: form.active,
     attributes: {
@@ -184,14 +185,17 @@ export function SellerProductFormPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Category</label>
-            <input
-              type="text"
-              placeholder="Category ID"
+            <select
               value={form.categoryId}
               onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
               required
-              className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
-            />
+              className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] text-[#14181f]"
+            >
+              <option value="" disabled>Select a category</option>
+              {CATEGORIES.map((c) => (
+                <option key={c.id} value={c.id}>{c.label}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Tags (comma separated)</label>

@@ -4,6 +4,7 @@ import com.marketplace.product.api.v1.dto.request.CreateProductRequest;
 import com.marketplace.product.api.v1.dto.request.UpdateProductRequest;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.application.service.ProductService;
+import com.marketplace.product.domain.model.Category;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -26,6 +31,14 @@ public class ProductController {
             @Valid @RequestBody CreateProductRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productService.createProduct(sellerId, request));
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<Map<String, String>>> getCategories() {
+        List<Map<String, String>> categories = Arrays.stream(Category.values())
+                .map(c -> Map.of("id", c.name(), "label", c.getDisplayName()))
+                .toList();
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping

@@ -1,5 +1,6 @@
 package com.marketplace.product.api.v1.dto.request;
 
+import com.marketplace.product.domain.model.Category;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 
@@ -12,7 +13,7 @@ public record UpdateProductRequest(
         String description,
         @DecimalMin("0.01") BigDecimal price,
         @Min(0) Integer stock,
-        String categoryId,
+        Category category,
         List<String> images,
         Map<String, String> attributes
 ) {}

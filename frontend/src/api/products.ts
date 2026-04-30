@@ -6,7 +6,7 @@ export interface CreateProductRequest {
   description: string
   price: number
   stock: number
-  categoryId: string
+  category: string
   images?: string[]
   attributes?: Record<string, string>
 }
@@ -16,7 +16,7 @@ export interface UpdateProductRequest {
   description?: string
   price?: number
   stock?: number
-  categoryId?: string
+  category?: string
   images?: string[]
   attributes?: Record<string, string>
 }

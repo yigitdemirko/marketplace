@@ -2,20 +2,21 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate, Link } from '@tanstack/react-router'
 import { ArrowRight, Package } from 'lucide-react'
 import { productsApi } from '@/api/products'
+import type { CategoryId } from '@/constants/categories'
 
 interface CategorySectionProps {
   bannerBg: string
   bannerEmoji: string
   bannerTitle: string
-  page: number
+  categoryId: CategoryId
 }
 
-function CategorySection({ bannerBg, bannerEmoji, bannerTitle, page }: CategorySectionProps) {
+function CategorySection({ bannerBg, bannerEmoji, bannerTitle, categoryId }: CategorySectionProps) {
   const navigate = useNavigate()
 
   const { data, isLoading } = useQuery({
-    queryKey: ['products', 'category-section', page],
-    queryFn: () => productsApi.getAll(page, 8),
+    queryKey: ['products', 'category-section', categoryId],
+    queryFn: () => productsApi.getByCategory(categoryId, 0, 8),
   })
 
   return (
@@ -96,8 +97,8 @@ export function HomeOutdoorSection() {
     <CategorySection
       bannerBg="bg-[#d4edda]"
       bannerEmoji="🏠"
-      bannerTitle="Home and outdoor products"
-      page={0}
+      bannerTitle="Home & Outdoor"
+      categoryId="HOME_OUTDOOR"
     />
   )
 }
@@ -107,8 +108,8 @@ export function ElectronicsSection() {
     <CategorySection
       bannerBg="bg-[#d0e8ff]"
       bannerEmoji="📱"
-      bannerTitle="Consumer electronics and gadgets"
-      page={1}
+      bannerTitle="Consumer Electronics & Gadgets"
+      categoryId="ELECTRONICS"
     />
   )
 }
