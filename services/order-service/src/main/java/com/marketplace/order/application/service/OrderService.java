@@ -9,7 +9,7 @@ import com.marketplace.order.domain.model.Order;
 import com.marketplace.order.domain.model.OrderItem;
 import com.marketplace.order.domain.model.OrderStatus;
 import com.marketplace.order.domain.repository.OrderRepository;
-import com.marketplace.order.infrastructure.client.ProductValidationClient;
+import com.marketplace.order.infrastructure.client.ProductValidationGateway;
 import com.marketplace.order.infrastructure.client.ValidateItem;
 import com.marketplace.order.infrastructure.client.ValidatedProduct;
 import com.marketplace.order.infrastructure.messaging.OrderEventPublisher;
@@ -30,7 +30,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderEventPublisher eventPublisher;
-    private final ProductValidationClient productValidationClient;
+    private final ProductValidationGateway productValidationGateway;
 
     @Transactional
     public OrderResponse createOrder(String userId, CreateOrderRequest request) {
@@ -68,7 +68,7 @@ public class OrderService {
         List<ValidateItem> payload = items.stream()
                 .map(i -> new ValidateItem(i.productId(), i.quantity()))
                 .toList();
-        List<ValidatedProduct> results = productValidationClient.validate(payload);
+        List<ValidatedProduct> results = productValidationGateway.validate(payload);
 
         Map<String, ValidatedProduct> byId = new HashMap<>();
         for (ValidatedProduct r : results) {
