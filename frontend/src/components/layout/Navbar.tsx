@@ -6,6 +6,7 @@ import { useCartStore } from '@/store/cartStore'
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore()
+  const isBuyer = isAuthenticated && user?.accountType === 'BUYER'
   const totalItems = useCartStore((state) => state.totalItems())
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
@@ -66,7 +67,7 @@ export function Navbar() {
         {/* Right icons */}
         <div className="flex items-center gap-5 ml-auto shrink-0">
           {/* Orders */}
-          {isAuthenticated ? (
+          {isBuyer ? (
             <Link to="/orders" className="flex flex-col items-center gap-0.5 cursor-pointer">
               <ClipboardList className="h-5 w-5 text-[#6f7c8e]" />
               <span className="text-[11px] text-[#6f7c8e]">Orders</span>
@@ -98,7 +99,7 @@ export function Navbar() {
           </Link>
 
           {/* Account */}
-          {isAuthenticated ? (
+          {isBuyer ? (
             <div className="flex items-center gap-3">
               <div className="flex flex-col items-center gap-0.5">
                 <UserCircle className="h-5 w-5 text-[#6f7c8e]" />

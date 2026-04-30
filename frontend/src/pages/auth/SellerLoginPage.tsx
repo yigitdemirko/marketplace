@@ -8,12 +8,11 @@ import { useAuthStore } from '@/store/authStore'
 
 const heroImage = 'https://www.figma.com/api/mcp/asset/4803ceb1-b82f-484f-8c5f-05d6e893a3b0'
 
-export function LoginPage() {
+export function SellerLoginPage() {
   const navigate = useNavigate()
   const setAuth = useAuthStore((state) => state.setAuth)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -25,8 +24,8 @@ export function LoginPage() {
     try {
       const user = await authApi.login({ email, password })
 
-      if (user.accountType !== 'BUYER') {
-        setError('This email is registered as a seller account. Please use the seller login page.')
+      if (user.accountType !== 'SELLER') {
+        setError('This email is registered as a buyer account. Please use the buyer login page.')
         return
       }
 
@@ -34,7 +33,7 @@ export function LoginPage() {
       setAuth(user)
 
       const params = new URLSearchParams(window.location.search)
-      navigate({ to: params.get('redirect') ?? '/' })
+      navigate({ to: params.get('redirect') ?? '/seller' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {
@@ -44,7 +43,6 @@ export function LoginPage() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Left: Hero Image */}
       <div className="hidden lg:block relative w-[58%] shrink-0 bg-[#f0eeeb] overflow-hidden">
         <img
           src={heroImage}
@@ -53,12 +51,17 @@ export function LoginPage() {
         />
       </div>
 
-      {/* Right: Login Form */}
       <div className="flex flex-1 flex-col justify-center overflow-y-auto bg-card px-8 py-12 lg:px-16 xl:px-24">
         <div className="w-full max-w-[445px] mx-auto space-y-8">
           <div className="space-y-1.5">
-            <h1 className="text-3xl font-bold text-foreground">Welcome 👋</h1>
-            <p className="text-base text-muted-foreground">Please login here</p>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center">
+                <span className="text-white font-bold text-sm">B</span>
+              </div>
+              <span className="font-bold text-[#14181f] text-[16px]">Seller Panel</span>
+            </div>
+            <h1 className="text-3xl font-bold text-foreground">Seller Login</h1>
+            <p className="text-base text-muted-foreground">Sign in to manage your store</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-7">
@@ -72,7 +75,7 @@ export function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="robertfox@example.com"
+                  placeholder="store@example.com"
                   required
                   className="h-14 rounded-[10px] border-foreground/25 px-4 text-base focus-visible:ring-primary"
                 />
@@ -91,24 +94,6 @@ export function LoginPage() {
                   className="h-14 rounded-[10px] border-foreground/25 px-4 text-base focus-visible:ring-primary"
                 />
               </div>
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2.5 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="size-5 rounded accent-primary cursor-pointer"
-                  />
-                  <span className="text-base text-foreground">Remember Me</span>
-                </label>
-                <a
-                  href="/forgot-password"
-                  className="text-sm text-foreground hover:text-primary transition-colors"
-                >
-                  Forgot Password?
-                </a>
-              </div>
             </div>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
@@ -122,16 +107,16 @@ export function LoginPage() {
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
-              Don't have an account?{' '}
-              <a href="/register" className="text-primary hover:underline font-medium">
-                Register
+              Don't have a seller account?{' '}
+              <a href="/seller/register" className="text-primary hover:underline font-medium">
+                Register as Seller
               </a>
             </p>
 
             <p className="text-sm text-center text-muted-foreground">
-              Are you a seller?{' '}
-              <a href="/seller/login" className="text-primary hover:underline font-medium">
-                Seller Login
+              Looking to shop?{' '}
+              <a href="/login" className="text-primary hover:underline font-medium">
+                Buyer Login
               </a>
             </p>
           </form>
