@@ -29,6 +29,7 @@ public class Product {
     private BigDecimal price;
     private Integer stock;
     private String categoryId;
+    private String brand;
     private List<String> images;
     private Map<String, String> attributes;
     private boolean active;

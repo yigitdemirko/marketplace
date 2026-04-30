@@ -11,13 +11,13 @@ import { useAuthStore } from '@/store/authStore'
 const NAV_ITEMS = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/seller' },
   { label: 'All orders', icon: Truck, to: '/seller/orders' },
-  { label: 'Products', icon: Package2, to: '/seller/products' },
+  { label: 'Catalog', icon: Package2, to: '/seller/products' },
 ]
 
 const PAGE_TITLES: Record<string, string> = {
   '/seller': 'Dashboard',
   '/seller/orders': 'All orders',
-  '/seller/products': 'Products',
+  '/seller/products': 'Catalog',
   '/seller/products/new': 'Add product',
 }
 

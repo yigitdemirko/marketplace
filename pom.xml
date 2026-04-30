@@ -28,6 +28,7 @@
         <module>services/order-service</module>
         <module>services/payment-service</module>
         <module>services/notification-service</module>
+        <module>services/feed-ingestion-service</module>
     </modules>
 
     <properties>

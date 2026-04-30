@@ -2,38 +2,63 @@ package com.marketplace.product.application.service;
 
 import com.marketplace.product.api.v1.dto.request.CreateProductRequest;
 import com.marketplace.product.api.v1.dto.request.UpdateProductRequest;
+import com.marketplace.product.api.v1.dto.response.BatchCreateFailure;
+import com.marketplace.product.api.v1.dto.response.BatchCreateResponse;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
+import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
 import com.marketplace.product.domain.model.Product;
 import com.marketplace.product.domain.repository.ProductRepository;
 import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+
+    private static final int LOW_STOCK_THRESHOLD = 10;
 
     private final ProductRepository productRepository;
     private final ProductEventPublisher eventPublisher;
 
     public ProductResponse createProduct(String sellerId, CreateProductRequest request) {
-        Product product = Product.create(
-                sellerId,
-                request.name(),
-                request.description(),
-                request.price(),
-                request.stock(),
-                request.category().name()
-        );
-
-        if (request.images() != null) product.setImages(request.images());
-        if (request.attributes() != null) product.setAttributes(request.attributes());
-
+        Product product = buildProduct(sellerId, request);
         Product saved = productRepository.save(product);
         eventPublisher.publishProductUpdated(saved);
         return toResponse(saved);
+    }
+
+    public BatchCreateResponse createProductsBatch(String sellerId, List<CreateProductRequest> requests) {
+        List<String> createdIds = new ArrayList<>();
+        List<BatchCreateFailure> failures = new ArrayList<>();
+
+        for (int i = 0; i < requests.size(); i++) {
+            CreateProductRequest request = requests.get(i);
+            try {
+                Product product = buildProduct(sellerId, request);
+                Product saved = productRepository.save(product);
+                eventPublisher.publishProductUpdated(saved);
+                createdIds.add(saved.getId());
+            } catch (Exception ex) {
+                log.warn("Batch row {} failed: {}", i, ex.getMessage());
+                failures.add(new BatchCreateFailure(i, ex.getMessage()));
+            }
+        }
+
+        return new BatchCreateResponse(
+                requests.size(),
+                createdIds.size(),
+                failures.size(),
+                createdIds,
+                failures
+        );
     }
 
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
@@ -46,6 +71,15 @@ public class ProductService {
 
     public Page<ProductResponse> getProductsBySeller(String sellerId, Pageable pageable) {
         return productRepository.findBySellerIdAndActiveTrue(sellerId, pageable).map(this::toResponse);
+    }
+
+    public SellerStatsResponse getSellerStats(String sellerId) {
+        long total = productRepository.countBySellerIdAndActiveTrue(sellerId);
+        long outOfStock = productRepository.countBySellerIdAndActiveTrueAndStock(sellerId, 0);
+        long lowStock = productRepository.countBySellerIdAndActiveTrueAndStockBetween(
+                sellerId, 1, LOW_STOCK_THRESHOLD - 1);
+        long inStock = total - outOfStock;
+        return new SellerStatsResponse(total, inStock, outOfStock, lowStock);
     }
 
     public ProductResponse getProduct(String id) {
@@ -67,6 +101,7 @@ public class ProductService {
         if (request.price() != null) product.setPrice(request.price());
         if (request.stock() != null) product.setStock(request.stock());
         if (request.category() != null) product.setCategoryId(request.category().name());
+        if (request.brand() != null) product.setBrand(request.brand());
         if (request.images() != null) product.setImages(request.images());
         if (request.attributes() != null) product.setAttributes(request.attributes());
 
@@ -88,6 +123,21 @@ public class ProductService {
         eventPublisher.publishProductUpdated(saved);
     }
 
+    private Product buildProduct(String sellerId, CreateProductRequest request) {
+        Product product = Product.create(
+                sellerId,
+                request.name(),
+                request.description(),
+                request.price(),
+                request.stock(),
+                request.category().name()
+        );
+        product.setBrand(request.brand());
+        if (request.images() != null) product.setImages(request.images());
+        if (request.attributes() != null) product.setAttributes(request.attributes());
+        return product;
+    }
+
     private ProductResponse toResponse(Product product) {
         return new ProductResponse(
                 product.getId(),
@@ -97,6 +147,7 @@ public class ProductService {
                 product.getPrice(),
                 product.getStock(),
                 product.getCategoryId(),
+                product.getBrand(),
                 product.getImages(),
                 product.getAttributes(),
                 product.isActive(),

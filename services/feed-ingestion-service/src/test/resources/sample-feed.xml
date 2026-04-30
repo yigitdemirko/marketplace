@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+  <channel>
+    <title>Sample Store Feed</title>
+    <link>https://sample.example.com</link>
+    <description>Sample Google Merchant feed for testing</description>
+    <item>
+      <g:id>SKU-001</g:id>
+      <title>Wireless Bluetooth Headphones</title>
+      <description>Over-ear wireless headphones with active noise cancellation and 30 hour battery life.</description>
+      <link>https://sample.example.com/products/sku-001</link>
+      <g:image_link>https://sample.example.com/images/sku-001.jpg</g:image_link>
+      <g:additional_image_link>https://sample.example.com/images/sku-001-side.jpg</g:additional_image_link>
+      <g:additional_image_link>https://sample.example.com/images/sku-001-case.jpg</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>129.99 USD</g:price>
+      <g:brand>SoundCore</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Electronics &gt; Audio &gt; Audio Components &gt; Headphones</g:google_product_category>
+      <g:product_type>Wireless Headphones</g:product_type>
+      <g:gtin>0123456789012</g:gtin>
+      <g:mpn>SC-H500</g:mpn>
+      <g:quantity>50</g:quantity>
+    </item>
+    <item>
+      <g:id>SKU-002</g:id>
+      <title>Stainless Steel Cookware Set</title>
+      <description>10-piece stainless steel cookware set with tempered glass lids.</description>
+      <link>https://sample.example.com/products/sku-002</link>
+      <g:image_link>https://sample.example.com/images/sku-002.jpg</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>249.00 USD</g:price>
+      <g:brand>HomePro</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Home &amp; Garden &gt; Kitchen &amp; Dining &gt; Cookware</g:google_product_category>
+      <g:quantity>20</g:quantity>
+    </item>
+    <item>
+      <g:id>SKU-003</g:id>
+      <title>Men's Running Shoes</title>
+      <description>Lightweight breathable running shoes for daily training.</description>
+      <link>https://sample.example.com/products/sku-003</link>
+      <g:image_link>https://sample.example.com/images/sku-003.jpg</g:image_link>
+      <g:availability>out of stock</g:availability>
+      <g:price>89.99 USD</g:price>
+      <g:brand>Stride</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Apparel &amp; Accessories &gt; Shoes</g:google_product_category>
+    </item>
+  </channel>
+</rss>

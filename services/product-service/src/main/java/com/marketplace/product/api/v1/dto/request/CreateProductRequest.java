@@ -16,6 +16,7 @@ public record CreateProductRequest(
         @NotNull @DecimalMin("0.01") BigDecimal price,
         @NotNull @Min(0) Integer stock,
         @NotNull Category category,
+        String brand,
         List<String> images,
         Map<String, String> attributes
 ) {}

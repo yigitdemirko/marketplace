@@ -2,7 +2,9 @@ package com.marketplace.product.api.v1.controller;
 
 import com.marketplace.product.api.v1.dto.request.CreateProductRequest;
 import com.marketplace.product.api.v1.dto.request.UpdateProductRequest;
+import com.marketplace.product.api.v1.dto.response.BatchCreateResponse;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
+import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
 import com.marketplace.product.application.service.ProductService;
 import com.marketplace.product.domain.model.Category;
 import jakarta.validation.Valid;
@@ -31,6 +33,19 @@ public class ProductController {
             @Valid @RequestBody CreateProductRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productService.createProduct(sellerId, request));
+    }
+
+    @PostMapping("/batch")
+    public ResponseEntity<BatchCreateResponse> createProductsBatch(
+            @RequestHeader("X-Seller-Id") String sellerId,
+            @RequestBody List<CreateProductRequest> requests) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(productService.createProductsBatch(sellerId, requests));
+    }
+
+    @GetMapping("/seller/{sellerId}/stats")
+    public ResponseEntity<SellerStatsResponse> getSellerStats(@PathVariable String sellerId) {
+        return ResponseEntity.ok(productService.getSellerStats(sellerId));
     }
 
     @GetMapping("/categories")

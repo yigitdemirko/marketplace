@@ -54,6 +54,7 @@ services:
       timeout: 5s
       retries: 10
 
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.0
     environment:
@@ -235,6 +236,21 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD}
     depends_on:
       kafka:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+
+  feed-ingestion-service:
+    image: ghcr.io/yigitdemirko/marketplace/feed-ingestion-service:latest
+    ports:
+      - "8087:8087"
+    environment:
+      DB_HOST: postgres
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      EUREKA_HOST: discovery-server
+    depends_on:
+      postgres:
         condition: service_healthy
       discovery-server:
         condition: service_healthy

@@ -19,6 +19,7 @@ on:
           - order-service
           - payment-service
           - notification-service
+          - feed-ingestion-service
           - frontend
           - all
 
@@ -47,6 +48,7 @@ jobs:
       order-service: ${{ steps.changes.outputs.order-service }}
       payment-service: ${{ steps.changes.outputs.payment-service }}
       notification-service: ${{ steps.changes.outputs.notification-service }}
+      feed-ingestion-service: ${{ steps.changes.outputs.feed-ingestion-service }}
       api-gateway: ${{ steps.changes.outputs.api-gateway }}
       frontend: ${{ steps.changes.outputs.frontend }}
     steps:
@@ -71,6 +73,8 @@ jobs:
               - 'services/payment-service/**'
             notification-service:
               - 'services/notification-service/**'
+            feed-ingestion-service:
+              - 'services/feed-ingestion-service/**'
             api-gateway:
               - 'infrastructure/api-gateway/**'
             frontend:
@@ -354,6 +358,37 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull notification-service
             docker compose up -d --no-deps notification-service
+
+  deploy-feed-ingestion-service:
+    needs: [detect-changes, sync]
+    if: |
+      needs.detect-changes.outputs.feed-ingestion-service == 'true' ||
+      github.event.inputs.service == 'feed-ingestion-service' ||
+      github.event.inputs.service == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Build and push image
+        run: |
+          mvn compile jib:build -pl services/feed-ingestion-service --also-make \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/feed-ingestion-service:latest \
+            -Djib.to.auth.username=${{ github.actor }} \
+            -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker compose pull feed-ingestion-service
+            docker compose up -d --no-deps feed-ingestion-service
 
   deploy-frontend:
     needs: [detect-changes, sync]

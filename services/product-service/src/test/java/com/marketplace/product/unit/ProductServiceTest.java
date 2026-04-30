@@ -43,7 +43,7 @@ class ProductServiceTest {
     void should_CreateProduct_Successfully() {
         CreateProductRequest request = new CreateProductRequest(
                 "Test Product", "Description", BigDecimal.valueOf(99.99),
-                100, Category.ELECTRONICS, null, null
+                100, Category.ELECTRONICS, "Acme", null, null
         );
 
         Product mockProduct = Product.create("seller-123", request.name(),
