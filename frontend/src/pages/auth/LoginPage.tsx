@@ -38,7 +38,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen overflow-hidden">
       {/* Left: Hero Image */}
       <div className="hidden lg:block relative w-[58%] shrink-0 bg-[#f0eeeb] overflow-hidden">
         <img
@@ -49,7 +49,7 @@ export function LoginPage() {
       </div>
 
       {/* Right: Login Form */}
-      <div className="flex flex-1 flex-col justify-center bg-card px-8 py-12 lg:px-16 xl:px-24">
+      <div className="flex flex-1 flex-col justify-center overflow-y-auto bg-card px-8 py-12 lg:px-16 xl:px-24">
         <div className="w-full max-w-[445px] mx-auto space-y-8">
           <div className="space-y-1.5">
             <h1 className="text-3xl font-bold text-foreground">Welcome 👋</h1>
