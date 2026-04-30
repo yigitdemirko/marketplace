@@ -11,7 +11,7 @@ import {
   Truck,
   BadgeCheck,
   Heart,
-  Send,
+  ShoppingCart,
   User,
   Pencil,
   XCircle,
@@ -34,7 +34,7 @@ export function ProductDetailPage() {
   const { productId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addItem = useCartStore((state) => state.addItem)
-  const { user } = useAuthStore()
+  useAuthStore()
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState('Description')
   const [wishlisted, setWishlisted] = useState(false)
@@ -109,7 +109,7 @@ export function ProductDetailPage() {
     ([k, v]) => ({ label: k.charAt(0).toUpperCase() + k.slice(1), value: String(v) })
   )
 
-  const isBuyer = user?.accountType === 'BUYER'
+
 
   return (
     <div className="-mx-4 -mt-8">
@@ -277,6 +277,28 @@ export function ProductDetailPage() {
               )}
               <div className="h-px bg-[#dce0e5]" />
             </div>
+
+            {/* Prominent Add to Cart CTA */}
+            <div className="flex items-center gap-3 pt-1">
+              <button
+                onClick={handleAddToCart}
+                disabled={!isInStock}
+                className="flex-1 h-[48px] bg-[#3348ff] hover:bg-[#2236e0] disabled:opacity-50 transition-colors rounded-[8px] flex items-center justify-center gap-2 shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
+              >
+                <ShoppingCart className="h-5 w-5 text-white" />
+                <span className="text-[16px] font-semibold text-white tracking-tight">
+                  {isInStock ? 'Add to cart' : 'Out of stock'}
+                </span>
+              </button>
+              <button
+                onClick={() => setWishlisted((v) => !v)}
+                className="h-[48px] w-[48px] shrink-0 bg-[#edf0f2] hover:bg-[#e0e4e8] transition-colors rounded-[8px] flex items-center justify-center"
+              >
+                <Heart
+                  className={`h-5 w-5 ${wishlisted ? 'fill-red-500 text-red-500' : 'text-[#14181f]'}`}
+                />
+              </button>
+            </div>
           </div>
 
           {/* RIGHT: Seller info card */}
@@ -326,25 +348,16 @@ export function ProductDetailPage() {
                 </span>
               </button>
 
-              {isBuyer ? (
-                <button
-                  onClick={handleAddToCart}
-                  disabled={!isInStock}
-                  className="relative bg-[#3348ff] hover:bg-[#2236e0] disabled:opacity-50 transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
-                >
-                  <Send className="h-4 w-4 text-white" />
-                  <span className="text-[15px] font-medium text-white tracking-tight">
-                    Add to cart
-                  </span>
-                </button>
-              ) : (
-                <button className="relative bg-[#3348ff] hover:bg-[#2236e0] transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]">
-                  <Send className="h-4 w-4 text-white" />
-                  <span className="text-[15px] font-medium text-white tracking-tight">
-                    Send inquiry
-                  </span>
-                </button>
-              )}
+              <button
+                onClick={handleAddToCart}
+                disabled={!isInStock}
+                className="relative bg-[#3348ff] hover:bg-[#2236e0] disabled:opacity-50 transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
+              >
+                <ShoppingCart className="h-4 w-4 text-white" />
+                <span className="text-[15px] font-medium text-white tracking-tight">
+                  Add to cart
+                </span>
+              </button>
 
               <button className="bg-[#e0edff] hover:bg-[#c8deff] transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full">
                 <User className="h-4 w-4 text-[#3348ff]" />
