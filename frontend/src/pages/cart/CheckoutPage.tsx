@@ -37,9 +37,7 @@ export function CheckoutPage() {
       const order = await ordersApi.create({
         items: items.map((item) => ({
           productId: item.productId,
-          sellerId: item.sellerId,
           quantity: item.quantity,
-          unitPrice: item.price,
         })),
         shippingAddress,
         idempotencyKey,

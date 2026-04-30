@@ -1,10 +1,10 @@
-package com.marketplace.order.api.v1.dto.request;
+package com.marketplace.product.api.v1.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record OrderItemRequest(
+public record ValidateProductRequest(
         @NotBlank String productId,
         @NotNull @Min(1) Integer quantity
 ) {}

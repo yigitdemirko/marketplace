@@ -7,6 +7,8 @@ import com.marketplace.order.application.service.OrderService;
 import com.marketplace.order.domain.model.Order;
 import com.marketplace.order.domain.model.OrderStatus;
 import com.marketplace.order.domain.repository.OrderRepository;
+import com.marketplace.order.infrastructure.client.ProductValidationClient;
+import com.marketplace.order.infrastructure.client.ValidatedProduct;
 import com.marketplace.order.infrastructure.messaging.OrderEventPublisher;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -35,18 +37,24 @@ class OrderServiceTest {
     @Mock
     private OrderEventPublisher eventPublisher;
 
+    @Mock
+    private ProductValidationClient productValidationClient;
+
     @InjectMocks
     private OrderService orderService;
 
     @Test
     void should_CreateOrder_Successfully() {
         CreateOrderRequest request = new CreateOrderRequest(
-                List.of(new OrderItemRequest("prod-001", "seller-123", 2, BigDecimal.valueOf(99.99))),
+                List.of(new OrderItemRequest("prod-001", 2)),
                 "Test Address",
                 "idem-key-001"
         );
 
         when(orderRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
+        when(productValidationClient.validate(any())).thenReturn(List.of(
+                new ValidatedProduct("prod-001", true, "seller-123", BigDecimal.valueOf(99.99), 10, null)
+        ));
         when(orderRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         OrderResponse response = orderService.createOrder("user-123", request);
@@ -54,13 +62,35 @@ class OrderServiceTest {
         assertThat(response.userId()).isEqualTo("user-123");
         assertThat(response.status()).isEqualTo(OrderStatus.STOCK_RESERVING.name());
         assertThat(response.totalAmount()).isEqualByComparingTo(BigDecimal.valueOf(199.98));
+        assertThat(response.items()).hasSize(1);
+        assertThat(response.items().get(0).sellerId()).isEqualTo("seller-123");
+        assertThat(response.items().get(0).unitPrice()).isEqualByComparingTo(BigDecimal.valueOf(99.99));
         verify(eventPublisher).publishOrderCreated(any());
+    }
+
+    @Test
+    void should_RejectOrder_When_ProductInvalid() {
+        CreateOrderRequest request = new CreateOrderRequest(
+                List.of(new OrderItemRequest("prod-001", 2)),
+                "Test Address",
+                "idem-key-001"
+        );
+
+        when(orderRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
+        when(productValidationClient.validate(any())).thenReturn(List.of(
+                new ValidatedProduct("prod-001", false, null, null, null, "Insufficient stock")
+        ));
+
+        assertThatThrownBy(() -> orderService.createOrder("user-123", request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Insufficient stock");
+        verify(eventPublisher, never()).publishOrderCreated(any());
     }
 
     @Test
     void should_ThrowException_When_IdempotencyKeyExists() {
         CreateOrderRequest request = new CreateOrderRequest(
-                List.of(new OrderItemRequest("prod-001", "seller-123", 2, BigDecimal.valueOf(99.99))),
+                List.of(new OrderItemRequest("prod-001", 2)),
                 "Test Address",
                 "idem-key-001"
         );

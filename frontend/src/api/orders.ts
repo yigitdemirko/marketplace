@@ -4,9 +4,7 @@ import type { Order } from '@/types'
 export interface CreateOrderRequest {
   items: {
     productId: string
-    sellerId: string
     quantity: number
-    unitPrice: number
   }[]
   shippingAddress: string
   idempotencyKey: string

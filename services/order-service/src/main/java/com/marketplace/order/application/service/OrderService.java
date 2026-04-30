@@ -1,6 +1,7 @@
 package com.marketplace.order.application.service;
 
 import com.marketplace.order.api.v1.dto.request.CreateOrderRequest;
+import com.marketplace.order.api.v1.dto.request.OrderItemRequest;
 import com.marketplace.order.api.v1.dto.response.OrderItemResponse;
 import com.marketplace.order.api.v1.dto.response.OrderResponse;
 import com.marketplace.order.api.v1.dto.response.SellerStatsResponse;
@@ -8,6 +9,9 @@ import com.marketplace.order.domain.model.Order;
 import com.marketplace.order.domain.model.OrderItem;
 import com.marketplace.order.domain.model.OrderStatus;
 import com.marketplace.order.domain.repository.OrderRepository;
+import com.marketplace.order.infrastructure.client.ProductValidationClient;
+import com.marketplace.order.infrastructure.client.ValidateItem;
+import com.marketplace.order.infrastructure.client.ValidatedProduct;
 import com.marketplace.order.infrastructure.messaging.OrderEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -24,6 +30,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderEventPublisher eventPublisher;
+    private final ProductValidationClient productValidationClient;
 
     @Transactional
     public OrderResponse createOrder(String userId, CreateOrderRequest request) {
@@ -32,18 +39,21 @@ public class OrderService {
                     throw new RuntimeException("Order already exists with this idempotency key");
                 });
 
+        Map<String, ValidatedProduct> validated = validateItems(request.items());
+
         Order order = Order.create(userId, request.shippingAddress(), request.idempotencyKey());
 
-        request.items().forEach(itemRequest -> {
+        for (OrderItemRequest itemRequest : request.items()) {
+            ValidatedProduct truth = validated.get(itemRequest.productId());
             OrderItem item = OrderItem.create(
                     order,
                     itemRequest.productId(),
-                    itemRequest.sellerId(),
+                    truth.sellerId(),
                     itemRequest.quantity(),
-                    itemRequest.unitPrice()
+                    truth.currentPrice()
             );
             order.getItems().add(item);
-        });
+        }
 
         order.calculateTotal();
         order.setStatus(OrderStatus.STOCK_RESERVING);
@@ -52,6 +62,22 @@ public class OrderService {
         eventPublisher.publishOrderCreated(saved);
         log.info("Order created: orderId={}, userId={}", saved.getId(), userId);
         return toResponse(saved);
+    }
+
+    private Map<String, ValidatedProduct> validateItems(List<OrderItemRequest> items) {
+        List<ValidateItem> payload = items.stream()
+                .map(i -> new ValidateItem(i.productId(), i.quantity()))
+                .toList();
+        List<ValidatedProduct> results = productValidationClient.validate(payload);
+
+        Map<String, ValidatedProduct> byId = new HashMap<>();
+        for (ValidatedProduct r : results) {
+            if (!r.valid()) {
+                throw new RuntimeException("Item " + r.productId() + " invalid: " + r.reason());
+            }
+            byId.put(r.productId(), r);
+        }
+        return byId;
     }
 
     @Transactional
