@@ -17,6 +17,7 @@ import { Route as CartRouteImport } from './routes/cart'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SellerIndexRouteImport } from './routes/seller/index'
 import { Route as OrdersIndexRouteImport } from './routes/orders/index'
+import { Route as StoreSellerIdRouteImport } from './routes/store/$sellerId'
 import { Route as SellerRegisterRouteImport } from './routes/seller/register'
 import { Route as SellerOrdersRouteImport } from './routes/seller/orders'
 import { Route as SellerLoginRouteImport } from './routes/seller/login'
@@ -64,6 +65,11 @@ const SellerIndexRoute = SellerIndexRouteImport.update({
 const OrdersIndexRoute = OrdersIndexRouteImport.update({
   id: '/orders/',
   path: '/orders/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoreSellerIdRoute = StoreSellerIdRouteImport.update({
+  id: '/store/$sellerId',
+  path: '/store/$sellerId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SellerRegisterRoute = SellerRegisterRouteImport.update({
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/seller/login': typeof SellerLoginRoute
   '/seller/orders': typeof SellerOrdersRoute
   '/seller/register': typeof SellerRegisterRoute
+  '/store/$sellerId': typeof StoreSellerIdRoute
   '/orders/': typeof OrdersIndexRoute
   '/seller/': typeof SellerIndexRoute
   '/seller/products/new': typeof SellerProductsNewRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/seller/login': typeof SellerLoginRoute
   '/seller/orders': typeof SellerOrdersRoute
   '/seller/register': typeof SellerRegisterRoute
+  '/store/$sellerId': typeof StoreSellerIdRoute
   '/orders': typeof OrdersIndexRoute
   '/seller': typeof SellerIndexRoute
   '/seller/products/new': typeof SellerProductsNewRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/seller/login': typeof SellerLoginRoute
   '/seller/orders': typeof SellerOrdersRoute
   '/seller/register': typeof SellerRegisterRoute
+  '/store/$sellerId': typeof StoreSellerIdRoute
   '/orders/': typeof OrdersIndexRoute
   '/seller/': typeof SellerIndexRoute
   '/seller/products/new': typeof SellerProductsNewRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/seller/login'
     | '/seller/orders'
     | '/seller/register'
+    | '/store/$sellerId'
     | '/orders/'
     | '/seller/'
     | '/seller/products/new'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/seller/login'
     | '/seller/orders'
     | '/seller/register'
+    | '/store/$sellerId'
     | '/orders'
     | '/seller'
     | '/seller/products/new'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/seller/login'
     | '/seller/orders'
     | '/seller/register'
+    | '/store/$sellerId'
     | '/orders/'
     | '/seller/'
     | '/seller/products/new'
@@ -232,6 +244,7 @@ export interface RootRouteChildren {
   SellerLoginRoute: typeof SellerLoginRoute
   SellerOrdersRoute: typeof SellerOrdersRoute
   SellerRegisterRoute: typeof SellerRegisterRoute
+  StoreSellerIdRoute: typeof StoreSellerIdRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
   SellerIndexRoute: typeof SellerIndexRoute
   SellerProductsNewRoute: typeof SellerProductsNewRoute
@@ -295,6 +308,13 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders/'
       preLoaderRoute: typeof OrdersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$sellerId': {
+      id: '/store/$sellerId'
+      path: '/store/$sellerId'
+      fullPath: '/store/$sellerId'
+      preLoaderRoute: typeof StoreSellerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/seller/register': {
@@ -368,6 +388,7 @@ const rootRouteChildren: RootRouteChildren = {
   SellerLoginRoute: SellerLoginRoute,
   SellerOrdersRoute: SellerOrdersRoute,
   SellerRegisterRoute: SellerRegisterRoute,
+  StoreSellerIdRoute: StoreSellerIdRoute,
   OrdersIndexRoute: OrdersIndexRoute,
   SellerIndexRoute: SellerIndexRoute,
   SellerProductsNewRoute: SellerProductsNewRoute,

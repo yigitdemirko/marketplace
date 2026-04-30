@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { ClipboardList, Heart, ShoppingBag, UserCircle, LogOut } from 'lucide-react'
+import { ClipboardList, ShoppingBag, UserCircle, LogOut } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { useCartStore } from '@/store/cartStore'
 
@@ -14,11 +14,13 @@ export function Navbar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    if (query.trim()) {
-      navigate({ to: '/search', search: { q: query.trim() } })
-    } else {
-      navigate({ to: '/search' })
-    }
+    navigate({
+      to: '/search',
+      search: {
+        q: query.trim() || undefined,
+        category: category !== 'All category' ? category : undefined,
+      },
+    })
   }
 
   return (
@@ -78,12 +80,6 @@ export function Navbar() {
               <span className="text-[11px] text-[#6f7c8e]">Orders</span>
             </div>
           )}
-
-          {/* Saved */}
-          <div className="flex flex-col items-center gap-0.5 cursor-pointer">
-            <Heart className="h-5 w-5 text-[#6f7c8e]" />
-            <span className="text-[11px] text-[#6f7c8e]">Saved</span>
-          </div>
 
           {/* Cart */}
           <Link to="/cart" className="flex flex-col items-center gap-0.5 relative">
