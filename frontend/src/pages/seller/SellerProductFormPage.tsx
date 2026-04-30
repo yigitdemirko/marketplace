@@ -40,7 +40,7 @@ export function SellerProductFormPage() {
         price: product.price.toString(),
         stock: product.stock.toString(),
         categoryId: product.categoryId,
-        tags: (product.attributes?.tags as string[] | undefined)?.join(', ') ?? '',
+        tags: product.attributes?.tags ?? '',
         active: product.active,
       })
       setImageUrls(product.images ?? [])
@@ -70,10 +70,7 @@ export function SellerProductFormPage() {
     active: form.active,
     attributes: {
       unit,
-      tags: form.tags
-        .split(',')
-        .map((t) => t.trim())
-        .filter(Boolean),
+      tags: form.tags,
     },
   })
 
