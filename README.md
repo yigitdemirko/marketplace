@@ -56,6 +56,7 @@ Marketplace is a full-stack e-commerce platform featuring buyer and seller workf
 | order-service | 8084 | Order management, Saga pattern | Spring Boot, PostgreSQL, Kafka |
 | payment-service | 8085 | Payment processing | Spring Boot, PostgreSQL, Iyzico |
 | notification-service | 8086 | Email notifications | Spring Boot, Kafka, JavaMail |
+| feed-ingestion-service | 8087 | Google Merchant XML catalog import | Spring Boot, PostgreSQL, OpenFeign |
 | config-server | 8888 | Centralized configuration | Spring Cloud Config |
 | discovery-server | 8761 | Service discovery | Eureka |
 
@@ -215,7 +216,8 @@ marketplace/
 │   ├── search-service/
 │   ├── order-service/
 │   ├── payment-service/
-│   └── notification-service/
+│   ├── notification-service/
+│   └── feed-ingestion-service/
 ├── frontend/
 ├── docker-compose.yaml
 ├── Makefile

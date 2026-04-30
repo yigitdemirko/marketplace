@@ -35,6 +35,10 @@ spring:
               uri: lb://payment-service
               predicates:
                 - Path=/api/v1/payments/**
+            - id: feed-ingestion-service
+              uri: lb://feed-ingestion-service
+              predicates:
+                - Path=/api/v1/feeds/**
             - id: user-service-docs
               uri: lb://user-service
               predicates:
@@ -65,6 +69,12 @@ spring:
                 - Path=/api-docs/search-service
               filters:
                 - RewritePath=/api-docs/search-service, /v3/api-docs
+            - id: feed-ingestion-service-docs
+              uri: lb://feed-ingestion-service
+              predicates:
+                - Path=/api-docs/feed-ingestion-service
+              filters:
+                - RewritePath=/api-docs/feed-ingestion-service, /v3/api-docs
           globalcors:
             cors-configurations:
               '[/**]':
@@ -94,6 +104,8 @@ springdoc:
         url: /api-docs/payment-service
       - name: search-service
         url: /api-docs/search-service
+      - name: feed-ingestion-service
+        url: /api-docs/feed-ingestion-service
 
 eureka:
   client:

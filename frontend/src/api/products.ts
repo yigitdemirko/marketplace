@@ -1,5 +1,5 @@
 import { apiClient } from './client'
-import type { Product, PageResponse } from '@/types'
+import type { Product, PageResponse, SellerStats } from '@/types'
 
 export interface CreateProductRequest {
   name: string
@@ -7,6 +7,7 @@ export interface CreateProductRequest {
   price: number
   stock: number
   category: string
+  brand?: string
   images?: string[]
   attributes?: Record<string, string>
 }
@@ -17,6 +18,7 @@ export interface UpdateProductRequest {
   price?: number
   stock?: number
   category?: string
+  brand?: string
   images?: string[]
   attributes?: Record<string, string>
 }
@@ -33,6 +35,9 @@ export const productsApi = {
 
   getBySeller: (sellerId: string, page = 0, size = 20) =>
     apiClient.get<PageResponse<Product>>(`/api/v1/products/seller/${sellerId}?page=${page}&size=${size}`),
+
+  getSellerStats: (sellerId: string) =>
+    apiClient.get<SellerStats>(`/api/v1/products/seller/${sellerId}/stats`),
 
   search: (query: string, page = 0, size = 20) =>
     apiClient.get<PageResponse<Product>>(`/api/v1/search?query=${query}&page=${page}&size=${size}`),

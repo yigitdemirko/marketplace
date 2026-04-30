@@ -14,11 +14,40 @@ export interface User {
     price: number
     stock: number
     categoryId: string
+    brand?: string
     images: string[]
     attributes: Record<string, string>
     active: boolean
     createdAt: string
     updatedAt: string
+  }
+
+  export interface SellerStats {
+    total: number
+    inStock: number
+    outOfStock: number
+    lowStock: number
+  }
+
+  export type ImportStatus = 'PROCESSING' | 'COMPLETED' | 'FAILED'
+
+  export interface ImportRowError {
+    index: number
+    productId: string | null
+    message: string
+  }
+
+  export interface ImportJob {
+    id: string
+    sellerId: string
+    fileName: string
+    totalItems: number
+    successCount: number
+    failureCount: number
+    status: ImportStatus
+    errors: ImportRowError[]
+    createdAt: string
+    completedAt: string | null
   }
   
   export interface PageResponse<T> {

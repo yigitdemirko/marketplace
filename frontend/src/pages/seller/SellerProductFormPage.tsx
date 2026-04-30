@@ -19,6 +19,7 @@ export function SellerProductFormPage() {
     price: '',
     stock: '',
     categoryId: '',
+    brand: '',
     tags: '',
     active: true,
   })
@@ -41,6 +42,7 @@ export function SellerProductFormPage() {
         price: product.price.toString(),
         stock: product.stock.toString(),
         categoryId: product.categoryId,
+        brand: product.brand ?? '',
         tags: product.attributes?.tags ?? '',
         active: product.active,
       })
@@ -67,6 +69,7 @@ export function SellerProductFormPage() {
     price: parseFloat(form.price),
     stock: parseInt(form.stock),
     category: form.categoryId,
+    brand: form.brand || undefined,
     images: imageUrls,
     active: form.active,
     attributes: {
@@ -181,7 +184,7 @@ export function SellerProductFormPage() {
           )}
         </div>
 
-        {/* Category + Tags */}
+        {/* Category + Brand */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Category</label>
@@ -198,15 +201,27 @@ export function SellerProductFormPage() {
             </select>
           </div>
           <div>
-            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Tags (comma separated)</label>
+            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Brand</label>
             <input
               type="text"
-              placeholder="Tag name, Tag two, ..."
-              value={form.tags}
-              onChange={(e) => setForm({ ...form, tags: e.target.value })}
+              placeholder="e.g. Acme"
+              value={form.brand}
+              onChange={(e) => setForm({ ...form, brand: e.target.value })}
               className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
             />
           </div>
+        </div>
+
+        {/* Tags */}
+        <div>
+          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Tags (comma separated)</label>
+          <input
+            type="text"
+            placeholder="Tag name, Tag two, ..."
+            value={form.tags}
+            onChange={(e) => setForm({ ...form, tags: e.target.value })}
+            className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
+          />
         </div>
 
         {/* Stock */}

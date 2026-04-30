@@ -14,6 +14,7 @@ public record UpdateProductRequest(
         @DecimalMin("0.01") BigDecimal price,
         @Min(0) Integer stock,
         Category category,
+        String brand,
         List<String> images,
         Map<String, String> attributes
 ) {}
