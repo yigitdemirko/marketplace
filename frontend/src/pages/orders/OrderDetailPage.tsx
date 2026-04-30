@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -19,15 +19,26 @@ const statusColors: Record<Order['status'], string> = {
   CANCELLED: 'destructive',
 }
 
+const CANCELLABLE: Order['status'][] = ['PENDING', 'STOCK_RESERVING']
+
 export function OrderDetailPage() {
   const { orderId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { user } = useAuthStore()
+  const queryClient = useQueryClient()
 
   const { data: order, isLoading, isError } = useQuery({
     queryKey: ['order', orderId],
     queryFn: () => ordersApi.getById(orderId!, user!.userId),
     enabled: !!orderId && !!user,
+  })
+
+  const cancelMutation = useMutation({
+    mutationFn: () => ordersApi.cancel(orderId!, user!.userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['order', orderId] })
+      queryClient.invalidateQueries({ queryKey: ['orders', user?.userId] })
+    },
   })
 
   if (isLoading) {
@@ -37,6 +48,8 @@ export function OrderDetailPage() {
   if (isError || !order) {
     return <p className="text-destructive">Order not found.</p>
   }
+
+  const isCancellable = CANCELLABLE.includes(order.status)
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -51,6 +64,12 @@ export function OrderDetailPage() {
           {order.status}
         </Badge>
       </div>
+
+      {order.status === 'SHIPPED' && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-700">
+          Your order is on the way!
+        </div>
+      )}
 
       <Card>
         <CardHeader>
@@ -86,6 +105,16 @@ export function OrderDetailPage() {
           <p className="text-sm text-muted-foreground">{order.shippingAddress}</p>
         </CardContent>
       </Card>
+
+      {isCancellable && (
+        <Button
+          variant="destructive"
+          disabled={cancelMutation.isPending}
+          onClick={() => cancelMutation.mutate()}
+        >
+          {cancelMutation.isPending ? 'Cancelling...' : 'Cancel Order'}
+        </Button>
+      )}
     </div>
   )
 }

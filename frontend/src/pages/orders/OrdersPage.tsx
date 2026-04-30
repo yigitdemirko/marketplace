@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -17,9 +17,12 @@ const statusColors: Record<Order['status'], string> = {
   CANCELLED: 'destructive',
 }
 
+const CANCELLABLE: Order['status'][] = ['PENDING', 'STOCK_RESERVING']
+
 export function OrdersPage() {
   const { user, isAuthenticated } = useAuthStore()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   if (!isAuthenticated) {
     navigate({ to: '/login' })
@@ -30,6 +33,11 @@ export function OrdersPage() {
     queryKey: ['orders', user?.userId],
     queryFn: () => ordersApi.getAll(user!.userId),
     enabled: !!user,
+  })
+
+  const cancelMutation = useMutation({
+    mutationFn: (orderId: string) => ordersApi.cancel(orderId, user!.userId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['orders', user?.userId] }),
   })
 
   if (isLoading) {
@@ -81,7 +89,22 @@ export function OrdersPage() {
                 <p className="text-sm text-muted-foreground">
                   {order.items.length} item{order.items.length > 1 ? 's' : ''}
                 </p>
-                <p className="font-bold">₺{order.totalAmount.toFixed(2)}</p>
+                <div className="flex items-center gap-3">
+                  <p className="font-bold">₺{order.totalAmount.toFixed(2)}</p>
+                  {CANCELLABLE.includes(order.status) && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      disabled={cancelMutation.isPending}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        cancelMutation.mutate(order.id)
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
