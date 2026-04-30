@@ -144,7 +144,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
             e.stopPropagation()
             navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })
           }}
-          className="mt-1.5 text-[11px] text-muted-foreground hover:text-primary transition-colors text-left w-full"
+          className="mt-1.5 text-[11px] text-muted-foreground hover:text-primary transition-colors text-left truncate w-full"
         >
           Visit store →
         </button>
