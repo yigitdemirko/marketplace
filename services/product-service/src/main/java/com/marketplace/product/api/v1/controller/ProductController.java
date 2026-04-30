@@ -10,6 +10,7 @@ import com.marketplace.product.application.service.ProductService;
 import com.marketplace.product.domain.model.Category;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -29,11 +30,16 @@ import java.util.Map;
 public class ProductController {
 
     private final ProductService productService;
-    private final ImageUploadService imageUploadService;
+
+    @Autowired(required = false)
+    private ImageUploadService imageUploadService;
 
     @PostMapping("/images/upload")
     public ResponseEntity<Map<String, String>> uploadImage(
             @RequestParam("file") MultipartFile file) throws IOException {
+        if (imageUploadService == null) {
+            return ResponseEntity.status(503).body(Map.of("error", "Image upload is not configured"));
+        }
         String url = imageUploadService.upload(file);
         return ResponseEntity.ok(Map.of("url", url));
     }
