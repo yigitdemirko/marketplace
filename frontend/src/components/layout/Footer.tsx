@@ -1,79 +1,96 @@
 import { Link } from '@tanstack/react-router'
+import { Smartphone } from 'lucide-react'
 
-const information = ['My Account', 'Login', 'My Cart', 'My Wishlist', 'Checkout']
-const service = ['About Us', 'Careers', 'Delivery Information', 'Privacy Policy', 'Terms & Conditions']
+const columns = [
+  {
+    header: 'Company',
+    links: ['About Us', 'Investor', 'Careers', 'Blog and news'],
+    isCompany: true,
+  },
+  {
+    header: 'Buyers',
+    links: ['Find store', 'Registration', 'Find partners', 'Gift solutions'],
+  },
+  {
+    header: 'Help',
+    links: ['Contact us', 'Technical support', 'Live chat', 'Refund', 'Trade order'],
+  },
+  {
+    header: 'Service',
+    links: ['Trade Resources', 'Logistics service', 'Refund', 'Sale purchase'],
+  },
+  {
+    header: 'Language',
+    links: ['Español', 'Português', '한국어', '日本語'],
+  },
+]
+
 
 export function Footer() {
   return (
-    <footer className="bg-foreground text-background/70">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1 space-y-2">
-            <Link to="/" className="text-xl font-bold text-background block mb-3">
-              Marketplace
-            </Link>
-            <p className="text-sm leading-relaxed">
-              100 Ecommerce Street,<br />Shopping City, SC 12345
-            </p>
-            <p className="text-sm">info@marketplace.com</p>
-            <p className="text-sm">+1 (555) 000-0000</p>
-          </div>
-
-          {/* Information */}
-          <div>
-            <p className="text-background font-semibold mb-4 text-sm">Information</p>
-            <ul className="space-y-2 text-sm">
-              {information.map((item) => (
-                <li key={item}>
-                  <Link to="/" className="hover:text-background transition-colors">
-                    {item}
+    <footer className="bg-[#1c1c1c]">
+      <div className="max-w-[1280px] mx-auto px-8 pt-12 pb-8">
+        {/* 5-column grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-8 mb-10">
+          {columns.map(({ header, links, isCompany }) => (
+            <div key={header}>
+              {isCompany ? (
+                <div className="mb-4">
+                  <Link to="/" className="flex items-center gap-2 mb-4">
+                    <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center shrink-0">
+                      <span className="text-white font-bold text-sm">B</span>
+                    </div>
+                    <span className="font-bold text-white text-[16px]">Brandname</span>
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Service */}
-          <div>
-            <p className="text-background font-semibold mb-4 text-sm">Service</p>
-            <ul className="space-y-2 text-sm">
-              {service.map((item) => (
-                <li key={item}>
-                  <Link to="/" className="hover:text-background transition-colors">
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <p className="text-background font-semibold mb-4 text-sm">Subscribe</p>
-            <p className="text-sm mb-3 leading-relaxed">
-              Enter your email to get the best coupons and deals
-            </p>
-            <div className="flex">
-              <input
-                type="email"
-                placeholder="Your Email"
-                className="flex-1 h-10 px-3 text-sm bg-background/10 border border-background/20 rounded-l text-background placeholder:text-background/40 focus:outline-none focus:border-background/40 min-w-0"
-              />
-              <button className="h-10 px-4 bg-primary text-white text-sm rounded-r hover:bg-primary/90 transition-colors whitespace-nowrap shrink-0">
-                Subscribe
-              </button>
+                </div>
+              ) : (
+                <p className="text-white font-semibold text-[16px] mb-4">{header}</p>
+              )}
+              {isCompany && (
+                <p className="text-white font-semibold text-[16px] mb-4">{header}</p>
+              )}
+              <ul className="space-y-2">
+                {links.map((link) => (
+                  <li key={link}>
+                    <a
+                      href="#"
+                      className="text-[14px] text-white/60 hover:text-white transition-colors block"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
+          ))}
         </div>
 
-        <div className="border-t border-background/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-          <p>©{new Date().getFullYear()} Marketplace. All rights reserved.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-background transition-colors">Facebook</a>
-            <a href="#" className="hover:text-background transition-colors">Twitter</a>
-            <a href="#" className="hover:text-background transition-colors">Instagram</a>
+        {/* Bottom row */}
+        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* App store badges */}
+          <div className="flex items-center gap-3">
+            <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-[8px] px-3 py-2 transition-colors">
+              <Smartphone className="h-5 w-5 text-white" />
+              <div className="text-left">
+                <p className="text-[10px] text-white/60 leading-none">Download on the</p>
+                <p className="text-[13px] text-white font-medium leading-tight">App Store</p>
+              </div>
+            </button>
+            <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-[8px] px-3 py-2 transition-colors">
+              <Smartphone className="h-5 w-5 text-white" />
+              <div className="text-left">
+                <p className="text-[10px] text-white/60 leading-none">Get it on</p>
+                <p className="text-[13px] text-white font-medium leading-tight">Google Play</p>
+              </div>
+            </button>
           </div>
+
+          {/* Copyright */}
+          <p className="text-[14px] text-white/60">
+            © {new Date().getFullYear()} Company Inc. All Rights Reserved
+          </p>
+
+          <div />
         </div>
       </div>
     </footer>

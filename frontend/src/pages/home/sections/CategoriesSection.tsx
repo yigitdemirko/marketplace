@@ -1,56 +1,114 @@
-import { Link } from '@tanstack/react-router'
-import { ChevronLeft, ChevronRight, Smartphone, Monitor, Watch, Camera, Headphones, Gamepad2 } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { useNavigate, Link } from '@tanstack/react-router'
+import { ArrowRight, Package } from 'lucide-react'
+import { productsApi } from '@/api/products'
 
-const categories = [
-  { name: 'Phones', icon: Smartphone },
-  { name: 'Computers', icon: Monitor },
-  { name: 'SmartWatch', icon: Watch },
-  { name: 'Camera', icon: Camera },
-  { name: 'HeadPhones', icon: Headphones },
-  { name: 'Gaming', icon: Gamepad2 },
-]
+interface CategorySectionProps {
+  bannerBg: string
+  bannerEmoji: string
+  bannerTitle: string
+  page: number
+}
 
-export function CategoriesSection() {
+function CategorySection({ bannerBg, bannerEmoji, bannerTitle, page }: CategorySectionProps) {
+  const navigate = useNavigate()
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['products', 'category-section', page],
+    queryFn: () => productsApi.getAll(page, 8),
+  })
+
   return (
-    <section className="py-10 bg-background">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <span className="w-5 h-10 rounded bg-primary block shrink-0" />
-              <span className="text-primary font-semibold text-sm">Categories</span>
-            </div>
-            <h2 className="text-3xl font-semibold text-foreground">Browse By Category</h2>
-          </div>
-          <div className="flex gap-2 shrink-0">
-            <button className="w-11 h-11 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors">
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button className="w-11 h-11 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors">
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Category cards */}
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
-          {categories.map(({ name, icon: Icon }) => (
+    <section className="bg-white py-8">
+      <div className="max-w-[1280px] mx-auto px-8">
+        <div className="flex gap-5">
+          {/* Left banner */}
+          <div
+            className={`${bannerBg} w-[300px] shrink-0 rounded-[8px] p-6 flex flex-col justify-end min-h-[300px] relative overflow-hidden`}
+          >
+            <span className="absolute top-4 right-4 text-[80px] opacity-20 leading-none select-none">
+              {bannerEmoji}
+            </span>
+            <h3 className="text-[20px] font-semibold text-[#14181f] mb-2 relative z-10">
+              {bannerTitle}
+            </h3>
             <Link
               to="/search"
-              key={name}
-              className="group border border-border rounded flex flex-col items-center justify-center py-6 gap-3 hover:bg-primary hover:border-primary transition-all"
+              className="flex items-center gap-1 text-[15px] text-[#3348ff] font-medium relative z-10 w-fit hover:underline"
             >
-              <Icon className="h-10 w-10 text-foreground group-hover:text-white transition-colors" />
-              <span className="text-sm text-foreground group-hover:text-white transition-colors">
-                {name}
-              </span>
+              Explore all <ArrowRight className="h-4 w-4" />
             </Link>
-          ))}
-        </div>
+          </div>
 
-        <div className="border-b border-border mt-10" />
+          {/* Right product grid */}
+          <div className="flex-1">
+            {isLoading && (
+              <div className="grid grid-cols-4 gap-3">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="h-[160px] bg-muted animate-pulse rounded-[8px]" />
+                ))}
+              </div>
+            )}
+
+            {data && data.content.length > 0 && (
+              <div className="grid grid-cols-4 gap-3">
+                {data.content.slice(0, 8).map((product) => (
+                  <div
+                    key={product.id}
+                    className="border border-[#dce0e5] rounded-[8px] overflow-hidden cursor-pointer hover:shadow-sm transition-shadow"
+                    onClick={() =>
+                      navigate({ to: '/products/$productId', params: { productId: product.id } })
+                    }
+                  >
+                    {/* Image */}
+                    <div className="aspect-square bg-[#f6f7f9] overflow-hidden flex items-center justify-center">
+                      {product.images && product.images.length > 0 ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-full h-full object-contain mix-blend-multiply"
+                        />
+                      ) : (
+                        <Package className="h-10 w-10 text-gray-300" />
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="px-3 py-2">
+                      <p className="text-[13px] text-[#14181f] truncate">{product.name}</p>
+                      <p className="text-[13px] text-[#6f7c8e]">
+                        From ${product.price.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </section>
+  )
+}
+
+export function HomeOutdoorSection() {
+  return (
+    <CategorySection
+      bannerBg="bg-[#d4edda]"
+      bannerEmoji="🏠"
+      bannerTitle="Home and outdoor products"
+      page={0}
+    />
+  )
+}
+
+export function ElectronicsSection() {
+  return (
+    <CategorySection
+      bannerBg="bg-[#d0e8ff]"
+      bannerEmoji="📱"
+      bannerTitle="Consumer electronics and gadgets"
+      page={1}
+    />
   )
 }
