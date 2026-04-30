@@ -327,10 +327,6 @@ export function ProductDetailPage() {
             {/* Features */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
-                <span className="text-base leading-none">🇩🇪</span>
-                <span className="text-[15px] text-[#525e6f] tracking-tight">Germany, Berlin</span>
-              </div>
-              <div className="flex items-center gap-3">
                 <Truck className="h-5 w-5 text-[#525e6f] shrink-0" />
                 <span className="text-[15px] text-[#525e6f] tracking-tight">Worldwide shipping</span>
               </div>
