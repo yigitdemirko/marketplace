@@ -1,40 +1,89 @@
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
+import { ChevronRight, ArrowRight } from 'lucide-react'
+import { useState } from 'react'
 
-const heroImage = 'https://www.figma.com/api/mcp/asset/4803ceb1-b82f-484f-8c5f-05d6e893a3b0'
+const categories = [
+  { name: "Woman's Fashion", hasDropdown: true },
+  { name: "Men's Fashion", hasDropdown: true },
+  { name: 'Electronics' },
+  { name: 'Home & Lifestyle' },
+  { name: 'Medicine' },
+  { name: 'Sports & Outdoor' },
+  { name: "Baby's & Toys" },
+  { name: 'Groceries & Pets' },
+  { name: 'Health & Beauty' },
+]
+
+const slides = [
+  {
+    brand: 'iPhone 14 Series',
+    headline: 'Up to 10%\noff Voucher',
+    cta: 'Shop Now',
+    bg: 'from-foreground to-foreground/90',
+  },
+]
 
 export function HeroSection() {
+  const [active, setActive] = useState(0)
+
   return (
-    <section className="bg-background overflow-hidden">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
-        <div className="flex items-center min-h-[580px] relative">
-          {/* Left content */}
-          <div className="relative z-10 max-w-[480px] py-16">
-            <p className="italic text-muted-foreground text-base mb-3">Classic Exclusive</p>
-            <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-4">
-              Women's<br />Collection
-            </h1>
-            <p className="text-2xl font-medium text-primary mb-8">UPTO 40% OFF</p>
-            <Link to="/search">
-              <Button className="h-12 px-8 rounded-[10px] bg-foreground text-background hover:bg-foreground/85 text-base font-normal gap-2">
+    <section className="bg-background border-b border-border">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-6">
+        <div className="flex gap-6">
+          {/* Left: category sidebar */}
+          <aside className="hidden lg:block w-[220px] shrink-0 border-r border-border pr-6">
+            <ul className="space-y-3">
+              {categories.map((cat) => (
+                <li key={cat.name}>
+                  <Link
+                    to="/search"
+                    className="flex items-center justify-between text-sm text-foreground/80 hover:text-foreground transition-colors py-0.5"
+                  >
+                    <span>{cat.name}</span>
+                    {cat.hasDropdown && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </aside>
+
+          {/* Right: hero banner */}
+          <div className="flex-1 relative rounded-[4px] overflow-hidden bg-foreground min-h-[344px] flex items-center">
+            <div className="relative z-10 px-12 py-10 max-w-[380px]">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
+                  <span className="text-background text-xs font-bold">🍎</span>
+                </div>
+                <span className="text-background/80 text-sm">iPhone 14 Series</span>
+              </div>
+              <h2 className="text-4xl font-semibold text-background leading-tight mb-6">
+                Up to 10%<br />off Voucher
+              </h2>
+              <Link to="/search" className="inline-flex items-center gap-2 text-background text-sm border-b border-background/60 hover:border-background pb-0.5 transition-colors">
                 Shop Now <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+              </Link>
+            </div>
 
-          {/* Faded background text */}
-          <span className="absolute right-[260px] top-1/2 -translate-y-1/2 text-[180px] font-extrabold text-foreground/[0.04] select-none pointer-events-none leading-none hidden lg:block">
-            BEST
-          </span>
+            {/* Placeholder product visual */}
+            <div className="absolute right-0 top-0 h-full w-[55%] flex items-center justify-center opacity-20">
+              <div className="w-64 h-64 rounded-full bg-white/10" />
+            </div>
 
-          {/* Right: model image */}
-          <div className="absolute right-0 top-0 h-full w-[52%] hidden lg:block">
-            <img
-              src={heroImage}
-              alt="Women's Collection"
-              className="w-full h-full object-cover object-[center_10%]"
-            />
+            {/* Dots */}
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  className={`rounded-full transition-all ${
+                    i === active
+                      ? 'w-5 h-2.5 bg-primary'
+                      : 'w-2.5 h-2.5 bg-background/30 hover:bg-background/50'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>

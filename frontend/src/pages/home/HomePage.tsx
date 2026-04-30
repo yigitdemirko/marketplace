@@ -1,21 +1,23 @@
-import { HeroSection } from './sections/HeroSection'
-import { CategoriesSection } from './sections/CategoriesSection'
-import { BestsellerSection } from './sections/BestsellerSection'
-import { DealsSection } from './sections/DealsSection'
-import { TestimonialsSection } from './sections/TestimonialsSection'
-import { InstagramSection } from './sections/InstagramSection'
-import { FeaturesSection } from './sections/FeaturesSection'
+import { HeroSection } from '@/pages/home/sections/HeroSection'
+import { FlashSalesSection } from '@/pages/home/sections/FlashSalesSection'
+import { CategoriesSection } from '@/pages/home/sections/CategoriesSection'
+import { BestsellerSection } from '@/pages/home/sections/BestsellerSection'
+import { DealsSection } from '@/pages/home/sections/DealsSection'
+import { ExploreProductsSection } from '@/pages/home/sections/ExploreProductsSection'
+import { NewArrivalSection } from '@/pages/home/sections/NewArrivalSection'
+import { FeaturesSection } from '@/pages/home/sections/FeaturesSection'
 import { Footer } from '@/components/layout/Footer'
 
 export function HomePage() {
   return (
     <div>
       <HeroSection />
+      <FlashSalesSection />
       <CategoriesSection />
       <BestsellerSection />
       <DealsSection />
-      <TestimonialsSection />
-      <InstagramSection />
+      <ExploreProductsSection />
+      <NewArrivalSection />
       <FeaturesSection />
       <Footer />
     </div>
