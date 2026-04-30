@@ -156,6 +156,11 @@ services:
       REDIS_HOST: redis
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      S3_URL: ${S3_URL}
+      BUCKET_NAME: ${BUCKET_NAME}
+      ACCESS_KEY_ID: ${ACCESS_KEY_ID}
+      SECRET_ACCESS_KEY: ${SECRET_ACCESS_KEY}
+      REGION: ${REGION}
     depends_on:
       mongodb:
         condition: service_healthy

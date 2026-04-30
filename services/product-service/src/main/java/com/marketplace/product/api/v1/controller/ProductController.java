@@ -5,6 +5,7 @@ import com.marketplace.product.api.v1.dto.request.UpdateProductRequest;
 import com.marketplace.product.api.v1.dto.response.BatchCreateResponse;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
+import com.marketplace.product.application.service.ImageUploadService;
 import com.marketplace.product.application.service.ProductService;
 import com.marketplace.product.domain.model.Category;
 import jakarta.validation.Valid;
@@ -15,7 +16,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,14 @@ import java.util.Map;
 public class ProductController {
 
     private final ProductService productService;
+    private final ImageUploadService imageUploadService;
+
+    @PostMapping("/images/upload")
+    public ResponseEntity<Map<String, String>> uploadImage(
+            @RequestParam("file") MultipartFile file) throws IOException {
+        String url = imageUploadService.upload(file);
+        return ResponseEntity.ok(Map.of("url", url));
+    }
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(
