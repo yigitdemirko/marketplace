@@ -41,7 +41,7 @@ export interface User {
   export interface Order {
     id: string
     userId: string
-    status: 'PENDING' | 'STOCK_RESERVING' | 'PAYMENT_PENDING' | 'CONFIRMED' | 'DELIVERED' | 'CANCELLED'
+    status: 'PENDING' | 'STOCK_RESERVING' | 'PAYMENT_PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
     totalAmount: number
     shippingAddress: string
     idempotencyKey: string

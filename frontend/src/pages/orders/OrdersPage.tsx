@@ -12,6 +12,7 @@ const statusColors: Record<Order['status'], string> = {
   STOCK_RESERVING: 'secondary',
   PAYMENT_PENDING: 'secondary',
   CONFIRMED: 'default',
+  SHIPPED: 'default',
   DELIVERED: 'default',
   CANCELLED: 'destructive',
 }

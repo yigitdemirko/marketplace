@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, ImagePlus, X } from 'lucide-react'
+import { ArrowLeft, X, Plus } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
 
@@ -16,12 +16,14 @@ export function SellerProductFormPage() {
     name: '',
     description: '',
     price: '',
-    salePrice: '',
     stock: '',
     categoryId: '',
     tags: '',
     active: true,
   })
+  const [imageUrls, setImageUrls] = useState<string[]>([])
+  const [newImageUrl, setNewImageUrl] = useState('')
+  const [unit, setUnit] = useState('Pcs')
   const [error, setError] = useState('')
 
   const { data: product } = useQuery({
@@ -36,27 +38,44 @@ export function SellerProductFormPage() {
         name: product.name,
         description: product.description,
         price: product.price.toString(),
-        salePrice: '',
         stock: product.stock.toString(),
         categoryId: product.categoryId,
-        tags: '',
+        tags: product.attributes?.tags ?? '',
         active: product.active,
       })
+      setImageUrls(product.images ?? [])
+      setUnit((product.attributes?.unit as string | undefined) ?? 'Pcs')
     }
   }, [product])
 
+  const handleAddImage = () => {
+    const url = newImageUrl.trim()
+    if (url && !imageUrls.includes(url)) {
+      setImageUrls((prev) => [...prev, url])
+    }
+    setNewImageUrl('')
+  }
+
+  const handleRemoveImage = (idx: number) => {
+    setImageUrls((prev) => prev.filter((_, i) => i !== idx))
+  }
+
+  const buildPayload = () => ({
+    name: form.name,
+    description: form.description,
+    price: parseFloat(form.price),
+    stock: parseInt(form.stock),
+    categoryId: form.categoryId,
+    images: imageUrls,
+    active: form.active,
+    attributes: {
+      unit,
+      tags: form.tags,
+    },
+  })
+
   const createMutation = useMutation({
-    mutationFn: () =>
-      productsApi.create(
-        {
-          name: form.name,
-          description: form.description,
-          price: parseFloat(form.price),
-          stock: parseInt(form.stock),
-          categoryId: form.categoryId,
-        },
-        user!.userId,
-      ),
+    mutationFn: () => productsApi.create(buildPayload(), user!.userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['seller-products'] })
       navigate({ to: '/seller/products' })
@@ -65,18 +84,7 @@ export function SellerProductFormPage() {
   })
 
   const updateMutation = useMutation({
-    mutationFn: () =>
-      productsApi.update(
-        productId!,
-        {
-          name: form.name,
-          description: form.description,
-          price: parseFloat(form.price),
-          stock: parseInt(form.stock),
-          categoryId: form.categoryId,
-        },
-        user!.userId,
-      ),
+    mutationFn: () => productsApi.update(productId!, buildPayload(), user!.userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['seller-products'] })
       navigate({ to: '/seller/products' })
@@ -136,23 +144,40 @@ export function SellerProductFormPage() {
         {/* Product images */}
         <div>
           <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Product images</label>
-          <div className="flex flex-row flex-wrap gap-3 p-3 bg-[#f6f7f9] border border-[#dce0e5] rounded-[6px]">
-            <label className="flex items-center justify-center w-[120px] h-[120px] border-2 border-dashed border-[#dce0e5] rounded-[6px] bg-white cursor-pointer hover:border-[#3348ff] transition-colors">
-              <input type="file" accept="image/*" className="hidden" />
-              <ImagePlus className="h-8 w-8 text-[#9aa5b4]" />
-            </label>
-            {product?.images?.map((img, i) => (
-              <div key={i} className="relative w-[120px] h-[120px] border border-[#dce0e5] rounded-[6px] overflow-hidden bg-[#f6f7f9]">
-                <img src={img} alt="" className="w-full h-full object-cover" />
-                <button
-                  type="button"
-                  className="absolute top-1 right-1 h-5 w-5 bg-white border border-[#dce0e5] rounded flex items-center justify-center hover:bg-[#ffeaea] hover:border-[#fa3434] transition-colors"
-                >
-                  <X className="h-3 w-3 text-[#fa3434]" />
-                </button>
-              </div>
-            ))}
+          <div className="flex gap-2 mb-3">
+            <input
+              type="url"
+              placeholder="https://example.com/image.jpg"
+              value={newImageUrl}
+              onChange={(e) => setNewImageUrl(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddImage())}
+              className="flex-1 h-9 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
+            />
+            <button
+              type="button"
+              onClick={handleAddImage}
+              className="h-9 px-3 text-[14px] font-medium border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] transition-colors flex items-center gap-1.5 text-[#14181f]"
+            >
+              <Plus className="h-4 w-4" />
+              Add
+            </button>
           </div>
+          {imageUrls.length > 0 && (
+            <div className="flex flex-wrap gap-3 p-3 bg-[#f6f7f9] border border-[#dce0e5] rounded-[6px]">
+              {imageUrls.map((img, i) => (
+                <div key={i} className="relative w-[100px] h-[100px] border border-[#dce0e5] rounded-[6px] overflow-hidden bg-white">
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(i)}
+                    className="absolute top-1 right-1 h-5 w-5 bg-white border border-[#dce0e5] rounded flex items-center justify-center hover:bg-[#ffeaea] hover:border-[#fa3434] transition-colors"
+                  >
+                    <X className="h-3 w-3 text-[#fa3434]" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Category + Tags */}
@@ -193,7 +218,11 @@ export function SellerProductFormPage() {
               required
               className="flex-1 h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
             />
-            <select className="h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff]">
+            <select
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+              className="h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff]"
+            >
               <option>Pcs</option>
               <option>Kg</option>
               <option>Litres</option>
@@ -202,32 +231,18 @@ export function SellerProductFormPage() {
         </div>
 
         {/* Price */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Price (regular)</label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              value={form.price}
-              onChange={(e) => setForm({ ...form, price: e.target.value })}
-              required
-              className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
-            />
-          </div>
-          <div>
-            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Sale price</label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              value={form.salePrice}
-              onChange={(e) => setForm({ ...form, salePrice: e.target.value })}
-              className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
-            />
-          </div>
+        <div className="sm:w-1/2">
+          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Price</label>
+          <input
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            value={form.price}
+            onChange={(e) => setForm({ ...form, price: e.target.value })}
+            required
+            className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
+          />
         </div>
 
         {/* Active toggle */}

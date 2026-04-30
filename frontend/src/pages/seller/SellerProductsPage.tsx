@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { Plus, Pencil, Trash2, Package } from 'lucide-react'
@@ -6,15 +6,12 @@ import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
 
 export function SellerProductsPage() {
-  const { user, isAuthenticated } = useAuthStore()
+  const { user } = useAuthStore()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [selected, setSelected] = useState<Set<string>>(new Set())
-
-  if (!isAuthenticated || user?.accountType !== 'SELLER') {
-    navigate({ to: '/' })
-    return null
-  }
+  const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
 
   const { data, isLoading } = useQuery({
     queryKey: ['seller-products', user?.userId],
@@ -27,6 +24,17 @@ export function SellerProductsPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['seller-products'] }),
   })
 
+  const filtered = useMemo(() => {
+    if (!data) return []
+    return data.content.filter((p) => {
+      const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesStatus =
+        statusFilter === 'all' ||
+        (statusFilter === 'active' ? p.active : !p.active)
+      return matchesSearch && matchesStatus
+    })
+  }, [data, searchQuery, statusFilter])
+
   const toggleSelect = (id: string) => {
     setSelected((prev) => {
       const next = new Set(prev)
@@ -37,11 +45,11 @@ export function SellerProductsPage() {
   }
 
   const toggleAll = () => {
-    if (!data) return
-    if (selected.size === data.content.length) {
+    if (filtered.length === 0) return
+    if (selected.size === filtered.length) {
       setSelected(new Set())
     } else {
-      setSelected(new Set(data.content.map((p) => p.id)))
+      setSelected(new Set(filtered.map((p) => p.id)))
     }
   }
 
@@ -52,23 +60,20 @@ export function SellerProductsPage() {
         <input
           type="search"
           placeholder="Search item"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="h-9 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] min-w-[180px]"
         />
-        <select className="h-9 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff]">
-          <option>All categories</option>
-          <option>Electronics</option>
-          <option>Home items</option>
-          <option>Food and Drinks</option>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="h-9 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff]"
+        >
+          <option value="all">Status: any</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
         </select>
-        <select className="h-9 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff]">
-          <option>Status: any</option>
-          <option>Active</option>
-          <option>Inactive</option>
-        </select>
-        <div className="ml-auto flex gap-2">
-          <button className="h-9 px-4 text-[14px] font-medium border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] transition-colors text-[#14181f]">
-            Import file
-          </button>
+        <div className="ml-auto">
           <button
             onClick={() => navigate({ to: '/seller/products/new' })}
             className="h-9 px-4 text-[14px] font-medium bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[6px] transition-colors flex items-center gap-2"
@@ -88,7 +93,7 @@ export function SellerProductsPage() {
                 <input
                   type="checkbox"
                   className="rounded border-[#dce0e5]"
-                  checked={!!data && selected.size === data.content.length && data.content.length > 0}
+                  checked={filtered.length > 0 && selected.size === filtered.length}
                   onChange={toggleAll}
                 />
               </th>
@@ -109,20 +114,26 @@ export function SellerProductsPage() {
                   </td>
                 </tr>
               ))}
-            {!isLoading && data?.content.length === 0 && (
+            {!isLoading && filtered.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-4 py-12 text-center text-[#6f7c8e]">
-                  No products yet.{' '}
-                  <button
-                    onClick={() => navigate({ to: '/seller/products/new' })}
-                    className="text-[#3348ff] hover:underline"
-                  >
-                    Add your first product
-                  </button>
+                  {data?.content.length === 0 ? (
+                    <>
+                      No products yet.{' '}
+                      <button
+                        onClick={() => navigate({ to: '/seller/products/new' })}
+                        className="text-[#3348ff] hover:underline"
+                      >
+                        Add your first product
+                      </button>
+                    </>
+                  ) : (
+                    'No products match your filters.'
+                  )}
                 </td>
               </tr>
             )}
-            {data?.content.map((product) => (
+            {filtered.map((product) => (
               <tr key={product.id} className="hover:bg-[#f6f7f9] transition-colors">
                 <td className="px-4 py-3">
                   <input
