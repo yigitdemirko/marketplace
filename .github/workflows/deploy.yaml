@@ -93,9 +93,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl infrastructure/config-server --also-make \
+          mvn compile jib:build -pl infrastructure/config-server \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/config-server:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
@@ -124,9 +125,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl infrastructure/discovery-server --also-make \
+          mvn compile jib:build -pl infrastructure/discovery-server \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/discovery-server:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
@@ -155,9 +157,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl infrastructure/api-gateway --also-make \
+          mvn compile jib:build -pl infrastructure/api-gateway \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/api-gateway:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
@@ -186,9 +189,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl services/user-service --also-make \
+          mvn compile jib:build -pl services/user-service \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/user-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
@@ -217,9 +221,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl services/product-service --also-make \
+          mvn compile jib:build -pl services/product-service \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/product-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
@@ -248,9 +253,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl services/search-service --also-make \
+          mvn compile jib:build -pl services/search-service \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/search-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
@@ -279,9 +285,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl services/order-service --also-make \
+          mvn compile jib:build -pl services/order-service \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/order-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
@@ -310,9 +317,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl services/payment-service --also-make \
+          mvn compile jib:build -pl services/payment-service \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/payment-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
@@ -341,9 +349,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl services/notification-service --also-make \
+          mvn compile jib:build -pl services/notification-service \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/notification-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
@@ -372,9 +381,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl services/feed-ingestion-service --also-make \
+          mvn compile jib:build -pl services/feed-ingestion-service \
             -Djib.to.image=ghcr.io/yigitdemirko/marketplace/feed-ingestion-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
