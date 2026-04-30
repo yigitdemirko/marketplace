@@ -16,6 +16,7 @@ import {
   XCircle,
 } from 'lucide-react'
 import { productsApi } from '@/api/products'
+import { usersApi } from '@/api/users'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
 
@@ -43,6 +44,14 @@ export function ProductDetailPage() {
     queryFn: () => productsApi.getById(productId!),
     enabled: !!productId,
   })
+
+  const { data: sellerProfile } = useQuery({
+    queryKey: ['seller-public-profile', product?.sellerId],
+    queryFn: () => usersApi.getSellerProfile(product!.sellerId),
+    enabled: !!product?.sellerId,
+  })
+
+  const sellerDisplayName = sellerProfile?.storeName ?? product?.sellerId
 
   const handleAddToCart = () => {
     if (!product) return
@@ -309,7 +318,7 @@ export function ProductDetailPage() {
               </div>
               <div>
                 <p className="text-[15px] text-[#6f7c8e] tracking-tight">Supplier</p>
-                <p className="text-[15px] text-[#14181f] tracking-tight">Guanjoi Trading LLC</p>
+                <p className="text-[15px] text-[#14181f] tracking-tight">{sellerDisplayName}</p>
               </div>
             </div>
 
@@ -488,8 +497,8 @@ export function ProductDetailPage() {
             {activeTab === 'Seller info' && (
               <div className="space-y-3">
                 <p className="text-[15px] text-[#14181f]">
-                  <span className="text-[#6f7c8e]">Seller ID: </span>
-                  <span className="font-mono">{product.sellerId}</span>
+                  <span className="text-[#6f7c8e]">Store: </span>
+                  <span className="font-semibold">{sellerDisplayName}</span>
                 </p>
                 <button
                   onClick={() => navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })}
