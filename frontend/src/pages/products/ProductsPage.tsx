@@ -54,12 +54,12 @@ export function ProductsPage({ initialQuery, initialCategory }: Props = {}) {
         </div>
       )}
 
-      <form onSubmit={handleSearch} className="flex gap-2">
+      <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
         <Input
           placeholder="Search products..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="max-w-md"
+          className="w-full sm:max-w-md"
         />
         <Button type="submit" variant="outline">
           <Search className="h-4 w-4" />

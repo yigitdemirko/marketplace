@@ -50,16 +50,16 @@ export function FlashSalesSection() {
 
   return (
     <section className="bg-white py-8">
-      <div className="max-w-[1280px] mx-auto px-8">
+      <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-baseline gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-baseline gap-2 flex-wrap">
             <h2 className="text-[24px] font-semibold text-[#14181f]">Deals and offers</h2>
             <span className="text-[15px] text-[#6f7c8e]">Hygiene equipments</span>
           </div>
 
           {/* Countdown */}
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-2 flex-wrap">
             <CountdownBox value={days} label="Days" />
             <span className="text-[18px] font-semibold text-[#14181f] mb-5">:</span>
             <CountdownBox value={hours} label="Hours" />
@@ -72,7 +72,7 @@ export function FlashSalesSection() {
 
         {/* Products */}
         {isLoading && (
-          <div className="grid grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="h-[240px] bg-[#f6f7f9] animate-pulse rounded-[8px]" />
             ))}
@@ -80,7 +80,7 @@ export function FlashSalesSection() {
         )}
 
         {data && data.content.length > 0 && (
-          <div className="grid grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {data.content.slice(0, 5).map((product, index) => (
               <div
                 key={product.id}

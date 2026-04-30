@@ -139,7 +139,7 @@ export function CartPage() {
             {items.map((item, index) => (
               <div key={item.productId}>
                 {index > 0 && <div className="h-px bg-[#dce0e5]" />}
-                <div className="flex items-center gap-4 p-4">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 p-4">
                   <div className="shrink-0 size-[60px] bg-[#f6f6f8] border border-[#dce0e5] rounded-[6px] overflow-hidden flex items-center justify-center">
                     {item.image ? (
                       <img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply" />
@@ -181,7 +181,7 @@ export function CartPage() {
                     </button>
                   </div>
 
-                  <div className="shrink-0 min-w-[96px] text-right">
+                  <div className="shrink-0 min-w-0 sm:min-w-[96px] text-right ml-auto sm:ml-0">
                     <p className="text-[15px] font-semibold text-[#14181f]">{(item.price * item.quantity).toFixed(2)} USD</p>
                   </div>
                 </div>

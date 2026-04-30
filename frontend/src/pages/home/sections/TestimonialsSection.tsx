@@ -46,7 +46,7 @@ export function TestimonialsSection() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((t) => (
             <div key={t.name} className="bg-card rounded-[10px] p-6 border border-border space-y-4">
               <div className="flex gap-1">

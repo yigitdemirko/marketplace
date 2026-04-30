@@ -27,10 +27,10 @@ const navItems = ['Hot offers', 'Services', 'Bestsellers', 'Gift boxes', 'Help']
 export function HeroSection() {
   return (
     <section className="bg-[#f6f7f9]">
-      <div className="max-w-[1280px] mx-auto px-8 py-6">
-        <div className="flex gap-5 h-[344px]">
+      <div className="max-w-[1280px] mx-auto px-4 lg:px-8 py-6">
+        <div className="flex flex-col lg:flex-row gap-5 lg:h-[344px]">
           {/* Left: category sidebar */}
-          <div className="w-[220px] shrink-0 bg-white border border-[#dce0e5] rounded-[6px] overflow-hidden flex flex-col">
+          <div className="hidden lg:flex w-[220px] shrink-0 bg-white border border-[#dce0e5] rounded-[6px] overflow-hidden flex-col">
             {sidebarCategories.map(({ name, icon: Icon }) => (
               <Link
                 key={name}
@@ -56,9 +56,9 @@ export function HeroSection() {
           </div>
 
           {/* Center: hero banner */}
-          <div className="flex-1 rounded-[6px] overflow-hidden bg-gradient-to-br from-[#c9e8f5] to-[#e8f4fb] p-8 flex flex-col justify-center relative">
+          <div className="flex-1 rounded-[6px] overflow-hidden bg-gradient-to-br from-[#c9e8f5] to-[#e8f4fb] p-8 flex flex-col justify-center relative min-h-[220px] lg:min-h-0">
             <p className="text-[15px] text-[#525e6f] mb-2">New trending</p>
-            <h2 className="text-[32px] font-bold text-[#14181f] leading-tight mb-6">
+            <h2 className="text-[22px] lg:text-[32px] font-bold text-[#14181f] leading-tight mb-6">
               Electronic<br />items
             </h2>
             <Link
@@ -71,7 +71,7 @@ export function HeroSection() {
           </div>
 
           {/* Right: promo banner */}
-          <div className="w-[260px] shrink-0 rounded-[6px] overflow-hidden relative bg-[#1a1a2e]">
+          <div className="hidden lg:block w-[260px] shrink-0 rounded-[6px] overflow-hidden relative bg-[#1a1a2e]">
             <div className="absolute inset-0 bg-gradient-to-bl from-[#3348ff]/20 to-transparent pointer-events-none" />
             <div className="relative z-10 p-6 flex flex-col justify-center h-full">
               <p className="text-[13px] text-white/60 mb-2">Sell on</p>
@@ -92,7 +92,7 @@ export function HeroSection() {
 
       {/* Category nav bar */}
       <div className="bg-white border-b border-[#dce0e5]">
-        <div className="max-w-[1280px] mx-auto px-8 h-[46px] flex items-center gap-6">
+        <div className="max-w-[1280px] mx-auto px-4 lg:px-8 h-[46px] flex items-center gap-3 lg:gap-6 overflow-x-auto">
           <span className="flex items-center gap-2 text-[15px] font-medium text-[#14181f]">
             <span className="text-[18px] leading-none">≡</span> All category
           </span>
