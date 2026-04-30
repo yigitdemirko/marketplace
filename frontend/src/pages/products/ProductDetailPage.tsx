@@ -247,13 +247,13 @@ export function ProductDetailPage() {
             {/* Spec list */}
             <div className="flex flex-col gap-3">
               <div className="flex items-start text-[15px] tracking-tight">
-                <span className="text-[#6f7c8e] w-[160px] shrink-0">Price:</span>
+                <span className="text-[#6f7c8e] w-[100px] sm:w-[160px] shrink-0">Price:</span>
                 <span className="text-[#14181f]">Negotiable</span>
               </div>
               <div className="h-px bg-[#dce0e5]" />
               {specEntries.slice(0, 6).map(({ label, value }) => (
                 <div key={label} className="flex items-start text-[15px] tracking-tight">
-                  <span className="text-[#6f7c8e] w-[160px] shrink-0">{label}:</span>
+                  <span className="text-[#6f7c8e] w-[100px] sm:w-[160px] shrink-0">{label}:</span>
                   <span className="text-[#14181f]">{value}</span>
                 </div>
               ))}
@@ -268,7 +268,7 @@ export function ProductDetailPage() {
                     ['Warranty', '2 years'],
                   ].map(([label, value]) => (
                     <div key={label} className="flex items-start text-[15px] tracking-tight">
-                      <span className="text-[#6f7c8e] w-[160px] shrink-0">{label}:</span>
+                      <span className="text-[#6f7c8e] w-[100px] sm:w-[160px] shrink-0">{label}:</span>
                       <span className="text-[#14181f]">{value}</span>
                     </div>
                   ))}
@@ -413,12 +413,12 @@ export function ProductDetailPage() {
           {/* RIGHT: Tabs + Detailed info */}
           <div>
             {/* Tab navigation */}
-            <div className="flex gap-6 border-b border-[#dce0e5] mb-6">
+            <div className="flex gap-6 border-b border-[#dce0e5] mb-6 overflow-x-auto">
               {TABS.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`text-[15px] pb-3 transition-colors tracking-tight whitespace-nowrap ${
+                  className={`text-[15px] pb-3 transition-colors tracking-tight whitespace-nowrap shrink-0 ${
                     activeTab === tab
                       ? 'text-[#3348ff] font-medium border-b-2 border-[#3348ff] -mb-px'
                       : 'text-[#6f7c8e] hover:text-[#14181f]'

@@ -36,7 +36,7 @@ export function InstagramSection() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {perks.map(({ icon: Icon, title, description }) => (
             <div key={title} className="text-center space-y-3">
               <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto">

@@ -101,10 +101,29 @@ export function SellerLayout() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-5 lg:p-6 bg-white overflow-auto">
+        <main className="flex-1 p-5 lg:p-6 pb-20 lg:pb-6 bg-white overflow-auto">
           <Outlet />
         </main>
       </div>
+
+      {/* Mobile bottom tab bar */}
+      <nav className="flex lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#dce0e5]">
+        {NAV_ITEMS.map(({ label, icon: Icon, to }) => {
+          const isActive = to === '/seller' ? pathname === '/seller' : pathname.startsWith(to)
+          return (
+            <Link
+              key={to}
+              to={to as '/seller'}
+              className={`flex-1 flex flex-col items-center gap-1 py-2 text-[11px] font-medium transition-colors ${
+                isActive ? 'text-[#3348ff]' : 'text-[#6f7c8e]'
+              }`}
+            >
+              <Icon className="h-5 w-5" />
+              {label}
+            </Link>
+          )
+        })}
+      </nav>
     </div>
   )
 }

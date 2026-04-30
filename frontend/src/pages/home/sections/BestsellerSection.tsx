@@ -13,11 +13,11 @@ export function RecommendedSection() {
 
   return (
     <section className="bg-white py-8">
-      <div className="max-w-[1280px] mx-auto px-8">
+      <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
         <h2 className="text-[24px] font-semibold text-[#14181f] mb-6">Recommended items</h2>
 
         {isLoading && (
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {Array.from({ length: 10 }).map((_, i) => (
               <div key={i} className="h-[260px] bg-muted animate-pulse rounded-[8px]" />
             ))}
@@ -25,7 +25,7 @@ export function RecommendedSection() {
         )}
 
         {data && data.content.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {data.content.map((product) => {
               const originalPrice = product.price * 1.25
               return (

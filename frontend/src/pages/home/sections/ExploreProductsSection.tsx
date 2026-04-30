@@ -21,8 +21,8 @@ const features = [
 export function FeaturesSection() {
   return (
     <section className="bg-[#f6f7f9] border-t border-[#dce0e5]">
-      <div className="max-w-[1280px] mx-auto px-8 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+      <div className="max-w-[1280px] mx-auto px-4 lg:px-8 py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map(({ icon: Icon, title, subtitle }) => (
             <div key={title} className="flex items-center gap-4">
               <div className="bg-[#14181f] rounded-full p-3 shrink-0">

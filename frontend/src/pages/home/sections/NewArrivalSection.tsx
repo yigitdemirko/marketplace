@@ -55,7 +55,7 @@ export function NewArrivalSection() {
             to="/search"
             className={`${items[0].bg} rounded flex flex-col justify-end p-8 min-h-[300px] lg:min-h-0 group`}
           >
-            <div className="flex-1 flex items-center justify-center text-8xl mb-4">
+            <div className="flex-1 flex items-center justify-center text-5xl sm:text-8xl mb-4">
               {items[0].emoji}
             </div>
             <div>

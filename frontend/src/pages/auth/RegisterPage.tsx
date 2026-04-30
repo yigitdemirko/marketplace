@@ -60,7 +60,7 @@ export function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-7">
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="firstName" className="text-xs text-foreground">
                     First Name

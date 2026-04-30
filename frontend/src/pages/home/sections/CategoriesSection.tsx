@@ -20,11 +20,11 @@ function CategorySection({ bannerBg, bannerEmoji, bannerTitle, page }: CategoryS
 
   return (
     <section className="bg-white py-8">
-      <div className="max-w-[1280px] mx-auto px-8">
-        <div className="flex gap-5">
+      <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-5">
           {/* Left banner */}
           <div
-            className={`${bannerBg} w-[300px] shrink-0 rounded-[8px] p-6 flex flex-col justify-end min-h-[300px] relative overflow-hidden`}
+            className={`${bannerBg} hidden lg:flex w-[300px] shrink-0 rounded-[8px] p-6 flex-col justify-end min-h-[300px] relative overflow-hidden`}
           >
             <span className="absolute top-4 right-4 text-[80px] opacity-20 leading-none select-none">
               {bannerEmoji}
@@ -43,7 +43,7 @@ function CategorySection({ bannerBg, bannerEmoji, bannerTitle, page }: CategoryS
           {/* Right product grid */}
           <div className="flex-1">
             {isLoading && (
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} className="h-[160px] bg-muted animate-pulse rounded-[8px]" />
                 ))}
@@ -51,7 +51,7 @@ function CategorySection({ bannerBg, bannerEmoji, bannerTitle, page }: CategoryS
             )}
 
             {data && data.content.length > 0 && (
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {data.content.slice(0, 8).map((product) => (
                   <div
                     key={product.id}
