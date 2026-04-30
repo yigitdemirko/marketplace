@@ -46,7 +46,7 @@ export function ProductsPage({ initialQuery, initialCategory }: Props = {}) {
           <span className="text-sm text-muted-foreground">Category:</span>
           <span className="text-sm font-medium bg-muted px-2 py-0.5 rounded">{initialCategory}</span>
           <button
-            onClick={() => navigate({ to: '/search' })}
+            onClick={() => navigate({ to: '/search', search: {} })}
             className="text-xs text-muted-foreground hover:text-foreground underline"
           >
             clear
