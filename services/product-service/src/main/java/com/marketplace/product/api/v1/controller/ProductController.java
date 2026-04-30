@@ -2,9 +2,11 @@ package com.marketplace.product.api.v1.controller;
 
 import com.marketplace.product.api.v1.dto.request.CreateProductRequest;
 import com.marketplace.product.api.v1.dto.request.UpdateProductRequest;
+import com.marketplace.product.api.v1.dto.request.ValidateProductRequest;
 import com.marketplace.product.api.v1.dto.response.BatchCreateResponse;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
+import com.marketplace.product.api.v1.dto.response.ValidatedProductResponse;
 import com.marketplace.product.application.service.ImageUploadService;
 import com.marketplace.product.application.service.ProductService;
 import com.marketplace.product.domain.model.Category;
@@ -58,6 +60,12 @@ public class ProductController {
             @RequestBody List<CreateProductRequest> requests) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productService.createProductsBatch(sellerId, requests));
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<List<ValidatedProductResponse>> validateProducts(
+            @Valid @RequestBody List<ValidateProductRequest> items) {
+        return ResponseEntity.ok(productService.validateProducts(items));
     }
 
     @GetMapping("/seller/{sellerId}/stats")

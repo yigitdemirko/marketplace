@@ -2,10 +2,12 @@ package com.marketplace.product.application.service;
 
 import com.marketplace.product.api.v1.dto.request.CreateProductRequest;
 import com.marketplace.product.api.v1.dto.request.UpdateProductRequest;
+import com.marketplace.product.api.v1.dto.request.ValidateProductRequest;
 import com.marketplace.product.api.v1.dto.response.BatchCreateFailure;
 import com.marketplace.product.api.v1.dto.response.BatchCreateResponse;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
+import com.marketplace.product.api.v1.dto.response.ValidatedProductResponse;
 import com.marketplace.product.domain.model.Product;
 import com.marketplace.product.domain.repository.ProductRepository;
 import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
@@ -16,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -71,6 +75,32 @@ public class ProductService {
 
     public Page<ProductResponse> getProductsBySeller(String sellerId, Pageable pageable) {
         return productRepository.findBySellerIdAndActiveTrue(sellerId, pageable).map(this::toResponse);
+    }
+
+    public List<ValidatedProductResponse> validateProducts(List<ValidateProductRequest> items) {
+        List<String> ids = items.stream().map(ValidateProductRequest::productId).toList();
+        Map<String, Product> productsById = new HashMap<>();
+        productRepository.findByIdInAndActiveTrue(ids).forEach(p -> productsById.put(p.getId(), p));
+
+        List<ValidatedProductResponse> results = new ArrayList<>(items.size());
+        for (ValidateProductRequest item : items) {
+            Product product = productsById.get(item.productId());
+            if (product == null) {
+                results.add(new ValidatedProductResponse(
+                        item.productId(), false, null, null, null, "Product not found or inactive"));
+                continue;
+            }
+            if (product.getStock() < item.quantity()) {
+                results.add(new ValidatedProductResponse(
+                        item.productId(), false, product.getSellerId(), product.getPrice(),
+                        product.getStock(), "Insufficient stock"));
+                continue;
+            }
+            results.add(new ValidatedProductResponse(
+                    item.productId(), true, product.getSellerId(), product.getPrice(),
+                    product.getStock(), null));
+        }
+        return results;
     }
 
     public SellerStatsResponse getSellerStats(String sellerId) {
