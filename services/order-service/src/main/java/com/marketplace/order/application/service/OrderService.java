@@ -3,6 +3,7 @@ package com.marketplace.order.application.service;
 import com.marketplace.order.api.v1.dto.request.CreateOrderRequest;
 import com.marketplace.order.api.v1.dto.response.OrderItemResponse;
 import com.marketplace.order.api.v1.dto.response.OrderResponse;
+import com.marketplace.order.api.v1.dto.response.SellerStatsResponse;
 import com.marketplace.order.domain.model.Order;
 import com.marketplace.order.domain.model.OrderItem;
 import com.marketplace.order.domain.model.OrderStatus;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -109,6 +111,44 @@ public class OrderService {
         Order saved = orderRepository.save(order);
         eventPublisher.publishOrderCancelled(saved);
         return toResponse(saved);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getSellerOrders(String sellerId) {
+        return orderRepository.findBySellerIdOrderByCreatedAtDesc(sellerId)
+                .stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getSellerOrdersByStatus(String sellerId, OrderStatus status) {
+        return orderRepository.findBySellerIdAndStatusOrderByCreatedAtDesc(sellerId, status)
+                .stream().map(this::toResponse).toList();
+    }
+
+    @Transactional
+    public OrderResponse markOrderAsShipped(String orderId, String sellerId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        boolean sellerOwns = order.getItems().stream()
+                .anyMatch(item -> item.getSellerId().equals(sellerId));
+        if (!sellerOwns) throw new RuntimeException("Unauthorized");
+        order.markAsShipped();
+        return toResponse(orderRepository.save(order));
+    }
+
+    @Transactional(readOnly = true)
+    public SellerStatsResponse getSellerStats(String sellerId) {
+        List<Order> orders = orderRepository.findBySellerIdOrderByCreatedAtDesc(sellerId);
+        long totalOrders = orders.size();
+        BigDecimal grossRevenue = orders.stream()
+                .filter(o -> o.getStatus() != OrderStatus.CANCELLED)
+                .flatMap(o -> o.getItems().stream())
+                .filter(item -> item.getSellerId().equals(sellerId))
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        long pendingShipment = orders.stream()
+                .filter(o -> o.getStatus() == OrderStatus.CONFIRMED).count();
+        return new SellerStatsResponse(totalOrders, grossRevenue, pendingShipment);
     }
 
     private OrderResponse toResponse(Order order) {
