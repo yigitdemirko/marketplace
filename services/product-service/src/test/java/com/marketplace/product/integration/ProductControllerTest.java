@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -33,6 +34,9 @@ class ProductControllerTest {
 
     @MockitoBean
     private ProductEventPublisher eventPublisher;
+
+    @MockitoBean
+    private S3Client s3Client;
 
     @Test
     void should_CreateProduct_Successfully() throws Exception {

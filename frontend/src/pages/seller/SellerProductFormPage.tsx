@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, X, Plus } from 'lucide-react'
+import { ArrowLeft, X, Plus, Upload, Loader2 } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
 import { CATEGORIES } from '@/constants/categories'
@@ -26,6 +26,8 @@ export function SellerProductFormPage() {
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [newImageUrl, setNewImageUrl] = useState('')
   const [unit, setUnit] = useState('Pcs')
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState('')
 
   const { data: product } = useQuery({
@@ -57,6 +59,21 @@ export function SellerProductFormPage() {
       setImageUrls((prev) => [...prev, url])
     }
     setNewImageUrl('')
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    try {
+      const url = await productsApi.uploadImage(file)
+      setImageUrls((prev) => [...prev, url])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
   }
 
   const handleRemoveImage = (idx: number) => {
@@ -163,7 +180,23 @@ export function SellerProductFormPage() {
               className="h-9 px-3 text-[14px] font-medium border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] transition-colors flex items-center gap-1.5 text-[#14181f]"
             >
               <Plus className="h-4 w-4" />
-              Add
+              Add URL
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="h-9 px-3 text-[14px] font-medium border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] transition-colors flex items-center gap-1.5 text-[#14181f] disabled:opacity-60"
+            >
+              {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+              {uploading ? 'Uploading…' : 'Upload'}
             </button>
           </div>
           {imageUrls.length > 0 && (

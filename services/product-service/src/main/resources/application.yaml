@@ -28,6 +28,18 @@ spring:
         spring.json.trusted.packages: "*"
         spring.json.value.default.type: java.util.HashMap
 
+storage:
+  s3:
+    endpoint: ${S3_URL:}
+    bucket: ${BUCKET_NAME:}
+    access-key: ${ACCESS_KEY_ID:}
+    secret-key: ${SECRET_ACCESS_KEY:}
+    region: ${REGION:eu-central-1}
+
+spring.servlet.multipart:
+  max-file-size: 5MB
+  max-request-size: 5MB
+
 eureka:
   client:
     service-url:
