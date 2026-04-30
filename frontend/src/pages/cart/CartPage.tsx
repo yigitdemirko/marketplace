@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, Link } from '@tanstack/react-router'
 import {
@@ -9,7 +9,6 @@ import {
   Star,
   Package,
   ShoppingCart,
-  CheckCircle,
 } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
@@ -31,14 +30,9 @@ function SuggestedProductCard({
 
   return (
     <div className="bg-white border border-[#dce0e5] rounded-[8px] overflow-hidden flex flex-col">
-      {/* Image */}
       <div className="relative aspect-square bg-[#f6f7f9] flex items-center justify-center overflow-hidden">
         {mainImage ? (
-          <img
-            src={mainImage}
-            alt={product.name}
-            className="w-full h-full object-contain mix-blend-multiply"
-          />
+          <img src={mainImage} alt={product.name} className="w-full h-full object-contain mix-blend-multiply" />
         ) : (
           <Package className="h-10 w-10 text-gray-300" />
         )}
@@ -46,32 +40,21 @@ function SuggestedProductCard({
           onClick={() => setWishlisted((v) => !v)}
           className="absolute top-2 right-2 p-1.5 rounded-full bg-white border border-[#dce0e5] hover:border-[#b6c1ca] transition-colors"
         >
-          <Heart
-            className={`h-4 w-4 ${wishlisted ? 'fill-red-500 text-red-500' : 'text-[#6f7c8e]'}`}
-          />
+          <Heart className={`h-4 w-4 ${wishlisted ? 'fill-red-500 text-red-500' : 'text-[#6f7c8e]'}`} />
         </button>
       </div>
 
-      {/* Info */}
       <div className="p-3 flex flex-col gap-2 flex-1">
-        <p className="text-[14px] text-[#14181f] font-medium leading-snug line-clamp-2">
-          {product.name}
-        </p>
+        <p className="text-[14px] text-[#14181f] font-medium leading-snug line-clamp-2">{product.name}</p>
 
-        {/* Stars */}
         <div className="flex items-center gap-1">
           {[1, 2, 3, 4, 5].map((s) => (
-            <Star
-              key={s}
-              className={`h-3 w-3 ${s <= 4 ? 'fill-[#ff9017] text-[#ff9017]' : 'fill-gray-200 text-gray-200'}`}
-            />
+            <Star key={s} className={`h-3 w-3 ${s <= 4 ? 'fill-[#ff9017] text-[#ff9017]' : 'fill-gray-200 text-gray-200'}`} />
           ))}
           <span className="text-[12px] text-[#6f7c8e] ml-1">(132 reviews)</span>
         </div>
 
-        <p className="text-[15px] font-semibold text-[#14181f]">
-          {product.price.toFixed(2)} USD
-        </p>
+        <p className="text-[15px] font-semibold text-[#14181f]">{product.price.toFixed(2)} USD</p>
 
         <button
           onClick={onAddToCart}
@@ -85,113 +68,22 @@ function SuggestedProductCard({
   )
 }
 
-function WishlistCard({
-  product,
-  onMoveToCart,
-  onRemove,
-}: {
-  product: Product
-  onMoveToCart: () => void
-  onRemove: () => void
-}) {
-  const mainImage = product.images?.[0]
-  const isInStock = product.stock > 0
-
-  return (
-    <div className="bg-white border border-[#dce0e5] rounded-[8px] overflow-hidden flex flex-col shrink-0 w-[190px]">
-      {/* Image */}
-      <div className="aspect-square bg-[#f6f7f9] flex items-center justify-center overflow-hidden">
-        {mainImage ? (
-          <img
-            src={mainImage}
-            alt={product.name}
-            className="w-full h-full object-contain mix-blend-multiply"
-          />
-        ) : (
-          <Package className="h-10 w-10 text-gray-300" />
-        )}
-      </div>
-
-      {/* Info */}
-      <div className="p-3 flex flex-col gap-2 flex-1">
-        <p className="text-[14px] text-[#14181f] font-medium leading-snug line-clamp-2">
-          {product.name}
-        </p>
-        <p className="text-[16px] font-bold text-[#14181f]">${product.price.toFixed(2)}</p>
-
-        <div className="flex items-center gap-1">
-          {isInStock ? (
-            <>
-              <CheckCircle className="h-3.5 w-3.5 text-[#00a81c]" />
-              <span className="text-[12px] text-[#00a81c]">In stock</span>
-            </>
-          ) : (
-            <span className="text-[12px] text-[#fa3434]">Out of stock</span>
-          )}
-        </div>
-
-        <p className="text-[12px] text-[#6f7c8e]">
-          {Math.floor(Math.random() * 400 + 100)} sold this week
-        </p>
-
-        <button
-          onClick={onMoveToCart}
-          className="w-full h-[34px] border border-[#3348ff] rounded-[6px] text-[13px] text-[#3348ff] font-medium flex items-center justify-center gap-1.5 hover:bg-[#e0edff] transition-colors"
-        >
-          <ShoppingBag className="h-3.5 w-3.5" />
-          Move to cart
-        </button>
-
-        <button
-          onClick={onRemove}
-          className="text-[12px] text-[#6f7c8e] hover:text-[#fa3434] transition-colors text-center"
-        >
-          Remove from wishlist
-        </button>
-      </div>
-    </div>
-  )
-}
-
 export function CartPage() {
-  const { items, removeItem, updateQuantity, clearCart, addItem, totalAmount, totalItems } =
-    useCartStore()
+  const { items, removeItem, updateQuantity, clearCart, addItem, totalAmount, totalItems } = useCartStore()
   const { isAuthenticated } = useAuthStore()
   const navigate = useNavigate()
-  const [promoCode, setPromoCode] = useState('')
-  const [discount, setDiscount] = useState(0)
   const [wishlistedItems, setWishlistedItems] = useState<Set<string>>(new Set())
-  const [wishlistProducts, setWishlistProducts] = useState<Product[]>([])
-  const [wishlistInitialized, setWishlistInitialized] = useState(false)
 
   const { data: suggestedData } = useQuery({
     queryKey: ['products', 'cart-suggested'],
     queryFn: () => productsApi.getAll(1, 4),
   })
 
-  const { data: wishlistData } = useQuery({
-    queryKey: ['products', 'cart-wishlist'],
-    queryFn: () => productsApi.getAll(2, 5),
-  })
-
-  useEffect(() => {
-    if (wishlistData && !wishlistInitialized) {
-      setWishlistProducts(wishlistData.content)
-      setWishlistInitialized(true)
-    }
-  }, [wishlistData, wishlistInitialized])
-
   const handleCheckout = () => {
     if (!isAuthenticated) {
       navigate({ to: '/login' })
     } else {
       navigate({ to: '/checkout' })
-    }
-  }
-
-  const handleApplyPromo = () => {
-    if (promoCode.trim().toLowerCase() === 'save10') {
-      setDiscount(60)
     }
   }
 
@@ -204,13 +96,9 @@ export function CartPage() {
     })
   }
 
-  const handleRemoveWishlistItem = (productId: string) => {
-    setWishlistProducts((prev) => prev.filter((p) => p.id !== productId))
-  }
-
   const subtotal = totalAmount()
   const tax = subtotal * TAX_RATE
-  const total = subtotal + DELIVERY_COST + tax - discount
+  const total = subtotal + DELIVERY_COST + tax
 
   const deliveryDate = new Date()
   deliveryDate.setDate(deliveryDate.getDate() + 5)
@@ -219,9 +107,6 @@ export function CartPage() {
     month: 'long',
     day: 'numeric',
   })
-
-  const displayWishlist =
-    wishlistProducts.length > 0 ? wishlistProducts : wishlistData?.content ?? []
 
   if (items.length === 0) {
     return (
@@ -232,10 +117,7 @@ export function CartPage() {
           </div>
           <h2 className="text-[24px] font-semibold text-[#14181f]">Your cart is empty</h2>
           <p className="text-[15px] text-[#6f7c8e]">Add some products to get started</p>
-          <Link
-            to="/"
-            className="bg-[#3348ff] hover:bg-[#2236e0] text-white px-8 py-3 rounded-[8px] text-[15px] font-medium transition-colors"
-          >
+          <Link to="/" className="bg-[#3348ff] hover:bg-[#2236e0] text-white px-8 py-3 rounded-[8px] text-[15px] font-medium transition-colors">
             Continue Shopping
           </Link>
         </div>
@@ -247,42 +129,30 @@ export function CartPage() {
     <div className="-mx-4 -mt-8">
       <div className="max-w-[1180px] mx-auto px-4 py-8">
 
-        {/* Header */}
         <h1 className="text-[24px] font-semibold text-[#14181f] mb-1">Your cart</h1>
         <p className="text-[15px] text-[#6f7c8e] mb-6">{totalItems()} Products in Your cart</p>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-5 items-start">
 
-          {/* ── Cart items ─────────────────────────────────────────── */}
+          {/* Cart items */}
           <div className="bg-white border border-[#dce0e5] rounded-[8px] overflow-hidden">
             {items.map((item, index) => (
               <div key={item.productId}>
                 {index > 0 && <div className="h-px bg-[#dce0e5]" />}
                 <div className="flex items-center gap-4 p-4">
-                  {/* Image */}
                   <div className="shrink-0 size-[60px] bg-[#f6f6f8] border border-[#dce0e5] rounded-[6px] overflow-hidden flex items-center justify-center">
                     {item.image ? (
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-full object-contain mix-blend-multiply"
-                      />
+                      <img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply" />
                     ) : (
                       <Package className="h-6 w-6 text-gray-300" />
                     )}
                   </div>
 
-                  {/* Name + price/unit */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-semibold text-[#14181f] leading-snug truncate">
-                      {item.name}
-                    </p>
-                    <p className="text-[13px] text-[#6f7c8e] mt-0.5">
-                      Price: {item.price.toFixed(2)} USD / per item
-                    </p>
+                    <p className="text-[15px] font-semibold text-[#14181f] leading-snug truncate">{item.name}</p>
+                    <p className="text-[13px] text-[#6f7c8e] mt-0.5">Price: {item.price.toFixed(2)} USD / per item</p>
                   </div>
 
-                  {/* Qty + actions */}
                   <div className="flex items-center gap-2 shrink-0">
                     <select
                       value={item.quantity}
@@ -290,9 +160,7 @@ export function CartPage() {
                       className="border border-[#dce0e5] rounded-[6px] text-[14px] text-[#14181f] px-2 py-1.5 bg-white outline-none cursor-pointer focus:border-[#3348ff]"
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                        <option key={n} value={n}>
-                          Qty: {n}
-                        </option>
+                        <option key={n} value={n}>Qty: {n}</option>
                       ))}
                     </select>
 
@@ -301,13 +169,7 @@ export function CartPage() {
                       className="p-1.5 rounded hover:bg-[#f6f7f9] transition-colors"
                       aria-label="Save for later"
                     >
-                      <Heart
-                        className={`h-4 w-4 ${
-                          wishlistedItems.has(item.productId)
-                            ? 'fill-red-500 text-red-500'
-                            : 'text-[#6f7c8e]'
-                        }`}
-                      />
+                      <Heart className={`h-4 w-4 ${wishlistedItems.has(item.productId) ? 'fill-red-500 text-red-500' : 'text-[#6f7c8e]'}`} />
                     </button>
 
                     <button
@@ -319,11 +181,8 @@ export function CartPage() {
                     </button>
                   </div>
 
-                  {/* Line total */}
                   <div className="shrink-0 min-w-[96px] text-right">
-                    <p className="text-[15px] font-semibold text-[#14181f]">
-                      {(item.price * item.quantity).toFixed(2)} USD
-                    </p>
+                    <p className="text-[15px] font-semibold text-[#14181f]">{(item.price * item.quantity).toFixed(2)} USD</p>
                   </div>
                 </div>
               </div>
@@ -331,37 +190,14 @@ export function CartPage() {
 
             <div className="h-px bg-[#dce0e5]" />
             <div className="px-4 py-3">
-              <button
-                onClick={clearCart}
-                className="text-[14px] text-[#3348ff] hover:underline"
-              >
+              <button onClick={clearCart} className="text-[14px] text-[#3348ff] hover:underline">
                 Remove all from cart
               </button>
             </div>
           </div>
 
-          {/* ── Order summary ──────────────────────────────────────── */}
+          {/* Order summary */}
           <div className="bg-white border border-[#dce0e5] rounded-[8px] p-4 sticky top-4">
-            {/* Promo code */}
-            <div className="flex items-center gap-2 mb-4">
-              <input
-                value={promoCode}
-                onChange={(e) => setPromoCode(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleApplyPromo()}
-                placeholder="Promocode"
-                className="flex-1 h-[36px] border border-[#dce0e5] rounded-[6px] px-3 text-[14px] text-[#14181f] placeholder:text-[#6f7c8e] outline-none focus:border-[#3348ff]"
-              />
-              <button
-                onClick={handleApplyPromo}
-                className="text-[14px] text-[#3348ff] font-medium hover:underline shrink-0"
-              >
-                Apply
-              </button>
-            </div>
-
-            <div className="h-px bg-[#dce0e5] mb-4" />
-
-            {/* Line items */}
             <div className="space-y-3 mb-4">
               <div className="flex justify-between text-[15px]">
                 <span className="text-[#6f7c8e]">{totalItems()} items:</span>
@@ -375,23 +211,15 @@ export function CartPage() {
                 <span className="text-[#6f7c8e]">Tax:</span>
                 <span className="text-[#14181f] font-medium">${tax.toFixed(2)}</span>
               </div>
-              {discount > 0 && (
-                <div className="flex justify-between text-[15px]">
-                  <span className="text-[#6f7c8e]">Discount:</span>
-                  <span className="text-[#00a81c] font-medium">-${discount.toFixed(2)}</span>
-                </div>
-              )}
             </div>
 
             <div className="h-px bg-[#dce0e5] mb-4" />
 
-            {/* Total */}
             <div className="flex justify-between items-center mb-5">
               <span className="text-[16px] font-semibold text-[#14181f]">Total:</span>
               <span className="text-[22px] font-bold text-[#14181f]">${total.toFixed(2)}</span>
             </div>
 
-            {/* Checkout */}
             <button
               onClick={handleCheckout}
               className="w-full h-[48px] bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[8px] text-[15px] font-medium flex items-center justify-center gap-2 transition-colors mb-4"
@@ -399,23 +227,19 @@ export function CartPage() {
               Checkout <ArrowRight className="h-4 w-4" />
             </button>
 
-            {/* Delivery estimate */}
             <div className="flex items-start gap-2 bg-[#f6f7f9] rounded-[6px] px-3 py-2.5">
               <ShoppingBag className="h-4 w-4 text-[#3348ff] shrink-0 mt-0.5" />
               <p className="text-[13px] text-[#6f7c8e] leading-snug">
-                Delivered by{' '}
-                <span className="text-[#14181f] font-medium">Morning, {deliveryStr}</span>
+                Delivered by <span className="text-[#14181f] font-medium">Morning, {deliveryStr}</span>
               </p>
             </div>
           </div>
         </div>
 
-        {/* ── Customer also bought ───────────────────────────────── */}
+        {/* Customers also bought */}
         {suggestedData && suggestedData.content.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-[20px] font-semibold text-[#14181f] mb-5">
-              Customer also bought these
-            </h2>
+            <h2 className="text-[20px] font-semibold text-[#14181f] mb-5">Customer also bought these</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {suggestedData.content.map((product) => (
                 <SuggestedProductCard
@@ -430,37 +254,6 @@ export function CartPage() {
                       quantity: 1,
                     })
                   }
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── Your wishlist ──────────────────────────────────────── */}
-        {displayWishlist.length > 0 && (
-          <div className="mt-10">
-            <h2 className="text-[20px] font-semibold text-[#14181f] mb-5">
-              Your wishlist{' '}
-              <span className="text-[#6f7c8e] font-normal text-[16px]">
-                ({displayWishlist.length})
-              </span>
-            </h2>
-            <div className="flex gap-4 overflow-x-auto pb-3">
-              {displayWishlist.map((product) => (
-                <WishlistCard
-                  key={product.id}
-                  product={product}
-                  onMoveToCart={() => {
-                    addItem({
-                      productId: product.id,
-                      sellerId: product.sellerId,
-                      name: product.name,
-                      price: product.price,
-                      quantity: 1,
-                    })
-                    handleRemoveWishlistItem(product.id)
-                  }}
-                  onRemove={() => handleRemoveWishlistItem(product.id)}
                 />
               ))}
             </div>
