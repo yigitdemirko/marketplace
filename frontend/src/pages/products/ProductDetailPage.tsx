@@ -13,7 +13,6 @@ import {
   Heart,
   ShoppingCart,
   User,
-  Pencil,
   XCircle,
 } from 'lucide-react'
 import { productsApi } from '@/api/products'
@@ -348,10 +347,13 @@ export function ProductDetailPage() {
                 </span>
               </button>
 
-              <button className="bg-[#e0edff] hover:bg-[#c8deff] transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full">
+              <button
+                onClick={() => navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })}
+                className="bg-[#e0edff] hover:bg-[#c8deff] transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full"
+              >
                 <User className="h-4 w-4 text-[#3348ff]" />
                 <span className="text-[15px] font-medium text-[#3348ff] tracking-tight">
-                  Seller profile
+                  Visit Store
                 </span>
               </button>
             </div>
@@ -405,13 +407,6 @@ export function ProductDetailPage() {
                 ))}
               </div>
 
-              {/* Write review button */}
-              <button className="border border-[#dce0e5] rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full hover:bg-gray-50 transition-colors">
-                <Pencil className="h-4 w-4 text-[#14181f]" />
-                <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
-                  Write a review
-                </span>
-              </button>
             </div>
           </div>
 
@@ -491,7 +486,18 @@ export function ProductDetailPage() {
             )}
 
             {activeTab === 'Seller info' && (
-              <div className="text-[15px] text-[#6f7c8e]">Seller information not available.</div>
+              <div className="space-y-3">
+                <p className="text-[15px] text-[#14181f]">
+                  <span className="text-[#6f7c8e]">Seller ID: </span>
+                  <span className="font-mono">{product.sellerId}</span>
+                </p>
+                <button
+                  onClick={() => navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })}
+                  className="text-[15px] text-[#3348ff] hover:underline"
+                >
+                  View all products from this seller →
+                </button>
+              </div>
             )}
 
             {activeTab === 'Shipping' && (
