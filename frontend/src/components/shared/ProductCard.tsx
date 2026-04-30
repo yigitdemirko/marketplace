@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ShoppingCart, Heart, Eye } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useCartStore } from '@/store/cartStore'
@@ -13,6 +14,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem)
+  const navigate = useNavigate()
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
@@ -137,6 +139,15 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
             </span>
           )}
         </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })
+          }}
+          className="mt-1.5 text-[11px] text-muted-foreground hover:text-primary transition-colors text-left w-full"
+        >
+          Visit store →
+        </button>
       </div>
     </div>
   )
