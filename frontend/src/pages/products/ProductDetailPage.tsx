@@ -348,17 +348,6 @@ export function ProductDetailPage() {
                 </span>
               </button>
 
-              <button
-                onClick={handleAddToCart}
-                disabled={!isInStock}
-                className="relative bg-[#3348ff] hover:bg-[#2236e0] disabled:opacity-50 transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
-              >
-                <ShoppingCart className="h-4 w-4 text-white" />
-                <span className="text-[15px] font-medium text-white tracking-tight">
-                  Add to cart
-                </span>
-              </button>
-
               <button className="bg-[#e0edff] hover:bg-[#c8deff] transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full">
                 <User className="h-4 w-4 text-[#3348ff]" />
                 <span className="text-[15px] font-medium text-[#3348ff] tracking-tight">

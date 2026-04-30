@@ -1,4 +1,5 @@
-import { Outlet, useRouterState, Link } from '@tanstack/react-router'
+import { Outlet, useRouterState, Link, useNavigate } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import {
   LayoutDashboard,
   Truck,
@@ -45,7 +46,17 @@ const PAGE_TITLES: Record<string, string> = {
 
 export function SellerLayout() {
   const { location } = useRouterState()
-  const { user, logout } = useAuthStore()
+  const { user, isAuthenticated, logout } = useAuthStore()
+  const navigate = useNavigate()
+  const isSeller = isAuthenticated && user?.accountType === 'SELLER'
+
+  useEffect(() => {
+    if (!isSeller) {
+      navigate({ to: '/seller/login', replace: true })
+    }
+  }, [isSeller, navigate])
+
+  if (!isSeller) return null
 
   const pathname = location.pathname
   const pageTitle = Object.keys(PAGE_TITLES)

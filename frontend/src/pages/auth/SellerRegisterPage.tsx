@@ -10,7 +10,7 @@ const heroImage = 'https://www.figma.com/api/mcp/asset/4049e18f-25b0-4761-8425-d
 
 const inputClass = 'h-14 rounded-[10px] border-foreground/25 px-4 text-base focus-visible:ring-primary'
 
-export function RegisterPage() {
+export function SellerRegisterPage() {
   const navigate = useNavigate()
   const setAuth = useAuthStore((state) => state.setAuth)
   const [error, setError] = useState('')
@@ -20,8 +20,9 @@ export function RegisterPage() {
   const [form, setForm] = useState({
     email: '',
     password: '',
-    firstName: '',
-    lastName: '',
+    storeName: '',
+    taxNumber: '',
+    phone: '',
   })
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -29,11 +30,11 @@ export function RegisterPage() {
     setError('')
     setLoading(true)
     try {
-      const user = await authApi.registerBuyer(form)
+      const user = await authApi.registerSeller(form)
       localStorage.setItem('token', user.token)
       setAuth(user)
       const params = new URLSearchParams(window.location.search)
-      navigate({ to: params.get('redirect') ?? '/' })
+      navigate({ to: params.get('redirect') ?? '/seller' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {
@@ -54,39 +55,30 @@ export function RegisterPage() {
       <div className="flex flex-1 flex-col justify-center overflow-y-auto bg-card px-8 py-12 lg:px-16 xl:px-24">
         <div className="w-full max-w-[445px] mx-auto space-y-8">
           <div className="space-y-1.5">
-            <h1 className="text-3xl font-bold text-foreground">Create New Account</h1>
-            <p className="text-base text-muted-foreground">Please enter details</p>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center">
+                <span className="text-white font-bold text-sm">B</span>
+              </div>
+              <span className="font-bold text-[#14181f] text-[16px]">Seller Panel</span>
+            </div>
+            <h1 className="text-3xl font-bold text-foreground">Create Seller Account</h1>
+            <p className="text-base text-muted-foreground">Start selling on our marketplace</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-7">
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="firstName" className="text-xs text-foreground">
-                    First Name
-                  </Label>
-                  <Input
-                    id="firstName"
-                    value={form.firstName}
-                    onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                    placeholder="Robert"
-                    required
-                    className={inputClass}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="lastName" className="text-xs text-foreground">
-                    Last Name
-                  </Label>
-                  <Input
-                    id="lastName"
-                    value={form.lastName}
-                    onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                    placeholder="Fox"
-                    required
-                    className={inputClass}
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="storeName" className="text-xs text-foreground">
+                  Store Name
+                </Label>
+                <Input
+                  id="storeName"
+                  value={form.storeName}
+                  onChange={(e) => setForm({ ...form, storeName: e.target.value })}
+                  placeholder="My Store"
+                  required
+                  className={inputClass}
+                />
               </div>
 
               <div className="space-y-1.5">
@@ -98,7 +90,7 @@ export function RegisterPage() {
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  placeholder="robertfox@example.com"
+                  placeholder="store@example.com"
                   required
                   className={inputClass}
                 />
@@ -113,6 +105,35 @@ export function RegisterPage() {
                   type="password"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  required
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="taxNumber" className="text-xs text-foreground">
+                  Tax Number
+                </Label>
+                <Input
+                  id="taxNumber"
+                  value={form.taxNumber}
+                  onChange={(e) => setForm({ ...form, taxNumber: e.target.value })}
+                  placeholder="1234567890"
+                  required
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="phone" className="text-xs text-foreground">
+                  Phone
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  placeholder="+90 555 000 0000"
                   required
                   className={inputClass}
                 />
@@ -139,20 +160,13 @@ export function RegisterPage() {
               disabled={loading}
               className="w-full h-14 rounded-[10px] bg-foreground text-background hover:bg-foreground/85 text-base font-normal"
             >
-              {loading ? 'Creating account...' : 'Sign Up'}
+              {loading ? 'Creating account...' : 'Create Seller Account'}
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
-              Already have an account?{' '}
-              <a href="/login" className="text-primary hover:underline font-medium">
+              Already have a seller account?{' '}
+              <a href="/seller/login" className="text-primary hover:underline font-medium">
                 Login
-              </a>
-            </p>
-
-            <p className="text-sm text-center text-muted-foreground">
-              Want to sell on our platform?{' '}
-              <a href="/seller/register" className="text-primary hover:underline font-medium">
-                Register as Seller
               </a>
             </p>
           </form>

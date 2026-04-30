@@ -2,7 +2,7 @@ import { Outlet, useRouterState } from '@tanstack/react-router'
 import { Navbar } from './Navbar'
 import { SellerLayout } from './SellerLayout'
 
-const FULLSCREEN_ROUTES = ['/login', '/register']
+const FULLSCREEN_ROUTES = ['/login', '/register', '/seller/login', '/seller/register']
 const NO_CONTAINER_ROUTES = ['/']
 
 export function Layout() {
@@ -11,12 +11,12 @@ export function Layout() {
   const isFullscreen = FULLSCREEN_ROUTES.includes(location.pathname)
   const isNoContainer = NO_CONTAINER_ROUTES.includes(location.pathname)
 
-  if (isSeller) {
-    return <SellerLayout />
-  }
-
   if (isFullscreen) {
     return <Outlet />
+  }
+
+  if (isSeller) {
+    return <SellerLayout />
   }
 
   if (isNoContainer) {
