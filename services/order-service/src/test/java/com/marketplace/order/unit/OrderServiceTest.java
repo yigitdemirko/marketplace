@@ -7,7 +7,7 @@ import com.marketplace.order.application.service.OrderService;
 import com.marketplace.order.domain.model.Order;
 import com.marketplace.order.domain.model.OrderStatus;
 import com.marketplace.order.domain.repository.OrderRepository;
-import com.marketplace.order.infrastructure.client.ProductValidationClient;
+import com.marketplace.order.infrastructure.client.ProductValidationGateway;
 import com.marketplace.order.infrastructure.client.ValidatedProduct;
 import com.marketplace.order.infrastructure.messaging.OrderEventPublisher;
 import org.junit.jupiter.api.Tag;
@@ -38,7 +38,7 @@ class OrderServiceTest {
     private OrderEventPublisher eventPublisher;
 
     @Mock
-    private ProductValidationClient productValidationClient;
+    private ProductValidationGateway productValidationGateway;
 
     @InjectMocks
     private OrderService orderService;
@@ -52,7 +52,7 @@ class OrderServiceTest {
         );
 
         when(orderRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
-        when(productValidationClient.validate(any())).thenReturn(List.of(
+        when(productValidationGateway.validate(any())).thenReturn(List.of(
                 new ValidatedProduct("prod-001", true, "seller-123", BigDecimal.valueOf(99.99), 10, null)
         ));
         when(orderRepository.save(any())).thenAnswer(i -> i.getArgument(0));
@@ -77,7 +77,7 @@ class OrderServiceTest {
         );
 
         when(orderRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
-        when(productValidationClient.validate(any())).thenReturn(List.of(
+        when(productValidationGateway.validate(any())).thenReturn(List.of(
                 new ValidatedProduct("prod-001", false, null, null, null, "Insufficient stock")
         ));
 
