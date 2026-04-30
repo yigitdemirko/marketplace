@@ -18,9 +18,10 @@ public class PaymentController {
 
     @PostMapping
     public ResponseEntity<PaymentResponse> processPayment(
+            @RequestHeader("X-User-Id") String userId,
             @Valid @RequestBody ProcessPaymentRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(paymentService.processPayment(request));
+                .body(paymentService.processPayment(userId, request));
     }
 
     @GetMapping("/order/{orderId}")

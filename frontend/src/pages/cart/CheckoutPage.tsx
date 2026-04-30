@@ -45,8 +45,6 @@ export function CheckoutPage() {
 
       await paymentsApi.process({
         orderId: order.id,
-        userId: user.userId,
-        amount: totalAmount(),
         idempotencyKey: `pay-${idempotencyKey}`,
         ...cardForm,
       })
