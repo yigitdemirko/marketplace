@@ -41,6 +41,11 @@ export function SellerOrdersPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['seller-orders', user?.userId] }),
   })
 
+  const deliverMutation = useMutation({
+    mutationFn: (orderId: string) => ordersApi.markAsDelivered(orderId, user!.userId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['seller-orders', user?.userId] }),
+  })
+
   const filtered = useMemo(() => {
     if (!ordersData) return []
     return ordersData.filter((o: Order) => {
@@ -129,10 +134,19 @@ export function SellerOrdersPage() {
                   {order.status === 'CONFIRMED' && (
                     <button
                       onClick={() => shipMutation.mutate(order.id)}
-                      disabled={shipMutation.isPending}
+                      disabled={shipMutation.isPending || deliverMutation.isPending}
                       className="h-7 px-3 text-[12px] font-medium bg-[#3348ff] hover:bg-[#2236e0] disabled:opacity-60 text-white rounded-[4px] transition-colors"
                     >
                       Mark Shipped
+                    </button>
+                  )}
+                  {order.status === 'SHIPPED' && (
+                    <button
+                      onClick={() => deliverMutation.mutate(order.id)}
+                      disabled={shipMutation.isPending || deliverMutation.isPending}
+                      className="h-7 px-3 text-[12px] font-medium bg-[#00a81c] hover:bg-[#008c18] disabled:opacity-60 text-white rounded-[4px] transition-colors"
+                    >
+                      Mark Delivered
                     </button>
                   )}
                 </td>

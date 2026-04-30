@@ -65,6 +65,13 @@ public class OrderController {
         return ResponseEntity.ok(orderService.markOrderAsShipped(orderId, sellerId));
     }
 
+    @PatchMapping("/{orderId}/deliver")
+    public ResponseEntity<OrderResponse> markAsDelivered(
+            @PathVariable String orderId,
+            @RequestHeader("X-Seller-Id") String sellerId) {
+        return ResponseEntity.ok(orderService.markOrderAsDelivered(orderId, sellerId));
+    }
+
     @GetMapping("/seller/stats")
     public ResponseEntity<SellerStatsResponse> getSellerStats(
             @RequestHeader("X-Seller-Id") String sellerId) {
