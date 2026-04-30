@@ -44,7 +44,7 @@ public class AuthService {
         buyerProfileRepository.save(profile);
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getAccountType());
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getAccountType().name());
+        return new AuthResponse(token, user.getId(), user.getEmail(), user.getAccountType().name(), null);
     }
 
     @Transactional
@@ -69,7 +69,7 @@ public class AuthService {
         sellerProfileRepository.save(profile);
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getAccountType());
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getAccountType().name());
+        return new AuthResponse(token, user.getId(), user.getEmail(), user.getAccountType().name(), profile.getStoreName());
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -80,7 +80,14 @@ public class AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
+        String storeName = null;
+        if (user.getAccountType() == AccountType.SELLER) {
+            storeName = sellerProfileRepository.findByUserId(user.getId())
+                    .map(SellerProfile::getStoreName)
+                    .orElse(null);
+        }
+
         String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getAccountType());
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getAccountType().name());
+        return new AuthResponse(token, user.getId(), user.getEmail(), user.getAccountType().name(), storeName);
     }
 }

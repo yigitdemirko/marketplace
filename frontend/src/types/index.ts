@@ -3,6 +3,7 @@ export interface User {
     email: string
     accountType: 'BUYER' | 'SELLER'
     token: string
+    storeName?: string
   }
   
   export interface Product {
