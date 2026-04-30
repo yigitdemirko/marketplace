@@ -23,6 +23,19 @@ on:
           - all
 
 jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            git pull origin main
+
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
@@ -64,7 +77,7 @@ jobs:
               - 'frontend/**'
 
   deploy-config-server:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.config-server == 'true' ||
       github.event.inputs.service == 'config-server' ||
@@ -95,7 +108,7 @@ jobs:
             docker compose up -d --no-deps config-server
 
   deploy-discovery-server:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.discovery-server == 'true' ||
       github.event.inputs.service == 'discovery-server' ||
@@ -126,7 +139,7 @@ jobs:
             docker compose up -d --no-deps discovery-server
 
   deploy-api-gateway:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.api-gateway == 'true' ||
       github.event.inputs.service == 'api-gateway' ||
@@ -157,7 +170,7 @@ jobs:
             docker compose up -d --no-deps api-gateway
 
   deploy-user-service:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.user-service == 'true' ||
       github.event.inputs.service == 'user-service' ||
@@ -188,7 +201,7 @@ jobs:
             docker compose up -d --no-deps user-service
 
   deploy-product-service:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.product-service == 'true' ||
       github.event.inputs.service == 'product-service' ||
@@ -219,7 +232,7 @@ jobs:
             docker compose up -d --no-deps product-service
 
   deploy-search-service:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.search-service == 'true' ||
       github.event.inputs.service == 'search-service' ||
@@ -250,7 +263,7 @@ jobs:
             docker compose up -d --no-deps search-service
 
   deploy-order-service:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.order-service == 'true' ||
       github.event.inputs.service == 'order-service' ||
@@ -281,7 +294,7 @@ jobs:
             docker compose up -d --no-deps order-service
 
   deploy-payment-service:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.payment-service == 'true' ||
       github.event.inputs.service == 'payment-service' ||
@@ -312,7 +325,7 @@ jobs:
             docker compose up -d --no-deps payment-service
 
   deploy-notification-service:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.notification-service == 'true' ||
       github.event.inputs.service == 'notification-service' ||
@@ -343,7 +356,7 @@ jobs:
             docker compose up -d --no-deps notification-service
 
   deploy-frontend:
-    needs: detect-changes
+    needs: [detect-changes, sync]
     if: |
       needs.detect-changes.outputs.frontend == 'true' ||
       github.event.inputs.service == 'frontend' ||
@@ -358,7 +371,6 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_PATH }}/frontend
-            git pull origin main
             pnpm install
             pnpm build
             cp -r dist/* /var/www/html/
