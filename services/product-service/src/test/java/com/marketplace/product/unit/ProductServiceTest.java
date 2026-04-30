@@ -3,6 +3,7 @@ package com.marketplace.product.unit;
 import com.marketplace.product.api.v1.dto.request.CreateProductRequest;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.application.service.ProductService;
+import com.marketplace.product.domain.model.Category;
 import com.marketplace.product.domain.model.Product;
 import com.marketplace.product.domain.repository.ProductRepository;
 import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
@@ -42,11 +43,11 @@ class ProductServiceTest {
     void should_CreateProduct_Successfully() {
         CreateProductRequest request = new CreateProductRequest(
                 "Test Product", "Description", BigDecimal.valueOf(99.99),
-                100, "cat-001", null, null
+                100, Category.ELECTRONICS, null, null
         );
 
         Product mockProduct = Product.create("seller-123", request.name(),
-                request.description(), request.price(), request.stock(), request.categoryId());
+                request.description(), request.price(), request.stock(), request.category().name());
 
         when(productRepository.save(any())).thenReturn(mockProduct);
 

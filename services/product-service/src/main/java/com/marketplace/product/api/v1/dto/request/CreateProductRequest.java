@@ -1,5 +1,6 @@
 package com.marketplace.product.api.v1.dto.request;
 
+import com.marketplace.product.domain.model.Category;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +15,7 @@ public record CreateProductRequest(
         @NotBlank String description,
         @NotNull @DecimalMin("0.01") BigDecimal price,
         @NotNull @Min(0) Integer stock,
-        @NotBlank String categoryId,
+        @NotNull Category category,
         List<String> images,
         Map<String, String> attributes
 ) {}

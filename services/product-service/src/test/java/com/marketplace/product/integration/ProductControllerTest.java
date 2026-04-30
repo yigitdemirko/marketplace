@@ -45,7 +45,7 @@ class ProductControllerTest {
                                     "description": "Test description",
                                     "price": 99.99,
                                     "stock": 100,
-                                    "categoryId": "cat-001"
+                                    "category": "ELECTRONICS"
                                 }
                                 """))
                 .andExpect(status().isCreated())

@@ -25,7 +25,7 @@ public class ProductService {
                 request.description(),
                 request.price(),
                 request.stock(),
-                request.categoryId()
+                request.category().name()
         );
 
         if (request.images() != null) product.setImages(request.images());
@@ -66,7 +66,7 @@ public class ProductService {
         if (request.description() != null) product.setDescription(request.description());
         if (request.price() != null) product.setPrice(request.price());
         if (request.stock() != null) product.setStock(request.stock());
-        if (request.categoryId() != null) product.setCategoryId(request.categoryId());
+        if (request.category() != null) product.setCategoryId(request.category().name());
         if (request.images() != null) product.setImages(request.images());
         if (request.attributes() != null) product.setAttributes(request.attributes());
 
