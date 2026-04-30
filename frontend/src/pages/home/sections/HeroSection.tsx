@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
 import { ChevronRight, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 
@@ -15,14 +14,7 @@ const categories = [
   { name: 'Health & Beauty' },
 ]
 
-const slides = [
-  {
-    brand: 'iPhone 14 Series',
-    headline: 'Up to 10%\noff Voucher',
-    cta: 'Shop Now',
-    bg: 'from-foreground to-foreground/90',
-  },
-]
+const SLIDE_COUNT = 5
 
 export function HeroSection() {
   const [active, setActive] = useState(0)
@@ -72,7 +64,7 @@ export function HeroSection() {
 
             {/* Dots */}
             <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
-              {[0, 1, 2, 3, 4].map((i) => (
+              {Array.from({ length: SLIDE_COUNT }).map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setActive(i)}
