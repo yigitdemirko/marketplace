@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, Link } from '@tanstack/react-router'
 import {
@@ -172,13 +172,14 @@ export function CartPage() {
   const { data: wishlistData } = useQuery({
     queryKey: ['products', 'cart-wishlist'],
     queryFn: () => productsApi.getAll(2, 5),
-    onSuccess: (data) => {
-      if (!wishlistInitialized) {
-        setWishlistProducts(data.content)
-        setWishlistInitialized(true)
-      }
-    },
   })
+
+  useEffect(() => {
+    if (wishlistData && !wishlistInitialized) {
+      setWishlistProducts(wishlistData.content)
+      setWishlistInitialized(true)
+    }
+  }, [wishlistData, wishlistInitialized])
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
