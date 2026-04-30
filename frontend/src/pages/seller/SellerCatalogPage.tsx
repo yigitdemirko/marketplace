@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { Plus, Pencil, Trash2, Package, Upload, Copy, Check } from 'lucide-react'
+import { Plus, Pencil, Trash2, Package, Upload, Copy, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { feedsApi } from '@/api/feeds'
 import { useAuthStore } from '@/store/authStore'
@@ -17,11 +17,14 @@ export function SellerCatalogPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [importOpen, setImportOpen] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [page, setPage] = useState(0)
+  const PAGE_SIZE = 20
 
   const productsQuery = useQuery({
-    queryKey: ['seller-products', user?.userId],
-    queryFn: () => productsApi.getBySeller(user!.userId, 0, 100),
+    queryKey: ['seller-products', user?.userId, page],
+    queryFn: () => productsApi.getBySeller(user!.userId, page, PAGE_SIZE),
     enabled: !!user,
+    placeholderData: (prev) => prev,
   })
 
   const statsQuery = useQuery({
@@ -39,7 +42,7 @@ export function SellerCatalogPage() {
   const deleteMutation = useMutation({
     mutationFn: (productId: string) => productsApi.delete(productId, user!.userId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['seller-products'] })
+      queryClient.invalidateQueries({ queryKey: ['seller-products', user?.userId] })
       queryClient.invalidateQueries({ queryKey: ['seller-stats'] })
     },
   })
@@ -56,10 +59,14 @@ export function SellerCatalogPage() {
     })
   }, [productsQuery.data, searchQuery, statusFilter])
 
+  const totalPages = productsQuery.data?.totalPages ?? 1
+  const totalElements = productsQuery.data?.totalElements ?? 0
+
   const handleImportSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ['seller-products'] })
+    queryClient.invalidateQueries({ queryKey: ['seller-products', user?.userId] })
     queryClient.invalidateQueries({ queryKey: ['seller-stats'] })
     queryClient.invalidateQueries({ queryKey: ['seller-imports'] })
+    setPage(0)
   }
 
   const copyId = (id: string) => {
@@ -77,12 +84,12 @@ export function SellerCatalogPage() {
           type="search"
           placeholder="Search by name or brand"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => { setSearchQuery(e.target.value); setPage(0) }}
           className="h-9 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] min-w-[220px]"
         />
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+          onChange={(e) => { setStatusFilter(e.target.value); setPage(0) }}
           className="h-9 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff]"
         >
           <option value="all">Status: any</option>
@@ -230,6 +237,43 @@ export function SellerCatalogPage() {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4">
+          <p className="text-[13px] text-[#6f7c8e]">
+            {totalElements} product{totalElements !== 1 ? 's' : ''} total
+          </p>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage((p) => p - 1)}
+              disabled={page === 0}
+              className="h-8 w-8 flex items-center justify-center border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i).map((p) => (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={`h-8 min-w-[32px] px-2 text-[13px] font-medium border rounded-[6px] transition-colors ${
+                  p === page
+                    ? 'bg-[#3348ff] border-[#3348ff] text-white'
+                    : 'border-[#dce0e5] bg-white hover:bg-[#f6f7f9] text-[#14181f]'
+                }`}
+              >
+                {p + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page >= totalPages - 1}
+              className="h-8 w-8 flex items-center justify-center border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {importsQuery.data && importsQuery.data.content.length > 0 && (
         <div className="mt-8">
