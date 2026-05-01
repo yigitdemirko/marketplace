@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Truck, CheckCircle2, Clock, XCircle } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { ordersApi } from '@/api/orders'
+import { useLocaleStore } from '@/store/localeStore'
+import { formatPrice } from '@/lib/formatPrice'
 import type { Order } from '@/types'
 
 function StatusBadge({ status }: { status: string }) {
@@ -26,6 +28,7 @@ function StatusBadge({ status }: { status: string }) {
 
 export function SellerOrdersPage() {
   const { user } = useAuthStore()
+  const { locale } = useLocaleStore()
   const queryClient = useQueryClient()
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -127,8 +130,7 @@ export function SellerOrdersPage() {
                   <StatusBadge status={order.status} />
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <span className="text-[11px] text-[#6f7c8e] mr-1">USD</span>
-                  <span className="font-medium text-[#14181f]">{Number(order.totalAmount).toFixed(2)}</span>
+                  <span className="font-medium text-[#14181f]">{formatPrice(order.totalAmount, locale)}</span>
                 </td>
                 <td className="px-4 py-3 text-right">
                   {order.status === 'CONFIRMED' && (

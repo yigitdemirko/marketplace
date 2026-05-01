@@ -7,6 +7,7 @@ import { useCartStore } from '@/store/cartStore'
 import { useAddedToCartFeedback } from '@/lib/cartFeedback'
 import { CATEGORIES, getCategoryLabel } from '@/constants/categories'
 import type { Product } from '@/types'
+import { formatPrice } from '@/lib/formatPrice'
 
 const COMMON_BRANDS = [
   'Apple', 'Samsung', 'Sony', 'LG', 'Dell',
@@ -77,7 +78,7 @@ function SearchProductCard({ product }: { product: Product }) {
         </div>
 
         <p className="text-[15px] font-semibold text-[#14181f] mt-auto">
-          ${Number(product.price).toFixed(2)}
+          {formatPrice(product.price, product.locale ?? 'EN')}
         </p>
 
         <button

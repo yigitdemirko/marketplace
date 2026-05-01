@@ -12,11 +12,15 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
     Page<Product> findByActiveTrue(Pageable pageable);
 
+    Page<Product> findByLocaleAndActiveTrue(String locale, Pageable pageable);
+
     Page<Product> findByCategoryIdAndActiveTrue(String categoryId, Pageable pageable);
 
     Page<Product> findBySellerIdAndActiveTrue(String sellerId, Pageable pageable);
 
     Page<Product> findBySellerIdAndCategoryIdAndActiveTrue(String sellerId, String categoryId, Pageable pageable);
+
+    Page<Product> findBySellerIdAndLocaleAndActiveTrue(String sellerId, String locale, Pageable pageable);
 
     List<Product> findByIdInAndActiveTrue(List<String> ids);
 
@@ -36,8 +40,21 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     })
     List<SellerCategoryCount> aggregateCategoryCountsBySellerId(String sellerId);
 
+    @Aggregation(pipeline = {
+            "{ $match: { sellerId: ?0, active: true } }",
+            "{ $group: { _id: '$locale', count: { $sum: 1 } } }",
+            "{ $project: { _id: 0, locale: '$_id', count: 1 } }",
+            "{ $sort: { locale: 1 } }"
+    })
+    List<SellerLocaleCount> aggregateLocaleCountsBySellerId(String sellerId);
+
     interface SellerCategoryCount {
         String getCategoryId();
+        long getCount();
+    }
+
+    interface SellerLocaleCount {
+        String getLocale();
         long getCount();
     }
 }

@@ -5,6 +5,7 @@ import { EMPTY_SEARCH } from '@/routes/search'
 import { productsApi } from '@/api/products'
 import type { CategoryId } from '@/constants/categories'
 import type { Product } from '@/types'
+import { formatPrice } from '@/lib/formatPrice'
 
 interface CategorySectionProps {
   bannerImage: string
@@ -112,7 +113,7 @@ function CategorySection({
                           {product.name}
                         </p>
                         <p className="text-[12px] text-[#6f7c8e]">
-                          From<br />${product.price.toFixed(2)}
+                          From<br />{formatPrice(product.price, product.locale ?? 'EN')}
                         </p>
                       </div>
                     </div>

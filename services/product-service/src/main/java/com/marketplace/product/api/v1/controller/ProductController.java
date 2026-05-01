@@ -6,6 +6,7 @@ import com.marketplace.product.api.v1.dto.request.ValidateProductRequest;
 import com.marketplace.product.api.v1.dto.response.BatchCreateResponse;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.api.v1.dto.response.SellerCategoryResponse;
+import com.marketplace.product.api.v1.dto.response.SellerLocaleResponse;
 import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
 import com.marketplace.product.api.v1.dto.response.ValidatedProductResponse;
 import com.marketplace.product.application.service.ImageUploadService;
@@ -79,6 +80,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getSellerCategories(sellerId));
     }
 
+    @GetMapping("/seller/{sellerId}/locales")
+    public ResponseEntity<List<SellerLocaleResponse>> getSellerLocales(@PathVariable String sellerId) {
+        return ResponseEntity.ok(productService.getSellerLocales(sellerId));
+    }
+
     @GetMapping("/categories")
     public ResponseEntity<List<Map<String, String>>> getCategories() {
         List<Map<String, String>> categories = Arrays.stream(Category.values())
@@ -89,8 +95,9 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> getAllProducts(
+            @RequestParam(required = false) String locale,
             @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(productService.getAllProducts(pageable));
+        return ResponseEntity.ok(productService.getAllProducts(locale, pageable));
     }
 
     @GetMapping("/category/{categoryId}")
@@ -104,9 +111,13 @@ public class ProductController {
     public ResponseEntity<Page<ProductResponse>> getProductsBySeller(
             @PathVariable String sellerId,
             @RequestParam(required = false) String categoryId,
+            @RequestParam(required = false) String locale,
             @PageableDefault(size = 20) Pageable pageable) {
         if (categoryId != null && !categoryId.isBlank()) {
             return ResponseEntity.ok(productService.getProductsBySellerAndCategory(sellerId, categoryId, pageable));
+        }
+        if (locale != null && !locale.isBlank()) {
+            return ResponseEntity.ok(productService.getProductsBySellerAndLocale(sellerId, locale, pageable));
         }
         return ResponseEntity.ok(productService.getProductsBySeller(sellerId, pageable));
     }

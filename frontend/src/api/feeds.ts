@@ -3,7 +3,7 @@ import type { ImportJob, PageResponse } from '@/types'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
-async function uploadFeed(file: File, sellerId: string): Promise<ImportJob> {
+async function uploadFeed(file: File, sellerId: string, locale: 'EN' | 'TR'): Promise<ImportJob> {
   const token = localStorage.getItem('token')
   const headers: Record<string, string> = {
     'X-Seller-Id': sellerId,
@@ -14,6 +14,7 @@ async function uploadFeed(file: File, sellerId: string): Promise<ImportJob> {
 
   const formData = new FormData()
   formData.append('file', file)
+  formData.append('locale', locale)
 
   const response = await fetch(`${BASE_URL}/api/v1/feeds/import`, {
     method: 'POST',
@@ -30,7 +31,7 @@ async function uploadFeed(file: File, sellerId: string): Promise<ImportJob> {
 }
 
 export const feedsApi = {
-  import: (file: File, sellerId: string) => uploadFeed(file, sellerId),
+  import: (file: File, sellerId: string, locale: 'EN' | 'TR') => uploadFeed(file, sellerId, locale),
 
   getImports: (sellerId: string, page = 0, size = 10) =>
     apiClient.get<PageResponse<ImportJob>>(

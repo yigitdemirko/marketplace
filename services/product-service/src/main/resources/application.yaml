@@ -45,6 +45,10 @@ eureka:
     service-url:
       defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
 
+app:
+  locale-backfill:
+    enabled: true
+
 management:
   endpoints:
     web:

@@ -49,7 +49,8 @@ class ProductControllerTest {
                                     "description": "Test description",
                                     "price": 99.99,
                                     "stock": 100,
-                                    "category": "ELECTRONICS"
+                                    "category": "ELECTRONICS",
+                                    "locale": "EN"
                                 }
                                 """))
                 .andExpect(status().isCreated())

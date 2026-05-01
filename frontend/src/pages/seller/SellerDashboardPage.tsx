@@ -13,6 +13,8 @@ import {
 import { productsApi } from '@/api/products'
 import { ordersApi } from '@/api/orders'
 import { useAuthStore } from '@/store/authStore'
+import { useLocaleStore } from '@/store/localeStore'
+import { formatPrice } from '@/lib/formatPrice'
 import type { Order } from '@/types'
 
 const CHART_DATA = [42, 68, 55, 90, 72, 110, 95, 130, 88, 115, 145, 160]
@@ -41,6 +43,7 @@ const maxChart = Math.max(...CHART_DATA)
 
 export function SellerDashboardPage() {
   const { user } = useAuthStore()
+  const { locale } = useLocaleStore()
   const navigate = useNavigate()
   const [activeFilter, setActiveFilter] = useState('All orders')
   const [searchQuery, setSearchQuery] = useState('')
@@ -150,7 +153,7 @@ export function SellerDashboardPage() {
                         <span className="text-[#14181f] truncate max-w-[160px]">{p.name}</span>
                       </td>
                       <td className="py-2 text-[#6f7c8e] text-right">{p.stock} pcs</td>
-                      <td className="py-2 text-[#14181f] font-medium text-right">${p.price.toFixed(2)}</td>
+                      <td className="py-2 text-[#14181f] font-medium text-right">{formatPrice(p.price, p.locale ?? 'EN')}</td>
                     </tr>
                   ))
                 : (
@@ -229,8 +232,7 @@ export function SellerDashboardPage() {
                       <StatusBadge status={order.status} />
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <span className="text-[11px] text-[#6f7c8e] mr-1">USD</span>
-                      <span className="font-medium text-[#14181f]">{Number(order.totalAmount).toFixed(2)}</span>
+                      <span className="font-medium text-[#14181f]">{formatPrice(order.totalAmount, locale)}</span>
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button

@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ordersApi } from '@/api/orders'
 import { useAuthStore } from '@/store/authStore'
+import { useLocaleStore } from '@/store/localeStore'
+import { formatPrice } from '@/lib/formatPrice'
 import type { Order } from '@/types'
 
 const statusColors: Record<Order['status'], string> = {
@@ -21,6 +23,7 @@ const CANCELLABLE: Order['status'][] = ['PENDING', 'STOCK_RESERVING']
 
 export function OrdersPage() {
   const { user, isAuthenticated } = useAuthStore()
+  const { locale } = useLocaleStore()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
@@ -90,7 +93,7 @@ export function OrdersPage() {
                   {order.items.length} item{order.items.length > 1 ? 's' : ''}
                 </p>
                 <div className="flex items-center gap-3">
-                  <p className="font-bold">₺{order.totalAmount.toFixed(2)}</p>
+                  <p className="font-bold">{formatPrice(order.totalAmount, locale)}</p>
                   {CANCELLABLE.includes(order.status) && (
                     <Button
                       variant="destructive"

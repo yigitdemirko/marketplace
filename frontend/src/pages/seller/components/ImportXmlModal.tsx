@@ -15,11 +15,12 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
   const { user } = useAuthStore()
   const inputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null)
+  const [locale, setLocale] = useState<'EN' | 'TR' | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [result, setResult] = useState<ImportJob | null>(null)
 
   const importMutation = useMutation({
-    mutationFn: (selectedFile: File) => feedsApi.import(selectedFile, user!.userId),
+    mutationFn: (selectedFile: File) => feedsApi.import(selectedFile, user!.userId, locale!),
     onSuccess: (job) => {
       setResult(job)
       onSuccess()
@@ -31,6 +32,7 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
   const handleClose = () => {
     if (importMutation.isPending) return
     setFile(null)
+    setLocale(null)
     setResult(null)
     importMutation.reset()
     onClose()
@@ -77,6 +79,29 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
               <p className="text-[13px] text-[#6f7c8e] mb-4">
                 Upload a Google Merchant XML feed. Each <code className="bg-[#f6f7f9] px-1 rounded">&lt;item&gt;</code> in the feed becomes a product in your catalog.
               </p>
+
+              <div className="mb-4">
+                <p className="text-[13px] font-medium text-[#14181f] mb-2">Catalog locale <span className="text-[#fa3434]">*</span></p>
+                <div className="flex gap-2">
+                  {(['EN', 'TR'] as const).map((l) => (
+                    <button
+                      key={l}
+                      type="button"
+                      onClick={() => setLocale(l)}
+                      className={`flex-1 h-10 text-[14px] font-medium rounded-[6px] border transition-colors ${
+                        locale === l
+                          ? 'bg-[#3348ff] border-[#3348ff] text-white'
+                          : 'bg-white border-[#dce0e5] text-[#6f7c8e] hover:bg-[#f6f7f9]'
+                      }`}
+                    >
+                      {l === 'EN' ? '🇬🇧 EN — prices in $' : '🇹🇷 TR — prices in ₺'}
+                    </button>
+                  ))}
+                </div>
+                {!locale && (
+                  <p className="text-[12px] text-[#6f7c8e] mt-1.5">Select a locale before importing. All items in this feed will be tagged with this locale.</p>
+                )}
+              </div>
 
               <label
                 onDragOver={(e) => {
@@ -184,7 +209,7 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
           {!result && (
             <button
               onClick={handleSubmit}
-              disabled={!file || importMutation.isPending}
+              disabled={!file || !locale || importMutation.isPending}
               className="h-9 px-4 text-[14px] font-medium bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[6px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {importMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}

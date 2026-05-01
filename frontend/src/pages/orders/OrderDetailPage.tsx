@@ -8,6 +8,8 @@ import { ArrowLeft, Package } from 'lucide-react'
 import { ordersApi } from '@/api/orders'
 import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
+import { useLocaleStore } from '@/store/localeStore'
+import { formatPrice } from '@/lib/formatPrice'
 import type { Order } from '@/types'
 
 const statusColors: Record<Order['status'], string> = {
@@ -26,6 +28,7 @@ export function OrderDetailPage() {
   const { orderId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { user } = useAuthStore()
+  const { locale } = useLocaleStore()
   const queryClient = useQueryClient()
 
   const { data: order, isLoading, isError } = useQuery({
@@ -109,12 +112,12 @@ export function OrderDetailPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-[15px] font-medium text-[#14181f] truncate">{name}</p>
                   <p className="text-[13px] text-[#6f7c8e]">
-                    {item.quantity} × ${item.unitPrice.toFixed(2)}
+                    {item.quantity} × {formatPrice(item.unitPrice, locale)}
                   </p>
                 </div>
 
                 <p className="text-[15px] font-semibold text-[#14181f] shrink-0">
-                  ${(item.quantity * item.unitPrice).toFixed(2)}
+                  {formatPrice(item.quantity * item.unitPrice, locale)}
                 </p>
               </div>
             )
@@ -123,7 +126,7 @@ export function OrderDetailPage() {
           <Separator />
           <div className="flex justify-between font-bold text-[16px]">
             <span>Total</span>
-            <span>${order.totalAmount.toFixed(2)}</span>
+            <span>{formatPrice(order.totalAmount, locale)}</span>
           </div>
         </CardContent>
       </Card>

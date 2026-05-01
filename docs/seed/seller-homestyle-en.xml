@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
   <channel>
-    <title>HomeStyle Pazar Yeri</title>
+    <title>HomeStyle Marketplace — EN</title>
     <link>https://homestyle.demo.marketplace.com</link>
-    <description>HomeStyle satıcısı için demo ürün beslemesi — TR lokali, TRY fiyatları</description>
+    <description>Demo seed feed for HomeStyle seller — EN locale, USD prices</description>
 
     <item>
-      <g:id>HS-001</g:id>
-      <title>Nike Dri-FIT Erkek Koşu Tişörtü</title>
-      <description>Egzersiz sırasında konfor için ter emici teknolojiye sahip hafif ve nefes alabilen tişört.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-001</link>
+      <g:id>HS-EN-001</g:id>
+      <title>Nike Dri-FIT Men's Running T-Shirt</title>
+      <description>Lightweight breathable t-shirt with sweat-wicking technology for comfort during workouts.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-001</link>
       <g:image_link>https://picsum.photos/seed/HS-001/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>899.00 TRY</g:price>
+      <g:price>24.00 USD</g:price>
       <g:brand>Nike</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Men's Clothing &gt; Activewear</g:google_product_category>
@@ -20,14 +20,14 @@
     </item>
 
     <item>
-      <g:id>HS-002</g:id>
-      <title>Levi's 501 Original Fit Erkek Kot Pantolon</title>
-      <description>1873'ten beri ikonik orijinal kot pantolon. Düz paça, düğmeli kapama, %100 pamuklu denim.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-002</link>
+      <g:id>HS-EN-002</g:id>
+      <title>Levi's 501 Original Fit Men's Jeans</title>
+      <description>The iconic original jean since 1873. Straight leg, button fly, 100% cotton denim.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-002</link>
       <g:image_link>https://picsum.photos/seed/HS-002/600/600</g:image_link>
       <g:additional_image_link>https://picsum.photos/seed/HS-002a/600/600</g:additional_image_link>
       <g:availability>in stock</g:availability>
-      <g:price>1899.00 TRY</g:price>
+      <g:price>54.00 USD</g:price>
       <g:brand>Levi's</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Men's Clothing &gt; Pants</g:google_product_category>
@@ -35,13 +35,13 @@
     </item>
 
     <item>
-      <g:id>HS-003</g:id>
-      <title>Adidas Originals Erkek Eşofman Ceketi</title>
-      <description>Tam fermuarlı ve nervürlü manşetli, yumuşak pamuk karışımlı klasik üç şeritli eşofman ceketi.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-003</link>
+      <g:id>HS-EN-003</g:id>
+      <title>Adidas Originals Men's Track Jacket</title>
+      <description>Classic three-stripe track jacket in soft cotton blend with full zip and ribbed cuffs.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-003</link>
       <g:image_link>https://picsum.photos/seed/HS-003/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>2499.00 TRY</g:price>
+      <g:price>69.00 USD</g:price>
       <g:brand>Adidas</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Men's Clothing &gt; Outerwear</g:google_product_category>
@@ -49,13 +49,13 @@
     </item>
 
     <item>
-      <g:id>HS-004</g:id>
-      <title>Zara Kadın Yün Karışımlı Palto</title>
-      <description>Çentikli yaka, tek sıra düğme kapamalı ve yan cepli yün karışımlı uzun kesim palto.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-004</link>
+      <g:id>HS-EN-004</g:id>
+      <title>Zara Women's Wool Blend Coat</title>
+      <description>Tailored long coat in wool blend with notched lapels, single-breasted button closure, and side pockets.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-004</link>
       <g:image_link>https://picsum.photos/seed/HS-004/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>3499.00 TRY</g:price>
+      <g:price>99.00 USD</g:price>
       <g:brand>Zara</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Women's Clothing &gt; Outerwear</g:google_product_category>
@@ -63,14 +63,14 @@
     </item>
 
     <item>
-      <g:id>HS-005</g:id>
-      <title>Mango Kadın Çiçek Desenli Yazlık Elbise</title>
-      <description>V yaka ve kısa fırfırlı kollu, çiçek baskılı hafif viskon kumaşlı orta boy elbise.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-005</link>
+      <g:id>HS-EN-005</g:id>
+      <title>Mango Women's Floral Summer Dress</title>
+      <description>Mid-length dress in lightweight viscose with floral print, V-neckline, and short ruffled sleeves.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-005</link>
       <g:image_link>https://picsum.photos/seed/HS-005/600/600</g:image_link>
       <g:additional_image_link>https://picsum.photos/seed/HS-005a/600/600</g:additional_image_link>
       <g:availability>in stock</g:availability>
-      <g:price>1299.00 TRY</g:price>
+      <g:price>35.00 USD</g:price>
       <g:brand>Mango</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Women's Clothing &gt; Dresses</g:google_product_category>
@@ -78,13 +78,13 @@
     </item>
 
     <item>
-      <g:id>HS-006</g:id>
-      <title>H&amp;M Kadın Pamuklu Uzun Kollu Bluz</title>
-      <description>V yaka, düşük omuzlu ve yuvarlak etek uçlu gevşek kesim, yumuşak pamuklu bluz.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-006</link>
+      <g:id>HS-EN-006</g:id>
+      <title>H&amp;M Women's Cotton Long-Sleeve Blouse</title>
+      <description>Loose-fit blouse in soft cotton fabric with V-neck, drop shoulders, and rounded hem.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-006</link>
       <g:image_link>https://picsum.photos/seed/HS-006/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>599.00 TRY</g:price>
+      <g:price>16.00 USD</g:price>
       <g:brand>H&amp;M</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Women's Clothing &gt; Tops</g:google_product_category>
@@ -92,14 +92,14 @@
     </item>
 
     <item>
-      <g:id>HS-007</g:id>
-      <title>Nike Air Max 90 Erkek Spor Ayakkabı</title>
-      <description>Max Air yastıklama, deri ve tekstil üst malzeme ve dayanıklı kauçuk dış taban ile ikonik Air Max 90.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-007</link>
+      <g:id>HS-EN-007</g:id>
+      <title>Nike Air Max 90 Men's Sneakers</title>
+      <description>Iconic Air Max 90 with Max Air cushioning, leather and textile upper, and durable rubber outsole.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-007</link>
       <g:image_link>https://picsum.photos/seed/HS-007/600/600</g:image_link>
       <g:additional_image_link>https://picsum.photos/seed/HS-007a/600/600</g:additional_image_link>
       <g:availability>in stock</g:availability>
-      <g:price>4299.00 TRY</g:price>
+      <g:price>119.00 USD</g:price>
       <g:brand>Nike</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Shoes</g:google_product_category>
@@ -107,13 +107,13 @@
     </item>
 
     <item>
-      <g:id>HS-008</g:id>
-      <title>Adidas Ultraboost 22 Koşu Ayakkabısı</title>
-      <description>Yüksek enerjili koşular için duyarlı Boost ara taban, Primeknit+ üst malzeme ve Continental kauçuk dış taban.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-008</link>
+      <g:id>HS-EN-008</g:id>
+      <title>Adidas Ultraboost 22 Running Shoes</title>
+      <description>Responsive Boost midsole, Primeknit+ upper, and Continental rubber outsole for high-energy runs.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-008</link>
       <g:image_link>https://picsum.photos/seed/HS-008/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>5499.00 TRY</g:price>
+      <g:price>159.00 USD</g:price>
       <g:brand>Adidas</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Shoes</g:google_product_category>
@@ -121,13 +121,13 @@
     </item>
 
     <item>
-      <g:id>HS-009</g:id>
-      <title>Vans Old Skool Klasik Spor Ayakkabı</title>
-      <description>İmza yan şeritli, dayanıklı kanvas ve süet üst malzemeli, waffle dış tabanlı ikonik kaykay ayakkabısı.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-009</link>
+      <g:id>HS-EN-009</g:id>
+      <title>Vans Old Skool Classic Sneakers</title>
+      <description>Iconic skate shoe with signature side stripe, durable canvas and suede upper, and waffle outsole.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-009</link>
       <g:image_link>https://picsum.photos/seed/HS-009/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>1899.00 TRY</g:price>
+      <g:price>54.00 USD</g:price>
       <g:brand>Vans</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Shoes</g:google_product_category>
@@ -135,13 +135,13 @@
     </item>
 
     <item>
-      <g:id>HS-010</g:id>
-      <title>Timberland Premium 6 İnç Su Geçirmez Bot</title>
-      <description>Premium tam tane deri, dolgulu bilek desteği ve dikiş sızdırmaz su geçirmez yapıyla ikonik sarı bot.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-010</link>
+      <g:id>HS-EN-010</g:id>
+      <title>Timberland Premium 6-Inch Waterproof Boots</title>
+      <description>Iconic yellow boot in premium full-grain leather, padded collar, and seam-sealed waterproof construction.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-010</link>
       <g:image_link>https://picsum.photos/seed/HS-010/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>6999.00 TRY</g:price>
+      <g:price>199.00 USD</g:price>
       <g:brand>Timberland</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Shoes</g:google_product_category>
@@ -149,13 +149,13 @@
     </item>
 
     <item>
-      <g:id>HS-011</g:id>
-      <title>Samsonite Cosmolite Spinner Bavul 75cm</title>
-      <description>Curv kabuğu, TSA kilidi ve uluslararası seyahat için 94L kapasiteli büyük 4 tekerlekli bavul.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-011</link>
+      <g:id>HS-EN-011</g:id>
+      <title>Samsonite Cosmolite Spinner Suitcase 75cm</title>
+      <description>Large 4-wheel suitcase in Curv shell, TSA lock, and 94L capacity for international travel.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-011</link>
       <g:image_link>https://picsum.photos/seed/HS-011/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>8999.00 TRY</g:price>
+      <g:price>249.00 USD</g:price>
       <g:brand>Samsonite</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Luggage &amp; Bags &gt; Suitcases</g:google_product_category>
@@ -163,13 +163,13 @@
     </item>
 
     <item>
-      <g:id>HS-012</g:id>
-      <title>Herschel Little America Sırt Çantası 25L</title>
-      <description>Manyetik kayış kapamalar ve dolgulu laptop bölmeli, dağcılık esinlenimli klasik günlük sırt çantası.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-012</link>
+      <g:id>HS-EN-012</g:id>
+      <title>Herschel Little America Backpack 25L</title>
+      <description>Classic mountaineering-inspired daypack with magnetic strap closures and padded laptop sleeve.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-012</link>
       <g:image_link>https://picsum.photos/seed/HS-012/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>2299.00 TRY</g:price>
+      <g:price>65.00 USD</g:price>
       <g:brand>Herschel</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Luggage &amp; Bags &gt; Backpacks</g:google_product_category>
@@ -177,13 +177,13 @@
     </item>
 
     <item>
-      <g:id>HS-013</g:id>
-      <title>Casio G-Shock GA-2100 Analog-Dijital Saat</title>
-      <description>İnce sekizgen kasa, darbe dayanıklılığı, 200m su geçirmezlik ve çift analog-dijital ekran.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-013</link>
+      <g:id>HS-EN-013</g:id>
+      <title>Casio G-Shock GA-2100 Analog-Digital Watch</title>
+      <description>Slim octagonal case, shock resistant, 200m water resistant, and dual analog-digital display.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-013</link>
       <g:image_link>https://picsum.photos/seed/HS-013/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>3499.00 TRY</g:price>
+      <g:price>99.00 USD</g:price>
       <g:brand>Casio</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Watches</g:google_product_category>
@@ -191,13 +191,13 @@
     </item>
 
     <item>
-      <g:id>HS-014</g:id>
-      <title>Pandora Gümüş Charm Bileklik</title>
-      <description>Fıçı kapamalı 925 ayar gümüşten yapılan ikonik Pandora anlar bilekliği.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-014</link>
+      <g:id>HS-EN-014</g:id>
+      <title>Pandora Sterling Silver Charm Bracelet</title>
+      <description>Iconic Pandora moments bracelet in 925 sterling silver with barrel clasp.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-014</link>
       <g:image_link>https://picsum.photos/seed/HS-014/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>4999.00 TRY</g:price>
+      <g:price>139.00 USD</g:price>
       <g:brand>Pandora</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Apparel &amp; Accessories &gt; Jewelry &gt; Bracelets</g:google_product_category>
@@ -205,14 +205,14 @@
     </item>
 
     <item>
-      <g:id>HS-015</g:id>
-      <title>Tefal 10 Parça Paslanmaz Çelik Tencere Seti</title>
-      <description>Termospor göstergeli, cam kapaklı ve paslanmaz çelik saplı indüksiyon uyumlu tencere seti.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-015</link>
+      <g:id>HS-EN-015</g:id>
+      <title>Tefal 10-Piece Stainless Steel Cookware Set</title>
+      <description>Induction-compatible cookware set with thermo-spot indicator, glass lids, and stainless steel handles.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-015</link>
       <g:image_link>https://picsum.photos/seed/HS-015/600/600</g:image_link>
       <g:additional_image_link>https://picsum.photos/seed/HS-015a/600/600</g:additional_image_link>
       <g:availability>in stock</g:availability>
-      <g:price>4999.00 TRY</g:price>
+      <g:price>139.00 USD</g:price>
       <g:brand>Tefal</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Home &amp; Garden &gt; Kitchen &amp; Dining &gt; Cookware</g:google_product_category>
@@ -220,13 +220,13 @@
     </item>
 
     <item>
-      <g:id>HS-016</g:id>
+      <g:id>HS-EN-016</g:id>
       <title>Philips Airfryer XXL Premium</title>
-      <description>1.4 kg kapasiteli, Twin TurboStar teknolojili, akıllı algılama ve 7 ön ayarlı pişirme programlı yağsız fritöz.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-016</link>
+      <description>1.4kg capacity, Twin TurboStar technology, smart sensing, and 7 preset cooking programs.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-016</link>
       <g:image_link>https://picsum.photos/seed/HS-016/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>6499.00 TRY</g:price>
+      <g:price>179.00 USD</g:price>
       <g:brand>Philips</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Home &amp; Garden &gt; Kitchen Appliances</g:google_product_category>
@@ -234,13 +234,13 @@
     </item>
 
     <item>
-      <g:id>HS-017</g:id>
-      <title>Bosch VeroCup Otomatik Kahve Makinesi</title>
-      <description>Seramik öğütücülü, OneTouch programlı ve entegre süt sistemli çekirdekten fincana tam otomatik espresso makinesi.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-017</link>
+      <g:id>HS-EN-017</g:id>
+      <title>Bosch VeroCup Automatic Coffee Machine</title>
+      <description>Bean-to-cup espresso machine with ceramic grinder, OneTouch programs, and integrated milk system.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-017</link>
       <g:image_link>https://picsum.photos/seed/HS-017/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>8999.00 TRY</g:price>
+      <g:price>249.00 USD</g:price>
       <g:brand>Bosch</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Home &amp; Garden &gt; Kitchen Appliances</g:google_product_category>
@@ -248,13 +248,13 @@
     </item>
 
     <item>
-      <g:id>HS-018</g:id>
-      <title>Dyson V15 Detect Kablosuz Süpürge</title>
-      <description>Lazer toz tespiti, LCD ekran ve 60 dakikaya kadar çalışma süresi olan güçlü emişli kablosuz süpürge.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-018</link>
+      <g:id>HS-EN-018</g:id>
+      <title>Dyson V15 Detect Cordless Vacuum</title>
+      <description>Powerful suction with laser dust detection, LCD screen, and up to 60 minutes of run time.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-018</link>
       <g:image_link>https://picsum.photos/seed/HS-018/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>24999.00 TRY</g:price>
+      <g:price>699.00 USD</g:price>
       <g:brand>Dyson</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Home &amp; Garden &gt; Home Appliances</g:google_product_category>
@@ -262,13 +262,13 @@
     </item>
 
     <item>
-      <g:id>HS-019</g:id>
-      <title>LG OLED 55 inç 4K Akıllı TV</title>
-      <description>Kendi ışığını üreten OLED pikseller, α9 Gen 6 AI işlemcisi, Dolby Vision IQ ve webOS akıllı platform.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-019</link>
+      <g:id>HS-EN-019</g:id>
+      <title>LG OLED 55-inch 4K Smart TV</title>
+      <description>Self-lit OLED pixels, α9 Gen 6 AI Processor, Dolby Vision IQ, and webOS smart platform.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-019</link>
       <g:image_link>https://picsum.photos/seed/HS-019/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>22999.00 TRY</g:price>
+      <g:price>649.00 USD</g:price>
       <g:brand>LG</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Home &amp; Garden &gt; Home Appliances</g:google_product_category>
@@ -276,13 +276,13 @@
     </item>
 
     <item>
-      <g:id>HS-020</g:id>
-      <title>IKEA Hemnes Kitaplık 90x197cm</title>
-      <description>Ayarlanabilir raflı ve beyaz boyalı, klasik masif çam ağacından üretilmiş kitaplık.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-020</link>
+      <g:id>HS-EN-020</g:id>
+      <title>IKEA Hemnes Bookshelf 90x197cm</title>
+      <description>Classic solid pine bookshelf with adjustable shelves and white-stained finish.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-020</link>
       <g:image_link>https://picsum.photos/seed/HS-020/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>3999.00 TRY</g:price>
+      <g:price>109.00 USD</g:price>
       <g:brand>IKEA</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Home &amp; Garden &gt; Furniture &gt; Shelving</g:google_product_category>
@@ -290,13 +290,13 @@
     </item>
 
     <item>
-      <g:id>HS-021</g:id>
-      <title>West Elm Ergonomik Ofis Koltuğu</title>
-      <description>Ayarlanabilir bel desteği, 4D kolçaklar ve 5 yıl garantili mesh sırtlıklı ergonomik ofis koltuğu.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-021</link>
+      <g:id>HS-EN-021</g:id>
+      <title>West Elm Ergonomic Office Chair</title>
+      <description>Mesh back office chair with adjustable lumbar support, 4D armrests, and 5-year warranty.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-021</link>
       <g:image_link>https://picsum.photos/seed/HS-021/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>7999.00 TRY</g:price>
+      <g:price>229.00 USD</g:price>
       <g:brand>West Elm</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Home &amp; Garden &gt; Furniture &gt; Chairs</g:google_product_category>
@@ -304,13 +304,13 @@
     </item>
 
     <item>
-      <g:id>HS-022</g:id>
-      <title>Wilson Pro Staff RF97 Tenis Raketi</title>
-      <description>97 inç kare kafa yüzeyi, 16x19 kiriş deseni ve 340g ağırlığıyla Roger Federer imzalı profesyonel raket.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-022</link>
+      <g:id>HS-EN-022</g:id>
+      <title>Wilson Pro Staff RF97 Tennis Racket</title>
+      <description>Roger Federer signature racket with 97 sq inch head, 16x19 string pattern, and 340g unstrung weight.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-022</link>
       <g:image_link>https://picsum.photos/seed/HS-022/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>4499.00 TRY</g:price>
+      <g:price>129.00 USD</g:price>
       <g:brand>Wilson</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Sporting Goods &gt; Sports &gt; Tennis &amp; Fitness</g:google_product_category>
@@ -318,13 +318,13 @@
     </item>
 
     <item>
-      <g:id>HS-023</g:id>
-      <title>Decathlon Domyos Yoga Matı 8mm</title>
-      <description>Kaymaz yüzeyli, 183x61cm boyutlarında, tüm yoga ve egzersiz pratikleri için ideal kalın dolgulu yoga matı.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-023</link>
+      <g:id>HS-EN-023</g:id>
+      <title>Decathlon Domyos Yoga Mat 8mm</title>
+      <description>Thick padded yoga mat with non-slip surface, 183x61cm, ideal for all yoga and fitness practices.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-023</link>
       <g:image_link>https://picsum.photos/seed/HS-023/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>499.00 TRY</g:price>
+      <g:price>13.00 USD</g:price>
       <g:brand>Decathlon</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Sporting Goods &gt; Exercise &amp; Fitness</g:google_product_category>
@@ -332,14 +332,14 @@
     </item>
 
     <item>
-      <g:id>HS-024</g:id>
-      <title>Dyson Supersonic Saç Kurutma Makinesi</title>
-      <description>Akıllı ısı kontrolü, 5 şekillendirme aparatı ve sessiz fırçasız motor ile hızlı ve sağlıklı kurutma.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-024</link>
+      <g:id>HS-EN-024</g:id>
+      <title>Dyson Supersonic Hair Dryer</title>
+      <description>Fast drying with intelligent heat control, 5 styling attachments, and quiet brushless motor.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-024</link>
       <g:image_link>https://picsum.photos/seed/HS-024/600/600</g:image_link>
       <g:additional_image_link>https://picsum.photos/seed/HS-024a/600/600</g:additional_image_link>
       <g:availability>in stock</g:availability>
-      <g:price>14999.00 TRY</g:price>
+      <g:price>429.00 USD</g:price>
       <g:brand>Dyson</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Health &amp; Beauty &gt; Personal Care &gt; Hair Care</g:google_product_category>
@@ -347,13 +347,13 @@
     </item>
 
     <item>
-      <g:id>HS-025</g:id>
-      <title>La Roche-Posay Anthelios Güneş Kremi Seti</title>
-      <description>SPF 50+ geniş spektrumlu, suya dayanıklı ve hassas ciltlere uygun 3'lü güneş koruyucu seti.</description>
-      <link>https://homestyle.demo.marketplace.com/p/HS-025</link>
+      <g:id>HS-EN-025</g:id>
+      <title>La Roche-Posay Anthelios Sunscreen Set</title>
+      <description>3-piece sunscreen set with SPF 50+ broad spectrum, water-resistant, suitable for sensitive skin.</description>
+      <link>https://homestyle.demo.marketplace.com/p/HS-EN-025</link>
       <g:image_link>https://picsum.photos/seed/HS-025/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>1499.00 TRY</g:price>
+      <g:price>42.00 USD</g:price>
       <g:brand>La Roche-Posay</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Health &amp; Beauty &gt; Personal Care</g:google_product_category>
