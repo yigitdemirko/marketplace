@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { EMPTY_SEARCH } from '@/routes/search'
 import {
   Car,
   Home,
@@ -35,6 +36,7 @@ export function HeroSection() {
               <Link
                 key={name}
                 to="/search"
+                search={EMPTY_SEARCH}
                 className="flex items-center justify-between py-2 px-4 text-[15px] text-[#525e6f] hover:bg-[#f6f7f9] transition-colors"
               >
                 <span className="flex items-center">
@@ -45,6 +47,7 @@ export function HeroSection() {
             ))}
             <Link
               to="/search"
+              search={EMPTY_SEARCH}
               className="flex items-center justify-between py-2 px-4 text-[15px] text-[#14181f] font-medium hover:bg-[#f6f7f9] transition-colors mt-auto border-t border-[#dce0e5]"
             >
               <span className="flex items-center">
@@ -63,6 +66,7 @@ export function HeroSection() {
             </h2>
             <Link
               to="/search"
+              search={EMPTY_SEARCH}
               className="border border-[#14181f] rounded-[6px] px-4 py-2 text-[15px] text-[#14181f] flex items-center gap-2 w-fit hover:bg-[#14181f] hover:text-white transition-all bg-transparent"
             >
               Learn more <ChevronRight className="h-4 w-4" />
@@ -100,6 +104,7 @@ export function HeroSection() {
             <Link
               key={item}
               to="/search"
+              search={EMPTY_SEARCH}
               className="text-[15px] text-[#525e6f] hover:text-[#3348ff] transition-colors"
             >
               {item}

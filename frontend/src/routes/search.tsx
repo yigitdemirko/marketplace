@@ -1,6 +1,26 @@
 import { createFileRoute, useSearch } from '@tanstack/react-router'
 import { ProductsPage } from '@/pages/products/ProductsPage'
 
+export type SearchParams = {
+  q: string | undefined
+  category: string | undefined
+  brand: string | undefined
+  priceMin: number | undefined
+  priceMax: number | undefined
+  sort: string | undefined
+  page: number | undefined
+}
+
+export const EMPTY_SEARCH: SearchParams = {
+  q: undefined,
+  category: undefined,
+  brand: undefined,
+  priceMin: undefined,
+  priceMax: undefined,
+  sort: undefined,
+  page: undefined,
+}
+
 export const Route = createFileRoute('/search')({
   validateSearch: (search: Record<string, unknown>) => ({
     q: (search.q as string) || undefined,
@@ -9,7 +29,7 @@ export const Route = createFileRoute('/search')({
     priceMin: search.priceMin ? Number(search.priceMin) : undefined,
     priceMax: search.priceMax ? Number(search.priceMax) : undefined,
     sort: (search.sort as string) || undefined,
-    page: search.page ? Number(search.page) : 0,
+    page: search.page ? Number(search.page) : undefined,
   }),
   component: SearchRoute,
 })
@@ -24,7 +44,7 @@ function SearchRoute() {
       initialPriceMin={priceMin}
       initialPriceMax={priceMax}
       initialSort={sort}
-      initialPage={page}
+      initialPage={page ?? 0}
     />
   )
 }

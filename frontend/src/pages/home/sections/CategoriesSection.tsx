@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, Link } from '@tanstack/react-router'
 import { ArrowRight, Package } from 'lucide-react'
+import { EMPTY_SEARCH } from '@/routes/search'
 import { productsApi } from '@/api/products'
 import type { CategoryId } from '@/constants/categories'
 
@@ -35,6 +36,7 @@ function CategorySection({ bannerBg, bannerEmoji, bannerTitle, categoryId }: Cat
             </h3>
             <Link
               to="/search"
+              search={EMPTY_SEARCH}
               className="flex items-center gap-1 text-[15px] text-[#3348ff] font-medium relative z-10 w-fit hover:underline"
             >
               Explore all <ArrowRight className="h-4 w-4" />

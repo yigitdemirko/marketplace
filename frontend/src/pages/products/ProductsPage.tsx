@@ -247,12 +247,15 @@ export function ProductsPage({
     setPage(0)
     navigate({
       to: '/search',
-      search: {
-        q: initialQuery,
+      search: (prev) => ({
+        q: prev.q,
         category: catId,
-        brand: selectedBrands[0],
-        sort: sortBy !== 'newest' ? sortBy : undefined,
-      },
+        brand: prev.brand,
+        priceMin: prev.priceMin,
+        priceMax: prev.priceMax,
+        sort: prev.sort,
+        page: undefined,
+      }),
     })
   }
 
