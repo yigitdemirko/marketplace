@@ -62,3 +62,7 @@ management:
 logging:
   pattern:
     correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "
+
+app:
+  outbox:
+    poll-interval-ms: 1000

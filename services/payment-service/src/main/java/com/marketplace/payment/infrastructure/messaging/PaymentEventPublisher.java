@@ -1,9 +1,12 @@
 package com.marketplace.payment.infrastructure.messaging;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.payment.domain.model.Payment;
+import com.marketplace.payment.domain.model.PaymentOutboxEvent;
+import com.marketplace.payment.domain.repository.PaymentOutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -14,7 +17,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentEventPublisher {
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final PaymentOutboxEventRepository outboxRepository;
+    private final ObjectMapper objectMapper;
 
     public void publishPaymentCompleted(Payment payment) {
         Map<String, Object> event = new HashMap<>();
@@ -23,8 +27,8 @@ public class PaymentEventPublisher {
         event.put("userId", payment.getUserId());
         event.put("amount", payment.getAmount());
 
-        kafkaTemplate.send("payment.completed", payment.getOrderId(), event);
-        log.info("Payment completed event published: orderId={}", payment.getOrderId());
+        saveOutbox("payment.completed", payment.getOrderId(), event);
+        log.info("Payment completed event queued: orderId={}", payment.getOrderId());
     }
 
     public void publishPaymentFailed(Payment payment) {
@@ -34,7 +38,16 @@ public class PaymentEventPublisher {
         event.put("userId", payment.getUserId());
         event.put("reason", payment.getFailureReason());
 
-        kafkaTemplate.send("payment.failed", payment.getOrderId(), event);
-        log.info("Payment failed event published: orderId={}", payment.getOrderId());
+        saveOutbox("payment.failed", payment.getOrderId(), event);
+        log.info("Payment failed event queued: orderId={}", payment.getOrderId());
+    }
+
+    private void saveOutbox(String eventType, String aggregateId, Map<String, Object> payload) {
+        try {
+            String json = objectMapper.writeValueAsString(payload);
+            outboxRepository.save(PaymentOutboxEvent.create(eventType, aggregateId, json));
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Failed to serialize payment outbox event", e);
+        }
     }
 }
