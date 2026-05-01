@@ -81,6 +81,7 @@ spring:
                 allowedOrigins:
                   - "http://localhost:5173"
                   - "${FRONTEND_URL}"
+                  - "${SELLER_URL}"
                 allowedMethods:
                   - GET
                   - POST

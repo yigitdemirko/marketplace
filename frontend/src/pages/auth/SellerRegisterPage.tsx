@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
+import { sellerPath } from '@/lib/sellerBase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -34,7 +35,7 @@ export function SellerRegisterPage() {
       localStorage.setItem('token', user.token)
       setAuth(user)
       const params = new URLSearchParams(window.location.search)
-      navigate({ to: params.get('redirect') ?? '/seller' })
+      navigate({ to: (params.get('redirect') ?? sellerPath('')) as '/seller' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {

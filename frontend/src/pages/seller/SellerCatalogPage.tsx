@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
+import { sellerPath } from '@/lib/sellerBase'
 import { Plus, Pencil, Trash2, Package, Upload, Copy, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { feedsApi } from '@/api/feeds'
@@ -127,7 +128,7 @@ export function SellerCatalogPage() {
             Import XML
           </button>
           <button
-            onClick={() => navigate({ to: '/seller/products/new' })}
+            onClick={() => navigate({ to: sellerPath('/products/new') as '/seller/products/new' })}
             className="h-9 px-4 text-[14px] font-medium bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[6px] flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
@@ -167,7 +168,7 @@ export function SellerCatalogPage() {
                     <>
                       No products yet.{' '}
                       <button
-                        onClick={() => navigate({ to: '/seller/products/new' })}
+                        onClick={() => navigate({ to: sellerPath('/products/new') as '/seller/products/new' })}
                         className="text-[#3348ff] hover:underline"
                       >
                         Add your first product
@@ -235,7 +236,7 @@ export function SellerCatalogPage() {
                     <button
                       onClick={() =>
                         navigate({
-                          to: '/seller/products/$productId/edit',
+                          to: sellerPath('/products/$productId/edit') as '/seller/products/$productId/edit',
                           params: { productId: product.id },
                         })
                       }
