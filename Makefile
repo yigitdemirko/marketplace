@@ -1,4 +1,4 @@
-.PHONY: build up down restart logs test clean
+.PHONY: build up down restart logs test clean seed
 
 build:
 	mvn clean package -DskipTests
@@ -29,3 +29,6 @@ up-service:
 
 restart-service:
 	mvn clean package -DskipTests -pl services/$(service) --also-make && docker-compose up --build $(service)
+
+seed:
+	@./scripts/seed.sh
