@@ -7,18 +7,19 @@ import {
   UserCircle,
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
+import { sellerPath } from '@/lib/sellerBase'
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', icon: LayoutDashboard, to: '/seller' },
-  { label: 'All orders', icon: Truck, to: '/seller/orders' },
-  { label: 'Catalog', icon: Package2, to: '/seller/products' },
+  { label: 'Dashboard', icon: LayoutDashboard, to: sellerPath('') },
+  { label: 'All orders', icon: Truck, to: sellerPath('/orders') },
+  { label: 'Catalog', icon: Package2, to: sellerPath('/products') },
 ]
 
 const PAGE_TITLES: Record<string, string> = {
-  '/seller': 'Dashboard',
-  '/seller/orders': 'All orders',
-  '/seller/products': 'Catalog',
-  '/seller/products/new': 'Add product',
+  [sellerPath('')]: 'Dashboard',
+  [sellerPath('/orders')]: 'All orders',
+  [sellerPath('/products')]: 'Catalog',
+  [sellerPath('/products/new')]: 'Add product',
 }
 
 export function SellerLayout() {
@@ -29,7 +30,7 @@ export function SellerLayout() {
 
   useEffect(() => {
     if (!isSeller) {
-      navigate({ to: '/seller/login', replace: true })
+      navigate({ to: sellerPath('/login') as '/seller/login', replace: true })
     }
   }, [isSeller, navigate])
 
@@ -63,7 +64,7 @@ export function SellerLayout() {
           <ul className="space-y-0.5">
             {NAV_ITEMS.map(({ label, icon: Icon, to }) => {
               const isActive =
-                to === '/seller' ? pathname === '/seller' : pathname.startsWith(to)
+                to === sellerPath('') ? pathname === sellerPath('') : pathname.startsWith(to)
               return (
                 <li key={to}>
                   <Link
@@ -109,7 +110,7 @@ export function SellerLayout() {
       {/* Mobile bottom tab bar */}
       <nav className="flex lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#dce0e5]">
         {NAV_ITEMS.map(({ label, icon: Icon, to }) => {
-          const isActive = to === '/seller' ? pathname === '/seller' : pathname.startsWith(to)
+          const isActive = to === sellerPath('') ? pathname === sellerPath('') : pathname.startsWith(to)
           return (
             <Link
               key={to}
