@@ -3,7 +3,7 @@ import { Navbar } from './Navbar'
 import { SellerLayout } from './SellerLayout'
 
 const FULLSCREEN_ROUTES = ['/login', '/register', '/seller/login', '/seller/register']
-const NO_CONTAINER_ROUTES = ['/']
+const NO_CONTAINER_ROUTES = ['/', '/checkout']
 
 export function Layout() {
   const { location } = useRouterState()
