@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { ShoppingCart, Heart, ChevronDown, Star, ChevronLeft, ChevronRight, Package } from 'lucide-react'
+import { ShoppingCart, Heart, ChevronDown, Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { productsApi, type SearchFilters } from '@/api/products'
 import { useCartStore } from '@/store/cartStore'
 import { CATEGORIES, getCategoryLabel } from '@/constants/categories'

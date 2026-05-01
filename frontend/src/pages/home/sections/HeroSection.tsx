@@ -1,7 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { EMPTY_SEARCH } from '@/routes/search'
 import {
-  Car,
   Home,
   Wrench,
   BookOpen,
@@ -11,7 +10,6 @@ import {
   MoreHorizontal,
   ChevronRight,
   Smartphone,
-  Zap,
   Watch,
   Footprints,
 } from 'lucide-react'
