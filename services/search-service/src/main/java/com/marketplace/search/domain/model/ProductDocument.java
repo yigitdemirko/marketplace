@@ -47,4 +47,7 @@ public class ProductDocument {
 
     @Field(type = FieldType.Object)
     private Map<String, String> attributes;
+
+    @Field(type = FieldType.Keyword)
+    private String brand;
 }

@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,6 +29,9 @@ class SearchServiceTest {
 
     @Mock
     private ProductSearchRepository productSearchRepository;
+
+    @Mock
+    private ElasticsearchOperations elasticsearchOperations;
 
     @InjectMocks
     private SearchService searchService;
