@@ -1,8 +1,7 @@
-import { useState } from 'react'
-import { ShoppingCart, Heart, Package } from 'lucide-react'
+import { ShoppingCart, Package, Star } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useCartStore } from '@/store/cartStore'
-import { Star } from 'lucide-react'
+import { useCartDrawer } from '@/store/cartDrawerStore'
 import type { Product } from '@/types'
 
 interface ProductCardProps {
@@ -12,8 +11,8 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem)
+  const openDrawer = useCartDrawer((s) => s.open)
   const navigate = useNavigate()
-  const [wishlisted, setWishlisted] = useState(false)
 
   const mainImage = product.images?.[0]
   const isOutOfStock = product.stock === 0
@@ -33,11 +32,12 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
       quantity: 1,
       image: mainImage,
     })
+    openDrawer()
   }
 
   return (
     <div
-      className="bg-white rounded-[12px] cursor-pointer"
+      className="bg-white rounded-[12px] cursor-pointer flex flex-col"
       onClick={handleClick}
     >
       {/* Image area */}
@@ -53,27 +53,11 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
             <Package className="h-16 w-16 text-[#cbd3db]" />
           </div>
         )}
-
-        {/* Wishlist button */}
-        <button
-          aria-label="Toggle wishlist"
-          className="absolute top-2 right-2 w-10 h-10 flex items-center justify-center bg-white/40 rounded-[8px] hover:bg-white/70 transition-colors"
-          onClick={(e) => {
-            e.stopPropagation()
-            setWishlisted((p) => !p)
-          }}
-        >
-          <Heart
-            className={`h-[22px] w-[22px] transition-colors ${
-              wishlisted ? 'fill-[#3348ff] text-[#3348ff]' : 'text-[#6f7c8e]'
-            }`}
-          />
-        </button>
       </div>
 
       {/* Info */}
-      <div className="flex flex-col gap-2 py-3">
-        <p className="text-[15px] text-[#14181f] leading-[1.4] line-clamp-2 tracking-[-0.3px]">
+      <div className="flex flex-col gap-2 py-3 flex-1">
+        <p className="text-[15px] text-[#14181f] leading-[1.4] line-clamp-2 min-h-[42px] tracking-[-0.3px]">
           {product.name}
         </p>
 
@@ -83,7 +67,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
           <span className="text-[13px] text-[#6f7c8e]">(0 orders)</span>
         </div>
 
-        <p className="text-[15px] font-semibold text-[#14181f]">
+        <p className="text-[15px] font-semibold text-[#14181f] mt-auto">
           ${Number(product.price).toFixed(2)}
         </p>
 

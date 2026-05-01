@@ -35,7 +35,7 @@ function CategorySection({
   for (const r of results) {
     if (r.data) {
       for (const p of r.data.content) {
-        if (!seen.has(p.id)) {
+        if (!seen.has(p.id) && p.stock > 0) {
           seen.add(p.id)
           products.push(p)
         }

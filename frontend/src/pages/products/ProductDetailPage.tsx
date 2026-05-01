@@ -4,23 +4,20 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import {
   Package,
   Star,
-  CheckCircle,
-  MessageCircle,
   ShoppingBasket,
   Store,
-  Truck,
-  BadgeCheck,
   Heart,
   ShoppingCart,
-  User,
-  XCircle,
+  Plus,
+  Minus,
+  PenLine,
 } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { usersApi } from '@/api/users'
 import { useCartStore } from '@/store/cartStore'
-import { useAuthStore } from '@/store/authStore'
+import { useCartDrawer } from '@/store/cartDrawerStore'
 
-const TABS = ['Description', 'Seller info', 'Reviews', 'Shipping']
+const TABS = ['Description', 'Reviews', 'Company', 'Usage guide']
 
 const RATING_BARS = [
   { star: 5, pct: 92 },
@@ -34,10 +31,11 @@ export function ProductDetailPage() {
   const { productId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addItem = useCartStore((state) => state.addItem)
-  useAuthStore()
+  const openDrawer = useCartDrawer((s) => s.open)
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState('Description')
   const [wishlisted, setWishlisted] = useState(false)
+  const [quantity, setQuantity] = useState(1)
 
   const { data: product, isLoading, isError } = useQuery({
     queryKey: ['product', productId],
@@ -60,8 +58,10 @@ export function ProductDetailPage() {
       sellerId: product.sellerId,
       name: product.name,
       price: product.price,
-      quantity: 1,
+      quantity,
+      image: product.images?.[0],
     })
+    openDrawer()
   }
 
   if (isLoading) {
@@ -69,14 +69,18 @@ export function ProductDetailPage() {
       <div className="-mx-4 -mt-8 animate-pulse">
         <div className="bg-[#f6f7f9] h-16" />
         <div className="max-w-[1180px] mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr_280px] gap-5">
-            <div className="h-[380px] bg-muted rounded-lg" />
+          <div className="grid grid-cols-1 lg:grid-cols-[72px_1fr_374px] gap-5">
+            <div className="hidden lg:flex flex-col gap-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-[70px] bg-muted rounded-md" />
+              ))}
+            </div>
+            <div className="aspect-[698/540] bg-muted rounded-lg" />
             <div className="space-y-4">
               <div className="h-6 w-3/4 bg-muted rounded" />
               <div className="h-4 w-1/2 bg-muted rounded" />
               <div className="h-20 bg-muted rounded" />
             </div>
-            <div className="h-[300px] bg-muted rounded-lg" />
           </div>
         </div>
       </div>
@@ -104,20 +108,12 @@ export function ProductDetailPage() {
   const images = product.images ?? []
   const mainImage = images[selectedImage] ?? null
   const isInStock = product.stock > 0
-  const price = product.price
-
-  const priceTiers = [
-    { price: `$${price.toFixed(2)}`, qty: '1–50 pcs', highlight: true },
-    { price: `$${(price * 0.92).toFixed(2)}`, qty: '50–500 pcs', highlight: false },
-    { price: `$${(price * 0.80).toFixed(2)}`, qty: '500+ pcs', highlight: false },
-  ]
 
   const attributes = product.attributes ?? {}
-  const specEntries: { label: string; value: string }[] = Object.entries(attributes).map(
+  const allSpecEntries: { label: string; value: string }[] = Object.entries(attributes).map(
     ([k, v]) => ({ label: k.charAt(0).toUpperCase() + k.slice(1), value: String(v) })
   )
-
-
+  const headlineSpecs = allSpecEntries.slice(0, 2)
 
   return (
     <div className="-mx-4 -mt-8">
@@ -144,39 +140,62 @@ export function ProductDetailPage() {
 
       {/* ── Main section ───────────────────────────────────────────── */}
       <div className="max-w-[1180px] mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr_280px] gap-5 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[72px_1fr_374px] gap-5 items-start">
 
-          {/* LEFT: Image gallery */}
-          <div className="flex flex-col gap-2">
-            <div className="bg-[#f6f6f8] border border-[#dce0e5] rounded-[6px] overflow-hidden w-full aspect-square flex items-center justify-center">
+          {/* LEFT: Vertical thumbnails */}
+          <div className="hidden lg:flex flex-col gap-2 w-[72px]">
+            {(images.length > 0 ? images : new Array(1).fill(null)).slice(0, 8).map(
+              (img: string | null, i: number) => (
+                <button
+                  key={i}
+                  onClick={() => setSelectedImage(i)}
+                  className={`bg-white border rounded-md overflow-hidden h-[70px] w-full flex items-center justify-center transition-colors ${
+                    selectedImage === i
+                      ? 'border-[#5261fe]'
+                      : 'border-[#dce0e5] hover:border-[#b6c1ca]'
+                  }`}
+                >
+                  {img ? (
+                    <img
+                      src={img}
+                      alt=""
+                      className="w-full h-full object-cover mix-blend-multiply"
+                    />
+                  ) : (
+                    <Package className="h-5 w-5 text-gray-300" />
+                  )}
+                </button>
+              )
+            )}
+          </div>
+
+          {/* CENTER: Main image */}
+          <div className="flex flex-col gap-3">
+            <div className="bg-[#edf0f2] border border-[#dce0e5] rounded-lg overflow-hidden w-full aspect-[698/540] flex items-center justify-center">
               {mainImage ? (
                 <img
                   src={mainImage}
                   alt={product.name}
-                  className="w-full h-full object-cover mix-blend-multiply"
+                  className="w-full h-full object-contain mix-blend-multiply"
                 />
               ) : (
                 <Package className="h-24 w-24 text-gray-300" />
               )}
             </div>
-            <div className="flex gap-2 flex-wrap">
-              {(images.length > 0 ? images : new Array(6).fill(null)).slice(0, 6).map(
+
+            {/* Mobile thumbnails (horizontal) */}
+            <div className="flex lg:hidden gap-2 overflow-x-auto pb-1">
+              {(images.length > 0 ? images : new Array(1).fill(null)).slice(0, 8).map(
                 (img: string | null, i: number) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`bg-[#f6f6f8] border rounded-[6px] overflow-hidden shrink-0 size-[56px] flex items-center justify-center transition-all ${
-                      selectedImage === i
-                        ? 'border-[#3348ff]'
-                        : 'border-[#dce0e5] hover:border-[#b6c1ca]'
+                    className={`bg-white border rounded-md overflow-hidden shrink-0 size-[70px] flex items-center justify-center transition-colors ${
+                      selectedImage === i ? 'border-[#5261fe]' : 'border-[#dce0e5]'
                     }`}
                   >
                     {img ? (
-                      <img
-                        src={img}
-                        alt=""
-                        className="w-full h-full object-cover mix-blend-multiply"
-                      />
+                      <img src={img} alt="" className="w-full h-full object-cover mix-blend-multiply" />
                     ) : (
                       <Package className="h-5 w-5 text-gray-300" />
                     )}
@@ -186,180 +205,117 @@ export function ProductDetailPage() {
             </div>
           </div>
 
-          {/* CENTER: Product info */}
-          <div className="flex flex-col gap-3">
-            <h1 className="font-medium text-[18px] text-[#14181f] leading-snug">
-              {product.name}
-            </h1>
-
-            {/* Rating row */}
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <div className="flex items-center gap-0.5">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star
-                    key={s}
-                    className={`h-4 w-4 ${
-                      s <= 4
-                        ? 'fill-[#ff9017] text-[#ff9017]'
-                        : 'fill-gray-200 text-gray-200'
-                    }`}
-                  />
-                ))}
-                <span className="ml-1.5 text-[15px] text-[#db6e00] tracking-tight">4.5</span>
-              </div>
-              <span className="text-[#6f7c8e]">•</span>
-              <div className="flex items-center gap-1">
-                <MessageCircle className="h-4 w-4 text-[#6f7c8e]" />
-                <span className="text-[15px] text-[#6f7c8e] tracking-tight">32 reviews</span>
-              </div>
-              <span className="text-[#6f7c8e]">•</span>
-              <div className="flex items-center gap-1">
-                <ShoppingBasket className="h-4 w-4 text-[#6f7c8e]" />
-                <span className="text-[15px] text-[#6f7c8e] tracking-tight">154 orders</span>
-              </div>
-            </div>
-
-            {/* Stock status */}
-            <div className="flex items-center gap-1">
-              {isInStock ? (
-                <>
-                  <CheckCircle className="h-4 w-4 text-[#00a81c]" />
-                  <span className="text-[15px] text-[#00a81c] tracking-tight">In stock</span>
-                </>
-              ) : (
-                <>
-                  <XCircle className="h-4 w-4 text-[#fa3434]" />
-                  <span className="text-[15px] text-[#fa3434] tracking-tight">Out of stock</span>
-                </>
-              )}
-            </div>
-
-            {/* Price tiers */}
-            <div className="bg-[#edf0f2] rounded-[6px] h-[72px] flex overflow-hidden">
-              {priceTiers.map((tier, i) => (
-                <div key={i} className="relative flex-1 flex flex-col justify-center px-4">
-                  {i > 0 && (
-                    <div className="absolute left-0 top-[16px] bottom-[16px] w-px bg-[#dce0e5]" />
-                  )}
-                  <span
-                    className={`font-semibold text-[18px] leading-snug ${
-                      i === 0 ? 'text-[#fa3434]' : 'text-[#1c1c1c]'
-                    }`}
-                  >
-                    {tier.price}
-                  </span>
-                  <span className="text-[13px] text-[#6f7c8e]">{tier.qty}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Spec list */}
+          {/* RIGHT: Product aside */}
+          <div className="flex flex-col gap-5">
+            {/* Title + rating */}
             <div className="flex flex-col gap-3">
-              <div className="flex items-start text-[15px] tracking-tight">
-                <span className="text-[#6f7c8e] w-[100px] sm:w-[160px] shrink-0">Price:</span>
-                <span className="text-[#14181f]">Negotiable</span>
-              </div>
-              <div className="h-px bg-[#dce0e5]" />
-              {specEntries.slice(0, 6).map(({ label, value }) => (
-                <div key={label} className="flex items-start text-[15px] tracking-tight">
-                  <span className="text-[#6f7c8e] w-[100px] sm:w-[160px] shrink-0">{label}:</span>
-                  <span className="text-[#14181f]">{value}</span>
+              <h1 className="font-semibold text-[20px] text-[#14181f] leading-[1.4]">
+                {product.name}
+              </h1>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-0.5">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Star
+                        key={s}
+                        className={`h-4 w-4 ${
+                          s <= 4
+                            ? 'fill-[#ff9017] text-[#ff9017]'
+                            : 'fill-gray-200 text-gray-200'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[15px] text-[#db6e00] tracking-tight">4.5</span>
                 </div>
-              ))}
-              {specEntries.length === 0 && (
-                <>
-                  {[
-                    ['Type', 'N/A'],
-                    ['Material', 'N/A'],
-                    ['Design', 'Modern'],
-                    ['Protection', 'Refund Policy'],
-                    ['Brand', 'N/A'],
-                    ['Warranty', '2 years'],
-                  ].map(([label, value]) => (
-                    <div key={label} className="flex items-start text-[15px] tracking-tight">
-                      <span className="text-[#6f7c8e] w-[100px] sm:w-[160px] shrink-0">{label}:</span>
-                      <span className="text-[#14181f]">{value}</span>
-                    </div>
-                  ))}
-                </>
-              )}
-              <div className="h-px bg-[#dce0e5]" />
+                <span className="size-[6px] rounded-full bg-[#dce0e5]" />
+                <div className="flex items-center gap-1.5">
+                  <ShoppingBasket className="h-4 w-4 text-[#6f7c8e]" />
+                  <span className="text-[15px] text-[#6f7c8e] tracking-tight">154 orders</span>
+                </div>
+              </div>
             </div>
 
-            {/* Prominent Add to Cart CTA */}
-            <div className="flex items-center gap-3 pt-1">
+            {/* Headline info rows — first 2 attributes if available, otherwise omitted */}
+            {headlineSpecs.length > 0 && (
+              <div className="flex flex-col gap-2">
+                {headlineSpecs.map(({ label, value }) => (
+                  <div key={label} className="flex items-start text-[15px] tracking-tight">
+                    <span className="text-[#6f7c8e] w-[120px] shrink-0">{label}:</span>
+                    <span className="text-[#14181f]">{value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="h-px bg-[#dce0e5]" />
+
+            {/* Quantity */}
+            <div className="flex flex-col gap-1.5 w-[135px]">
+              <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
+                Quantity
+              </span>
+              <div className="bg-white border border-[#3348ff] rounded-lg h-10 flex items-center gap-1 p-1">
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="bg-[#e0edff] hover:bg-[#c8deff] transition-colors rounded-md size-8 flex items-center justify-center"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="h-4 w-4 text-[#3348ff]" />
+                </button>
+                <span className="flex-1 text-center text-[15px] font-medium text-[#14181f] tracking-tight">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() =>
+                    setQuantity((q) => (product.stock > 0 ? Math.min(product.stock, q + 1) : q + 1))
+                  }
+                  className="bg-[#e0edff] hover:bg-[#c8deff] transition-colors rounded-md size-8 flex items-center justify-center"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="h-4 w-4 text-[#3348ff]" />
+                </button>
+              </div>
+            </div>
+
+            {/* Price */}
+            <div className="flex flex-col gap-1">
+              <span className="text-[15px] text-[#525e6f] tracking-tight">Price</span>
+              <span className="font-semibold text-[20px] text-[#14181f] leading-[1.4]">
+                ${product.price.toFixed(2)}
+              </span>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-stretch gap-2">
               <button
                 onClick={handleAddToCart}
                 disabled={!isInStock}
-                className="flex-1 h-[48px] bg-[#3348ff] hover:bg-[#2236e0] disabled:opacity-50 transition-colors rounded-[8px] flex items-center justify-center gap-2 shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
+                className="flex-1 h-10 bg-[#3348ff] hover:bg-[#2236e0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg flex items-center justify-center gap-2 px-3 shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
               >
                 <ShoppingCart className="h-5 w-5 text-white" />
-                <span className="text-[16px] font-semibold text-white tracking-tight">
+                <span className="text-[15px] font-medium text-white tracking-tight whitespace-nowrap">
                   {isInStock ? 'Add to cart' : 'Out of stock'}
                 </span>
               </button>
               <button
-                onClick={() => setWishlisted((v) => !v)}
-                className="h-[48px] w-[48px] shrink-0 bg-[#edf0f2] hover:bg-[#e0e4e8] transition-colors rounded-[8px] flex items-center justify-center"
+                disabled={!isInStock}
+                className="flex-1 h-10 bg-[#e0edff] hover:bg-[#c8deff] disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg flex items-center justify-center px-3"
               >
-                <Heart
-                  className={`h-5 w-5 ${wishlisted ? 'fill-red-500 text-red-500' : 'text-[#14181f]'}`}
-                />
+                <span className="text-[15px] font-medium text-[#3348ff] tracking-tight">
+                  Buy now
+                </span>
               </button>
-            </div>
-          </div>
-
-          {/* RIGHT: Seller info card */}
-          <div className="bg-white border border-[#b6c1ca] rounded-[8px] shadow-[0px_3px_3px_rgba(128,128,128,0.12)] p-4 flex flex-col gap-5">
-            {/* Supplier */}
-            <div className="flex items-center gap-3">
-              <div className="bg-[#eaccff] rounded-[8px] size-[48px] flex items-center justify-center shrink-0">
-                <Store className="h-6 w-6 text-[#8b2fc9]" />
-              </div>
-              <div>
-                <p className="text-[15px] text-[#6f7c8e] tracking-tight">Supplier</p>
-                <p className="text-[15px] text-[#14181f] tracking-tight">{sellerDisplayName}</p>
-              </div>
-            </div>
-
-            <div className="h-px bg-[#dce0e5]" />
-
-            {/* Features */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-3">
-                <Truck className="h-5 w-5 text-[#525e6f] shrink-0" />
-                <span className="text-[15px] text-[#525e6f] tracking-tight">Worldwide shipping</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <BadgeCheck className="h-5 w-5 text-[#525e6f] shrink-0" />
-                <span className="text-[15px] text-[#525e6f] tracking-tight">Verified Seller</span>
-              </div>
-            </div>
-
-            {/* Action buttons */}
-            <div className="flex flex-col gap-2">
               <button
                 onClick={() => setWishlisted((v) => !v)}
-                className="bg-[#edf0f2] hover:bg-[#e0e4e8] transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full"
+                className="size-10 shrink-0 bg-white border border-[#dce0e5] hover:bg-[#f6f7f9] transition-colors rounded-lg flex items-center justify-center shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
+                aria-label="Add to wishlist"
               >
                 <Heart
-                  className={`h-4 w-4 ${
+                  className={`h-[18px] w-[18px] ${
                     wishlisted ? 'fill-red-500 text-red-500' : 'text-[#14181f]'
                   }`}
                 />
-                <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
-                  Save for later
-                </span>
-              </button>
-
-              <button
-                onClick={() => navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })}
-                className="bg-[#e0edff] hover:bg-[#c8deff] transition-colors rounded-[8px] h-[40px] flex items-center justify-center gap-2 w-full"
-              >
-                <User className="h-4 w-4 text-[#3348ff]" />
-                <span className="text-[15px] font-medium text-[#3348ff] tracking-tight">
-                  Visit Store
-                </span>
               </button>
             </div>
           </div>
@@ -368,13 +324,120 @@ export function ProductDetailPage() {
       </div>
 
       {/* ── Bottom section ─────────────────────────────────────────── */}
-      <div className="max-w-[1180px] mx-auto px-4 border-t border-[#dce0e5]">
-        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 pt-7 pb-12">
+      <div className="max-w-[1180px] mx-auto px-4 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_374px] gap-5 items-start">
 
-          {/* LEFT: Rating overview */}
-          <div className="lg:mt-[88px]">
-            <div className="bg-white border border-[#dce0e5] rounded-[6px] shadow-[0px_3px_6px_rgba(128,128,128,0.12)] p-5 flex flex-col gap-4">
-              {/* Rating summary */}
+          {/* LEFT: Tabs + description */}
+          <div className="border-t border-[#dce0e5] pt-1">
+            {/* Tab navigation */}
+            <div className="flex border-b border-[#dce0e5]">
+              {TABS.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`text-[15px] px-2.5 py-2.5 transition-colors tracking-tight whitespace-nowrap ${
+                    activeTab === tab
+                      ? 'text-[#3348ff] font-medium border-b-2 border-[#3348ff] -mb-px'
+                      : 'text-[#6f7c8e] hover:text-[#14181f]'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab content */}
+            <div className="pt-6">
+              {activeTab === 'Description' && (
+                <div>
+                  <div className="text-[16px] text-[#14181f] leading-[24px] space-y-3 mb-8">
+                    {product.description ? (
+                      <p>{product.description}</p>
+                    ) : (
+                      <p className="text-[#6f7c8e]">No description provided.</p>
+                    )}
+                  </div>
+
+                  {/* Full attributes table */}
+                  {allSpecEntries.length > 0 && (
+                    <div className="border-t border-[#dce0e5]">
+                      {allSpecEntries.map(({ label, value }) => (
+                        <div
+                          key={label}
+                          className="flex items-start border-t border-[#dce0e5] first:border-t-0"
+                        >
+                          <div className="w-[210px] shrink-0 px-2 py-2">
+                            <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
+                              {label}
+                            </span>
+                          </div>
+                          <div className="flex-1 px-3 py-2">
+                            <span className="text-[15px] text-[#525e6f] tracking-tight">
+                              {value}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'Reviews' && (
+                <div className="text-[15px] text-[#6f7c8e]">No reviews yet.</div>
+              )}
+
+              {activeTab === 'Company' && (
+                <div className="space-y-3">
+                  <p className="text-[15px] text-[#14181f]">
+                    <span className="text-[#6f7c8e]">Store: </span>
+                    <span className="font-semibold">{sellerDisplayName}</span>
+                  </p>
+                  <button
+                    onClick={() =>
+                      navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })
+                    }
+                    className="text-[15px] text-[#3348ff] hover:underline"
+                  >
+                    View all products from this seller →
+                  </button>
+                </div>
+              )}
+
+              {activeTab === 'Usage guide' && (
+                <div className="text-[15px] text-[#6f7c8e]">Usage guide not available.</div>
+              )}
+            </div>
+          </div>
+
+          {/* RIGHT: Seller card + rating card stacked */}
+          <div className="flex flex-col gap-4">
+            {/* Seller card */}
+            <div className="bg-white border border-[#dce0e5] rounded-lg shadow-[0px_1px_2px_rgba(128,128,128,0.12)] p-5 flex flex-col gap-5">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#b3f8eb] rounded-lg size-14 flex items-center justify-center shrink-0">
+                  <Store className="h-8 w-8 text-[#0d9488]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-semibold text-[#3348ff] tracking-tight truncate">
+                    {sellerDisplayName}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() =>
+                  navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })
+                }
+                className="bg-white border border-[#dce0e5] hover:bg-[#f6f7f9] transition-colors rounded-lg h-10 flex items-center justify-center w-full shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
+              >
+                <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
+                  Seller's profile
+                </span>
+              </button>
+            </div>
+
+            {/* Rating overview card */}
+            <div className="bg-white border border-[#dce0e5] rounded-lg shadow-[0px_1px_2px_rgba(128,128,128,0.12)] p-5 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-3">
                   <div className="flex gap-0.5">
@@ -394,7 +457,6 @@ export function ProductDetailPage() {
                 <p className="text-[15px] text-[#6f7c8e] tracking-tight">458 global ratings</p>
               </div>
 
-              {/* Star distribution bars */}
               <div className="flex flex-col gap-2">
                 {RATING_BARS.map(({ star, pct }) => (
                   <div key={star} className="flex items-center gap-2">
@@ -412,102 +474,13 @@ export function ProductDetailPage() {
                 ))}
               </div>
 
+              <button className="bg-white border border-[#dce0e5] hover:bg-[#f6f7f9] transition-colors rounded-lg h-10 flex items-center justify-center gap-2 w-full shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]">
+                <PenLine className="h-4 w-4 text-[#14181f]" />
+                <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
+                  Write a review
+                </span>
+              </button>
             </div>
-          </div>
-
-          {/* RIGHT: Tabs + Detailed info */}
-          <div>
-            {/* Tab navigation */}
-            <div className="flex gap-6 border-b border-[#dce0e5] mb-6 overflow-x-auto">
-              {TABS.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`text-[15px] pb-3 transition-colors tracking-tight whitespace-nowrap shrink-0 ${
-                    activeTab === tab
-                      ? 'text-[#3348ff] font-medium border-b-2 border-[#3348ff] -mb-px'
-                      : 'text-[#6f7c8e] hover:text-[#14181f]'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab content */}
-            {activeTab === 'Description' && (
-              <div>
-                <h2 className="text-[18px] font-semibold text-[#14181f] mb-4">
-                  Detailed information
-                </h2>
-                <div className="text-[16px] text-[#14181f] leading-[24px] space-y-3 mb-8">
-                  {product.description ? (
-                    <p>{product.description}</p>
-                  ) : (
-                    <>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                        cillum dolore eu fugiat nulla pariatur.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                        cillum dolore eu fugiat nulla pariatur.
-                      </p>
-                    </>
-                  )}
-                </div>
-
-                {/* Attributes table */}
-                {specEntries.length > 0 && (
-                  <div className="border-t border-[#dce0e5]">
-                    {specEntries.map(({ label, value }) => (
-                      <div
-                        key={label}
-                        className="flex items-start border-t border-[#dce0e5] first:border-t-0"
-                      >
-                        <div className="w-[210px] shrink-0 px-2 py-2">
-                          <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
-                            {label}
-                          </span>
-                        </div>
-                        <div className="flex-1 px-3 py-2">
-                          <span className="text-[15px] text-[#525e6f] tracking-tight">{value}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {activeTab === 'Reviews' && (
-              <div className="text-[15px] text-[#6f7c8e]">No reviews yet.</div>
-            )}
-
-            {activeTab === 'Seller info' && (
-              <div className="space-y-3">
-                <p className="text-[15px] text-[#14181f]">
-                  <span className="text-[#6f7c8e]">Store: </span>
-                  <span className="font-semibold">{sellerDisplayName}</span>
-                </p>
-                <button
-                  onClick={() => navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })}
-                  className="text-[15px] text-[#3348ff] hover:underline"
-                >
-                  View all products from this seller →
-                </button>
-              </div>
-            )}
-
-            {activeTab === 'Shipping' && (
-              <div className="text-[15px] text-[#6f7c8e]">Shipping details not available.</div>
-            )}
           </div>
 
         </div>
