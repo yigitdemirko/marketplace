@@ -6,9 +6,9 @@ import com.marketplace.payment.api.v1.dto.response.PaymentResponse;
 import com.marketplace.payment.application.service.PaymentService;
 import com.marketplace.payment.domain.model.PaymentStatus;
 import com.marketplace.payment.domain.repository.PaymentRepository;
-import com.marketplace.payment.infrastructure.client.OrderClient;
+import com.marketplace.payment.infrastructure.client.OrderServiceGateway;
 import com.marketplace.payment.infrastructure.client.OrderSummary;
-import com.marketplace.payment.infrastructure.iyzico.IyzicoPaymentService;
+import com.marketplace.payment.infrastructure.iyzico.IyzicoGateway;
 import com.marketplace.payment.infrastructure.messaging.PaymentEventPublisher;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -36,13 +36,13 @@ class PaymentServiceTest {
     private PaymentRepository paymentRepository;
 
     @Mock
-    private IyzicoPaymentService iyzicoPaymentService;
+    private IyzicoGateway iyzicoGateway;
 
     @Mock
     private PaymentEventPublisher eventPublisher;
 
     @Mock
-    private OrderClient orderClient;
+    private OrderServiceGateway orderServiceGateway;
 
     @InjectMocks
     private PaymentService paymentService;
@@ -59,13 +59,13 @@ class PaymentServiceTest {
         ProcessPaymentRequest request = sampleRequest("idem-pay-001");
 
         OrderSummary order = new OrderSummary("order-001", "user-123", "PAYMENT_PENDING", BigDecimal.valueOf(199.98));
-        when(orderClient.getOrder(eq("order-001"), eq("user-123"))).thenReturn(order);
+        when(orderServiceGateway.getOrder(eq("order-001"), eq("user-123"))).thenReturn(order);
 
         Payment mockIyzicoPayment = mock(Payment.class);
         when(mockIyzicoPayment.getStatus()).thenReturn("success");
 
         when(paymentRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
-        when(iyzicoPaymentService.processPayment(anyString(), anyString(), any(), any()))
+        when(iyzicoGateway.processPayment(anyString(), anyString(), any(), any()))
                 .thenReturn(mockIyzicoPayment);
         when(paymentRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
@@ -76,7 +76,7 @@ class PaymentServiceTest {
         assertThat(response.amount()).isEqualByComparingTo(BigDecimal.valueOf(199.98));
 
         ArgumentCaptor<BigDecimal> amountCaptor = ArgumentCaptor.forClass(BigDecimal.class);
-        verify(iyzicoPaymentService).processPayment(eq("order-001"), eq("user-123"), amountCaptor.capture(), any());
+        verify(iyzicoGateway).processPayment(eq("order-001"), eq("user-123"), amountCaptor.capture(), any());
         assertThat(amountCaptor.getValue()).isEqualByComparingTo(BigDecimal.valueOf(199.98));
         verify(eventPublisher).publishPaymentCompleted(any());
     }
@@ -86,13 +86,13 @@ class PaymentServiceTest {
         ProcessPaymentRequest request = sampleRequest("idem-pay-002");
 
         OrderSummary order = new OrderSummary("order-001", "user-123", "PAYMENT_PENDING", BigDecimal.valueOf(99.99));
-        when(orderClient.getOrder(eq("order-001"), eq("user-123"))).thenReturn(order);
+        when(orderServiceGateway.getOrder(eq("order-001"), eq("user-123"))).thenReturn(order);
 
         Payment mockIyzicoPayment = mock(Payment.class);
         when(mockIyzicoPayment.getStatus()).thenReturn("failure");
 
         when(paymentRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
-        when(iyzicoPaymentService.processPayment(anyString(), anyString(), any(), any()))
+        when(iyzicoGateway.processPayment(anyString(), anyString(), any(), any()))
                 .thenReturn(mockIyzicoPayment);
         when(paymentRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
@@ -108,13 +108,13 @@ class PaymentServiceTest {
 
         OrderSummary order = new OrderSummary("order-001", "user-123", "CONFIRMED", BigDecimal.valueOf(99.99));
         when(paymentRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.empty());
-        when(orderClient.getOrder(eq("order-001"), eq("user-123"))).thenReturn(order);
+        when(orderServiceGateway.getOrder(eq("order-001"), eq("user-123"))).thenReturn(order);
 
         assertThatThrownBy(() -> paymentService.processPayment("user-123", request))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Order is not payable");
 
-        verify(iyzicoPaymentService, never()).processPayment(anyString(), anyString(), any(), any());
+        verify(iyzicoGateway, never()).processPayment(anyString(), anyString(), any(), any());
         verify(eventPublisher, never()).publishPaymentCompleted(any());
         verify(eventPublisher, never()).publishPaymentFailed(any());
     }
@@ -134,7 +134,7 @@ class PaymentServiceTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Payment already processed");
 
-        verify(orderClient, never()).getOrder(anyString(), anyString());
+        verify(orderServiceGateway, never()).getOrder(anyString(), anyString());
     }
 
     @Test

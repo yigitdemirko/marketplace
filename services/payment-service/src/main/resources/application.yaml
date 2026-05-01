@@ -46,10 +46,28 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: health,info,prometheus,circuitbreakers,circuitbreakerevents
   endpoint:
     health:
       show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      order:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        permittedNumberOfCallsInHalfOpenState: 3
+      iyzico:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        permittedNumberOfCallsInHalfOpenState: 3
 ---
 management:
   tracing:
