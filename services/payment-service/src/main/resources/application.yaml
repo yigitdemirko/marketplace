@@ -68,6 +68,15 @@ resilience4j:
         waitDurationInOpenState: 30s
         automaticTransitionFromOpenToHalfOpenEnabled: true
         permittedNumberOfCallsInHalfOpenState: 3
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+api:
+  server-url: ${API_SERVER_URL:http://localhost:8080}
 ---
 management:
   tracing:

@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+  <channel>
+    <title>FreshMarket Gıda</title>
+    <link>https://freshmarket.bilbos-shop.com</link>
+    <description>FreshMarket satıcısı için demo ürün beslemesi — TR lokali, TRY fiyatları</description>
+
+    <item>
+      <g:id>FM-001</g:id>
+      <title>Apple</title>
+      <description>Apple, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.2/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-001</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/apple/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>68.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>8</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-002</g:id>
+      <title>Beef Steak</title>
+      <description>Beef Steak, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.5/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-002</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/beef-steak/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>442.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>86</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-003</g:id>
+      <title>Cat Food</title>
+      <description>Cat Food, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.1/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-003</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/cat-food/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>306.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>46</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-004</g:id>
+      <title>Chicken Meat</title>
+      <description>Chicken Meat, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.2/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-004</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/chicken-meat/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/groceries/chicken-meat/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>340.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>97</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-005</g:id>
+      <title>Cooking Oil</title>
+      <description>Cooking Oil, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.8/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-005</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/cooking-oil/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>170.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>10</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-006</g:id>
+      <title>Cucumber</title>
+      <description>Cucumber, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.1/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-006</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/cucumber/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>51.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>84</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-007</g:id>
+      <title>Dog Food</title>
+      <description>Dog Food, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.5/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-007</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/dog-food/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>374.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>71</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-008</g:id>
+      <title>Eggs</title>
+      <description>Eggs, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 2.5/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-008</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/eggs/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>102.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>9</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-009</g:id>
+      <title>Fish Steak</title>
+      <description>Fish Steak, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.8/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-009</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/fish-steak/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>510.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>74</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-010</g:id>
+      <title>Green Bell Pepper</title>
+      <description>Green Bell Pepper, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.2/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-010</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/green-bell-pepper/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>44.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>33</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-011</g:id>
+      <title>Green Chili Pepper</title>
+      <description>Green Chili Pepper, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.7/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-011</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/green-chili-pepper/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>34.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>3</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-012</g:id>
+      <title>Honey Jar</title>
+      <description>Honey Jar, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.0/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-012</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/honey-jar/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>238.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>34</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-013</g:id>
+      <title>Ice Cream</title>
+      <description>Ice Cream, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.4/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-013</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/ice-cream/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/groceries/ice-cream/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>187.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>27</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-014</g:id>
+      <title>Juice</title>
+      <description>Juice, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.9/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-014</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/juice/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>136.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>50</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-015</g:id>
+      <title>Kiwi</title>
+      <description>Kiwi, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.9/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-015</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>85.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>99</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-016</g:id>
+      <title>Lemon</title>
+      <description>Lemon, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.5/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-016</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/lemon/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>27.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>31</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-017</g:id>
+      <title>Milk</title>
+      <description>Milk, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 2.6/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-017</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/milk/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>119.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>27</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-018</g:id>
+      <title>Mulberry</title>
+      <description>Mulberry, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 5.0/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-018</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/mulberry/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>170.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>99</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-019</g:id>
+      <title>Nescafe Coffee</title>
+      <description>Nescafe Coffee, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.8/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-019</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/nescafe-coffee/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>272.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>57</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-020</g:id>
+      <title>Potatoes</title>
+      <description>Potatoes, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.8/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-020</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/potatoes/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>78.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>13</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-021</g:id>
+      <title>Protein Powder</title>
+      <description>Protein Powder, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.2/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-021</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/protein-powder/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>680.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>80</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-022</g:id>
+      <title>Red Onions</title>
+      <description>Red Onions, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.2/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-022</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/red-onions/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>68.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>82</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-023</g:id>
+      <title>Rice</title>
+      <description>Rice, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.2/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-023</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/rice/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>204.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>59</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-024</g:id>
+      <title>Soft Drinks</title>
+      <description>Soft Drinks, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 4.8/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-024</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/soft-drinks/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>68.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>53</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-025</g:id>
+      <title>Strawberry</title>
+      <description>Strawberry, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 3.1/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-025</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/strawberry/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>136.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>46</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-026</g:id>
+      <title>Tissue Paper Box</title>
+      <description>Tissue Paper Box, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 2.7/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-026</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/tissue-paper-box/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/groceries/tissue-paper-box/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>85.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>86</g:quantity>
+    </item>
+
+    <item>
+      <g:id>FM-027</g:id>
+      <title>Water</title>
+      <description>Water, doğal içerikleri ve taze kalitesiyle sağlıklı bir yaşamın parçası. Katkı maddesi içermeyen, besleyici ve lezzetli bir gıda ürünü. Kullanıcı puanı: 5.0/5.</description>
+      <link>https://freshmarket.bilbos-shop.com/p/FM-027</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/groceries/water/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>34.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Food, Beverages &amp; Tobacco</g:google_product_category>
+      <g:quantity>53</g:quantity>
+    </item>
+
+  </channel>
+</rss>

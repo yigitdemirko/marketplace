@@ -66,7 +66,7 @@ export function Navbar() {
           <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center">
             <span className="text-white font-bold text-sm">B</span>
           </div>
-          <span className="font-bold text-[#14181f] text-[16px]">Brandname</span>
+          <span className="font-bold text-[#14181f] text-[16px]">Bilbo's</span>
         </Link>
 
         {/* Desktop search bar */}

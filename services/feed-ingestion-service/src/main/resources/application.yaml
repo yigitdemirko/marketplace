@@ -41,6 +41,9 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
+api:
+  server-url: ${API_SERVER_URL:http://localhost:8080}
+
 ---
 management:
   tracing:

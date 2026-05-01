@@ -107,6 +107,7 @@ springdoc:
         url: /api-docs/search-service
       - name: feed-ingestion-service
         url: /api-docs/feed-ingestion-service
+    server-url: ${API_SERVER_URL:http://localhost:8080}
 
 eureka:
   client:

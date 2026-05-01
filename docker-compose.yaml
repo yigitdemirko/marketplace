@@ -168,6 +168,7 @@ services:
     environment:
       EUREKA_HOST: discovery-server
       FRONTEND_URL: ${FRONTEND_URL}
+      API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -182,6 +183,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       EUREKA_HOST: discovery-server
+      API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
       postgres:
         condition: service_healthy
@@ -208,6 +210,7 @@ services:
       ACCESS_KEY_ID: ${ACCESS_KEY_ID}
       SECRET_ACCESS_KEY: ${SECRET_ACCESS_KEY}
       REGION: ${REGION}
+      API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
       mongodb:
         condition: service_healthy
@@ -226,6 +229,7 @@ services:
       ELASTICSEARCH_HOST: elasticsearch
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -245,6 +249,7 @@ services:
       REDIS_HOST: redis
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
       postgres:
         condition: service_healthy
@@ -268,6 +273,7 @@ services:
       IYZICO_API_KEY: ${IYZICO_API_KEY}
       IYZICO_SECRET_KEY: ${IYZICO_SECRET_KEY}
       IYZICO_BASE_URL: ${IYZICO_BASE_URL}
+      API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
       postgres:
         condition: service_healthy
@@ -301,6 +307,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       EUREKA_HOST: discovery-server
+      API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
       postgres:
         condition: service_healthy

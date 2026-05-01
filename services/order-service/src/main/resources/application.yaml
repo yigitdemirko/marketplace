@@ -69,6 +69,15 @@ resilience4j:
 app:
   outbox:
     poll-interval-ms: 1000
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+api:
+  server-url: ${API_SERVER_URL:http://localhost:8080}
 ---
 management:
   tracing:
