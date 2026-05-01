@@ -13,7 +13,7 @@ export function FlashSalesSection() {
     queryFn: () => productsApi.getAll(0, 5),
   })
 
-  const products = data?.content.slice(0, 5) ?? []
+  const products = data?.content.filter((p) => p.stock > 0).slice(0, 5) ?? []
 
   return (
     <section className="py-5 bg-[#f6f7f9]">

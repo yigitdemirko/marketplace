@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { ShoppingCart, Heart, ChevronDown, Star, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ShoppingCart, ChevronDown, Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { productsApi, type SearchFilters } from '@/api/products'
 import { useCartStore } from '@/store/cartStore'
+import { useCartDrawer } from '@/store/cartDrawerStore'
 import { CATEGORIES, getCategoryLabel } from '@/constants/categories'
 import type { Product } from '@/types'
 
@@ -42,14 +43,14 @@ interface Props {
 
 function SearchProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((state) => state.addItem)
+  const openDrawer = useCartDrawer((s) => s.open)
   const navigate = useNavigate()
-  const [wishlisted, setWishlisted] = useState(false)
   const mainImage = product.images?.[0]
   const isOutOfStock = product.stock === 0
 
   return (
     <div
-      className="bg-white rounded-[12px] cursor-pointer"
+      className="bg-white rounded-[12px] cursor-pointer flex flex-col"
       onClick={() => navigate({ to: '/products/$productId', params: { productId: product.id } })}
     >
       {/* Image area */}
@@ -61,23 +62,11 @@ function SearchProductCard({ product }: { product: Product }) {
             <ShoppingCart className="h-16 w-16 text-[#cbd3db]" />
           </div>
         )}
-        <button
-          aria-label="Toggle wishlist"
-          className="absolute top-2 right-2 w-10 h-10 flex items-center justify-center bg-white/40 rounded-[8px] hover:bg-white/70 transition-colors"
-          onClick={(e) => {
-            e.stopPropagation()
-            setWishlisted((p) => !p)
-          }}
-        >
-          <Heart
-            className={`h-[22px] w-[22px] transition-colors ${wishlisted ? 'fill-[#3348ff] text-[#3348ff]' : 'text-[#6f7c8e]'}`}
-          />
-        </button>
       </div>
 
       {/* Info */}
-      <div className="flex flex-col gap-2 py-3">
-        <p className="text-[15px] text-[#14181f] leading-[1.4] line-clamp-2 tracking-[-0.3px]">
+      <div className="flex flex-col gap-2 py-3 flex-1">
+        <p className="text-[15px] text-[#14181f] leading-[1.4] line-clamp-2 min-h-[42px] tracking-[-0.3px]">
           {product.name}
         </p>
 
@@ -87,7 +76,7 @@ function SearchProductCard({ product }: { product: Product }) {
           <span className="text-[13px] text-[#6f7c8e]">(0 orders)</span>
         </div>
 
-        <p className="text-[15px] font-semibold text-[#14181f]">
+        <p className="text-[15px] font-semibold text-[#14181f] mt-auto">
           ${Number(product.price).toFixed(2)}
         </p>
 
@@ -104,6 +93,7 @@ function SearchProductCard({ product }: { product: Product }) {
               quantity: 1,
               image: mainImage,
             })
+            openDrawer()
           }}
         >
           <ShoppingCart className="h-5 w-5" />
@@ -481,15 +471,17 @@ export function ProductsPage({
             )}
 
             {/* Products grid */}
-            {data && !isLoading && (
+            {data && !isLoading && (() => {
+              const visibleProducts = data.content.filter((p) => p.stock > 0)
+              return (
               <>
-                {data.content.length === 0 ? (
+                {visibleProducts.length === 0 ? (
                   <p className="text-center py-16 text-[#6f7c8e] text-[18px]">
                     No products found for your filters.
                   </p>
                 ) : (
                   <div className="grid grid-cols-3 gap-5">
-                    {data.content.map((product) => (
+                    {visibleProducts.map((product) => (
                       <SearchProductCard key={product.id} product={product} />
                     ))}
                   </div>
@@ -551,7 +543,8 @@ export function ProductsPage({
                   </div>
                 )}
               </>
-            )}
+              )
+            })()}
           </div>
         </div>
       </div>

@@ -21,13 +21,17 @@ export function RecommendedSection() {
           </div>
         )}
 
-        {data && data.content.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {data.content.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+        {data && (() => {
+          const visible = data.content.filter((p) => p.stock > 0)
+          if (visible.length === 0) return null
+          return (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {visible.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )
+        })()}
       </div>
     </section>
   )
