@@ -6,6 +6,7 @@ import com.marketplace.product.api.v1.dto.request.ValidateProductRequest;
 import com.marketplace.product.api.v1.dto.response.BatchCreateFailure;
 import com.marketplace.product.api.v1.dto.response.BatchCreateResponse;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
+import com.marketplace.product.api.v1.dto.response.SellerCategoryResponse;
 import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
 import com.marketplace.product.api.v1.dto.response.ValidatedProductResponse;
 import com.marketplace.product.domain.model.Product;
@@ -75,6 +76,17 @@ public class ProductService {
 
     public Page<ProductResponse> getProductsBySeller(String sellerId, Pageable pageable) {
         return productRepository.findBySellerIdAndActiveTrue(sellerId, pageable).map(this::toResponse);
+    }
+
+    public Page<ProductResponse> getProductsBySellerAndCategory(String sellerId, String categoryId, Pageable pageable) {
+        return productRepository.findBySellerIdAndCategoryIdAndActiveTrue(sellerId, categoryId, pageable)
+                .map(this::toResponse);
+    }
+
+    public List<SellerCategoryResponse> getSellerCategories(String sellerId) {
+        return productRepository.aggregateCategoryCountsBySellerId(sellerId).stream()
+                .map(c -> new SellerCategoryResponse(c.getCategoryId(), c.getCount()))
+                .toList();
     }
 
     public List<ValidatedProductResponse> validateProducts(List<ValidateProductRequest> items) {

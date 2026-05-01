@@ -66,11 +66,17 @@ export const productsApi = {
   getByCategory: (categoryId: string, page = 0, size = 20) =>
     apiClient.get<PageResponse<Product>>(`/api/v1/products/category/${categoryId}?page=${page}&size=${size}`),
 
-  getBySeller: (sellerId: string, page = 0, size = 20) =>
-    apiClient.get<PageResponse<Product>>(`/api/v1/products/seller/${sellerId}?page=${page}&size=${size}`),
+  getBySeller: (sellerId: string, page = 0, size = 20, categoryId?: string) => {
+    const params = new URLSearchParams({ page: String(page), size: String(size) })
+    if (categoryId) params.set('categoryId', categoryId)
+    return apiClient.get<PageResponse<Product>>(`/api/v1/products/seller/${sellerId}?${params}`)
+  },
 
   getSellerStats: (sellerId: string) =>
     apiClient.get<SellerStats>(`/api/v1/products/seller/${sellerId}/stats`),
+
+  getSellerCategories: (sellerId: string) =>
+    apiClient.get<Array<{ categoryId: string; count: number }>>(`/api/v1/products/seller/${sellerId}/categories`),
 
   search: (query: string, page = 0, size = 20) =>
     apiClient.get<PageResponse<Product>>(`/api/v1/search?query=${query}&page=${page}&size=${size}`),
