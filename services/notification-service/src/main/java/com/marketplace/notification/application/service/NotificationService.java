@@ -13,33 +13,33 @@ public class NotificationService {
 
     private final JavaMailSender mailSender;
 
-    public void sendOrderCreatedNotification(String orderId, String userId) {
+    public void sendOrderCreatedNotification(String recipientEmail, String orderId) {
         sendEmail(
-                "user@marketplace.com",
+                recipientEmail,
                 "Order Created - " + orderId,
                 "Your order " + orderId + " has been created successfully and is being processed."
         );
     }
 
-    public void sendPaymentCompletedNotification(String orderId, String userId) {
+    public void sendPaymentCompletedNotification(String recipientEmail, String orderId) {
         sendEmail(
-                "user@marketplace.com",
+                recipientEmail,
                 "Payment Confirmed - " + orderId,
                 "Payment for your order " + orderId + " has been completed successfully."
         );
     }
 
-    public void sendPaymentFailedNotification(String orderId, String userId, String reason) {
+    public void sendPaymentFailedNotification(String recipientEmail, String orderId, String reason) {
         sendEmail(
-                "user@marketplace.com",
+                recipientEmail,
                 "Payment Failed - " + orderId,
                 "Payment for your order " + orderId + " has failed. Reason: " + reason
         );
     }
 
-    public void sendOrderCancelledNotification(String orderId, String userId) {
+    public void sendOrderCancelledNotification(String recipientEmail, String orderId) {
         sendEmail(
-                "user@marketplace.com",
+                recipientEmail,
                 "Order Cancelled - " + orderId,
                 "Your order " + orderId + " has been cancelled."
         );
