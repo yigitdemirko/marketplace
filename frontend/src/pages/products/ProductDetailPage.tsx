@@ -15,7 +15,8 @@ import {
 import { productsApi } from '@/api/products'
 import { usersApi } from '@/api/users'
 import { useCartStore } from '@/store/cartStore'
-import { useCartDrawer } from '@/store/cartDrawerStore'
+import { useAddedToCartFeedback } from '@/lib/cartFeedback'
+import { getCategoryLabel } from '@/constants/categories'
 
 const TABS = ['Description', 'Reviews', 'Company', 'Usage guide']
 
@@ -31,7 +32,7 @@ export function ProductDetailPage() {
   const { productId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addItem = useCartStore((state) => state.addItem)
-  const openDrawer = useCartDrawer((s) => s.open)
+  const notifyAdded = useAddedToCartFeedback()
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState('Description')
   const [wishlisted, setWishlisted] = useState(false)
@@ -61,7 +62,7 @@ export function ProductDetailPage() {
       quantity,
       image: product.images?.[0],
     })
-    openDrawer()
+    notifyAdded()
   }
 
   if (isLoading) {
@@ -130,7 +131,7 @@ export function ProductDetailPage() {
             </button>
             <span>/</span>
             <span className="hover:text-[#14181f] transition-colors cursor-pointer">
-              {product.categoryId ?? 'Products'}
+              {product.categoryId ? getCategoryLabel(product.categoryId) : 'Products'}
             </span>
             <span>/</span>
             <span className="text-[#14181f] truncate max-w-xs">{product.name}</span>
@@ -240,9 +241,9 @@ export function ProductDetailPage() {
             {headlineSpecs.length > 0 && (
               <div className="flex flex-col gap-2">
                 {headlineSpecs.map(({ label, value }) => (
-                  <div key={label} className="flex items-start text-[15px] tracking-tight">
-                    <span className="text-[#6f7c8e] w-[120px] shrink-0">{label}:</span>
-                    <span className="text-[#14181f]">{value}</span>
+                  <div key={label} className="flex items-start gap-4 text-[15px] tracking-tight">
+                    <span className="text-[#6f7c8e] shrink-0 whitespace-nowrap">{label}:</span>
+                    <span className="text-[#14181f] min-w-0 break-words">{value}</span>
                   </div>
                 ))}
               </div>
@@ -296,14 +297,6 @@ export function ProductDetailPage() {
                 <ShoppingCart className="h-5 w-5 text-white" />
                 <span className="text-[15px] font-medium text-white tracking-tight whitespace-nowrap">
                   {isInStock ? 'Add to cart' : 'Out of stock'}
-                </span>
-              </button>
-              <button
-                disabled={!isInStock}
-                className="flex-1 h-10 bg-[#e0edff] hover:bg-[#c8deff] disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg flex items-center justify-center px-3"
-              >
-                <span className="text-[15px] font-medium text-[#3348ff] tracking-tight">
-                  Buy now
                 </span>
               </button>
               <button

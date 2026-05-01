@@ -2,6 +2,7 @@ import { Outlet, useRouterState } from '@tanstack/react-router'
 import { Navbar } from './Navbar'
 import { SellerLayout } from './SellerLayout'
 import { CartDrawer } from '@/components/shared/CartDrawer'
+import { Toast } from '@/components/shared/Toast'
 
 const FULLSCREEN_ROUTES = ['/login', '/register', '/seller/login', '/seller/register']
 const NO_CONTAINER_ROUTES = ['/', '/checkout', '/search']
@@ -25,6 +26,7 @@ export function Layout() {
       <div className="min-h-screen bg-background">
         <Navbar />
         <CartDrawer />
+        <Toast />
         <Outlet />
       </div>
     )
@@ -34,6 +36,7 @@ export function Layout() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <CartDrawer />
+      <Toast />
       <main className="container mx-auto px-4 py-8">
         <Outlet />
       </main>
