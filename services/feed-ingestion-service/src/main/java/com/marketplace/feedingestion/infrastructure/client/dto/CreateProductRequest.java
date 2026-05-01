@@ -10,6 +10,7 @@ public record CreateProductRequest(
         BigDecimal price,
         Integer stock,
         Category category,
+        String locale,
         String brand,
         List<String> images,
         Map<String, String> attributes

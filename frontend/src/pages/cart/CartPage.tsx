@@ -14,6 +14,8 @@ import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
 import { productsApi } from '@/api/products'
 import type { Product } from '@/types'
+import { useLocaleStore } from '@/store/localeStore'
+import { formatPrice } from '@/lib/formatPrice'
 
 const DELIVERY_COST = 25
 const TAX_RATE = 0.08
@@ -54,7 +56,7 @@ function SuggestedProductCard({
           <span className="text-[12px] text-[#6f7c8e] ml-1">(132 reviews)</span>
         </div>
 
-        <p className="text-[15px] font-semibold text-[#14181f]">{product.price.toFixed(2)} USD</p>
+        <p className="text-[15px] font-semibold text-[#14181f]">{formatPrice(product.price, product.locale ?? 'EN')}</p>
 
         <button
           onClick={onAddToCart}
@@ -71,6 +73,7 @@ function SuggestedProductCard({
 export function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, addItem, totalAmount, totalItems } = useCartStore()
   const { isAuthenticated } = useAuthStore()
+  const { locale } = useLocaleStore()
   const navigate = useNavigate()
   const [wishlistedItems, setWishlistedItems] = useState<Set<string>>(new Set())
 
@@ -150,7 +153,7 @@ export function CartPage() {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-[15px] font-semibold text-[#14181f] leading-snug truncate">{item.name}</p>
-                    <p className="text-[13px] text-[#6f7c8e] mt-0.5">Price: {item.price.toFixed(2)} USD / per item</p>
+                    <p className="text-[13px] text-[#6f7c8e] mt-0.5">Price: {formatPrice(item.price, item.locale ?? 'EN')} / per item</p>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
@@ -182,7 +185,7 @@ export function CartPage() {
                   </div>
 
                   <div className="shrink-0 min-w-0 sm:min-w-[96px] text-right ml-auto sm:ml-0">
-                    <p className="text-[15px] font-semibold text-[#14181f]">{(item.price * item.quantity).toFixed(2)} USD</p>
+                    <p className="text-[15px] font-semibold text-[#14181f]">{formatPrice(item.price * item.quantity, item.locale ?? 'EN')}</p>
                   </div>
                 </div>
               </div>
@@ -201,15 +204,15 @@ export function CartPage() {
             <div className="space-y-3 mb-4">
               <div className="flex justify-between text-[15px]">
                 <span className="text-[#6f7c8e]">{totalItems()} items:</span>
-                <span className="text-[#14181f] font-medium">${subtotal.toFixed(2)}</span>
+                <span className="text-[#14181f] font-medium">{formatPrice(subtotal, locale)}</span>
               </div>
               <div className="flex justify-between text-[15px]">
                 <span className="text-[#6f7c8e]">Delivery cost:</span>
-                <span className="text-[#14181f] font-medium">${DELIVERY_COST}</span>
+                <span className="text-[#14181f] font-medium">{formatPrice(DELIVERY_COST, locale)}</span>
               </div>
               <div className="flex justify-between text-[15px]">
                 <span className="text-[#6f7c8e]">Tax:</span>
-                <span className="text-[#14181f] font-medium">${tax.toFixed(2)}</span>
+                <span className="text-[#14181f] font-medium">{formatPrice(tax, locale)}</span>
               </div>
             </div>
 
@@ -217,7 +220,7 @@ export function CartPage() {
 
             <div className="flex justify-between items-center mb-5">
               <span className="text-[16px] font-semibold text-[#14181f]">Total:</span>
-              <span className="text-[22px] font-bold text-[#14181f]">${total.toFixed(2)}</span>
+              <span className="text-[22px] font-bold text-[#14181f]">{formatPrice(total, locale)}</span>
             </div>
 
             <button

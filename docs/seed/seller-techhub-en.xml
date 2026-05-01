@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
   <channel>
-    <title>TechHub Elektronik</title>
+    <title>TechHub Electronics — EN</title>
     <link>https://techhub.demo.marketplace.com</link>
-    <description>TechHub satıcısı için demo ürün beslemesi — TR lokali, TRY fiyatları</description>
+    <description>Demo seed feed for TechHub seller — EN locale, USD prices</description>
 
     <item>
-      <g:id>TH-001</g:id>
-      <title>iPhone 15 Pro 256GB Titanyum Mavi</title>
-      <description>A17 Pro çipli, 6.1 inç Super Retina XDR ekranlı, ProMotion teknolojili ve 48MP ana kameralı Apple iPhone 15 Pro. Titanyum çerçeve, USB-C bağlantı noktası.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-001</link>
+      <g:id>TH-EN-001</g:id>
+      <title>iPhone 15 Pro 256GB Titanium Blue</title>
+      <description>Apple iPhone 15 Pro with A17 Pro chip, 6.1-inch Super Retina XDR display, ProMotion technology, and 48MP main camera. Titanium frame, USB-C.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-001</link>
       <g:image_link>https://picsum.photos/seed/TH-001/600/600</g:image_link>
       <g:additional_image_link>https://picsum.photos/seed/TH-001a/600/600</g:additional_image_link>
       <g:availability>in stock</g:availability>
-      <g:price>65999.00 TRY</g:price>
+      <g:price>1799.00 USD</g:price>
       <g:brand>Apple</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Communications &gt; Phones</g:google_product_category>
@@ -21,13 +21,13 @@
     </item>
 
     <item>
-      <g:id>TH-002</g:id>
+      <g:id>TH-EN-002</g:id>
       <title>Samsung Galaxy S24 Ultra 512GB</title>
-      <description>Snapdragon 8 Gen 3 işlemcili, 6.8 inç QHD+ Dynamic AMOLED ekranlı, 200MP kameralı ve dahili S Pen'li Galaxy S24 Ultra.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-002</link>
+      <description>Galaxy S24 Ultra with Snapdragon 8 Gen 3, 6.8-inch QHD+ Dynamic AMOLED, 200MP camera, and built-in S Pen.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-002</link>
       <g:image_link>https://picsum.photos/seed/TH-002/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>54999.00 TRY</g:price>
+      <g:price>1399.00 USD</g:price>
       <g:brand>Samsung</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Communications &gt; Phones</g:google_product_category>
@@ -35,13 +35,13 @@
     </item>
 
     <item>
-      <g:id>TH-003</g:id>
+      <g:id>TH-EN-003</g:id>
       <title>Xiaomi Redmi Note 13 Pro 256GB</title>
-      <description>200MP kamera, 120Hz AMOLED ekran ve 67W hızlı şarj özellikli orta segment akıllı telefon.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-003</link>
+      <description>Mid-range smartphone with 200MP camera, 120Hz AMOLED display, and 67W fast charging.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-003</link>
       <g:image_link>https://picsum.photos/seed/TH-003/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>14999.00 TRY</g:price>
+      <g:price>429.00 USD</g:price>
       <g:brand>Xiaomi</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Communications &gt; Phones</g:google_product_category>
@@ -49,13 +49,13 @@
     </item>
 
     <item>
-      <g:id>TH-004</g:id>
-      <title>iPad Air 5. Nesil 64GB Wi-Fi</title>
-      <description>M1 çipli, 10.9 inç Liquid Retina ekranlı, Touch ID sensörlü ve uzun pil ömürlü Apple iPad Air.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-004</link>
+      <g:id>TH-EN-004</g:id>
+      <title>iPad Air 5th Generation 64GB Wi-Fi</title>
+      <description>Apple iPad Air with M1 chip, 10.9-inch Liquid Retina display, Touch ID, and all-day battery.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-004</link>
       <g:image_link>https://picsum.photos/seed/TH-004/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>28999.00 TRY</g:price>
+      <g:price>829.00 USD</g:price>
       <g:brand>Apple</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Computers &gt; Tablets</g:google_product_category>
@@ -63,13 +63,13 @@
     </item>
 
     <item>
-      <g:id>TH-005</g:id>
+      <g:id>TH-EN-005</g:id>
       <title>Samsung Galaxy Tab S9 128GB</title>
-      <description>Snapdragon 8 Gen 2 işlemcili, 11 inç Dynamic AMOLED 2X ekranlı ve dahili S Pen'li üst segment Android tablet.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-005</link>
+      <description>Premium Android tablet with Snapdragon 8 Gen 2, 11-inch Dynamic AMOLED 2X, and S Pen included.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-005</link>
       <g:image_link>https://picsum.photos/seed/TH-005/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>32999.00 TRY</g:price>
+      <g:price>949.00 USD</g:price>
       <g:brand>Samsung</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Computers &gt; Tablets</g:google_product_category>
@@ -77,14 +77,14 @@
     </item>
 
     <item>
-      <g:id>TH-006</g:id>
-      <title>MacBook Air M2 13 inç 256GB</title>
-      <description>M2 çipli, 13.6 inç Liquid Retina ekranlı, 8GB birleşik bellekli ve 18 saate kadar pil ömürlü Apple MacBook Air.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-006</link>
+      <g:id>TH-EN-006</g:id>
+      <title>MacBook Air M2 13-inch 256GB</title>
+      <description>Apple MacBook Air with M2 chip, 13.6-inch Liquid Retina display, 8GB unified memory, and 18-hour battery life.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-006</link>
       <g:image_link>https://picsum.photos/seed/TH-006/600/600</g:image_link>
       <g:additional_image_link>https://picsum.photos/seed/TH-006a/600/600</g:additional_image_link>
       <g:availability>in stock</g:availability>
-      <g:price>49999.00 TRY</g:price>
+      <g:price>1299.00 USD</g:price>
       <g:brand>Apple</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Computers &gt; Laptops</g:google_product_category>
@@ -92,13 +92,13 @@
     </item>
 
     <item>
-      <g:id>TH-007</g:id>
-      <title>Lenovo ThinkPad X1 Carbon 11. Nesil</title>
-      <description>Intel Core i7-1365U işlemcili, 16GB RAM, 512GB SSD ve 14 inç 2.8K OLED ekranlı iş ultrabook'u.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-007</link>
+      <g:id>TH-EN-007</g:id>
+      <title>Lenovo ThinkPad X1 Carbon Gen 11</title>
+      <description>Business ultrabook with Intel Core i7-1365U, 16GB RAM, 512GB SSD, and 14-inch 2.8K OLED display.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-007</link>
       <g:image_link>https://picsum.photos/seed/TH-007/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>67999.00 TRY</g:price>
+      <g:price>1899.00 USD</g:price>
       <g:brand>Lenovo</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Computers &gt; Laptops</g:google_product_category>
@@ -106,13 +106,13 @@
     </item>
 
     <item>
-      <g:id>TH-008</g:id>
-      <title>ASUS ROG Strix G15 Oyun Laptopu</title>
-      <description>AMD Ryzen 7 işlemcili, RTX 4060 ekran kartlı, 16GB DDR5 RAM, 1TB NVMe SSD ve 165Hz ekranlı oyun laptopu.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-008</link>
+      <g:id>TH-EN-008</g:id>
+      <title>ASUS ROG Strix G15 Gaming Laptop</title>
+      <description>Gaming laptop with AMD Ryzen 7, RTX 4060, 16GB DDR5 RAM, 1TB NVMe SSD, and 165Hz display.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-008</link>
       <g:image_link>https://picsum.photos/seed/TH-008/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>42999.00 TRY</g:price>
+      <g:price>1199.00 USD</g:price>
       <g:brand>ASUS</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Computers &gt; Laptops</g:google_product_category>
@@ -120,13 +120,13 @@
     </item>
 
     <item>
-      <g:id>TH-009</g:id>
-      <title>Dell XPS 15 Dokunmatik Laptop</title>
-      <description>Intel Core i9 işlemcili, 32GB RAM, 1TB SSD, NVIDIA RTX 4070 ekran kartlı ve InfinityEdge ekranlı üst segment içerik üretici laptopu.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-009</link>
+      <g:id>TH-EN-009</g:id>
+      <title>Dell XPS 15 Touch Laptop</title>
+      <description>Premium creator laptop with Intel Core i9, 32GB RAM, 1TB SSD, NVIDIA RTX 4070, and InfinityEdge display.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-009</link>
       <g:image_link>https://picsum.photos/seed/TH-009/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>79999.00 TRY</g:price>
+      <g:price>2199.00 USD</g:price>
       <g:brand>Dell</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Computers &gt; Laptops</g:google_product_category>
@@ -134,14 +134,14 @@
     </item>
 
     <item>
-      <g:id>TH-010</g:id>
-      <title>Sony WH-1000XM5 Kablosuz Kulaklık</title>
-      <description>Sektörün en iyi gürültü engelleme teknolojisi, 30 saatlik pil ömrü ve kristal netliğinde eller serbest arama.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-010</link>
+      <g:id>TH-EN-010</g:id>
+      <title>Sony WH-1000XM5 Wireless Headphones</title>
+      <description>Industry-leading noise cancellation, 30-hour battery life, and crystal-clear hands-free calling.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-010</link>
       <g:image_link>https://picsum.photos/seed/TH-010/600/600</g:image_link>
       <g:additional_image_link>https://picsum.photos/seed/TH-010a/600/600</g:additional_image_link>
       <g:availability>in stock</g:availability>
-      <g:price>12999.00 TRY</g:price>
+      <g:price>349.00 USD</g:price>
       <g:brand>Sony</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Audio &gt; Headphones</g:google_product_category>
@@ -149,13 +149,13 @@
     </item>
 
     <item>
-      <g:id>TH-011</g:id>
-      <title>Apple AirPods Pro 2. Nesil</title>
-      <description>Aktif Gürültü Engelleme, Uyarlanabilir Şeffaflık, Kişiselleştirilmiş Uzamsal Ses ve USB-C MagSafe şarj kutusu.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-011</link>
+      <g:id>TH-EN-011</g:id>
+      <title>Apple AirPods Pro 2nd Generation</title>
+      <description>Active Noise Cancellation, Adaptive Transparency, Personalized Spatial Audio, and USB-C MagSafe case.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-011</link>
       <g:image_link>https://picsum.photos/seed/TH-011/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>8499.00 TRY</g:price>
+      <g:price>249.00 USD</g:price>
       <g:brand>Apple</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Audio &gt; Headphones</g:google_product_category>
@@ -163,13 +163,13 @@
     </item>
 
     <item>
-      <g:id>TH-012</g:id>
-      <title>JBL Charge 5 Taşınabilir Bluetooth Hoparlör</title>
-      <description>Güçlü Pro Ses kalitesi, IP67 su geçirmezlik sertifikası, 20 saatlik pil ömrü ve dahili güç bankası.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-012</link>
+      <g:id>TH-EN-012</g:id>
+      <title>JBL Charge 5 Portable Bluetooth Speaker</title>
+      <description>Powerful Pro Sound, IP67 waterproof, 20-hour battery, and built-in power bank.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-012</link>
       <g:image_link>https://picsum.photos/seed/TH-012/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>4499.00 TRY</g:price>
+      <g:price>129.00 USD</g:price>
       <g:brand>JBL</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Audio &gt; Speakers</g:google_product_category>
@@ -177,13 +177,13 @@
     </item>
 
     <item>
-      <g:id>TH-013</g:id>
-      <title>Bose QuietComfort 45 Kulaklık</title>
-      <description>Ödüllü gürültü engelleme teknolojisi, premium ses kalitesi ve hızlı şarj destekli 24 saatlik pil ömrü.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-013</link>
+      <g:id>TH-EN-013</g:id>
+      <title>Bose QuietComfort 45 Headphones</title>
+      <description>Acclaimed noise cancellation, premium audio, and 24-hour battery life with quick charge.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-013</link>
       <g:image_link>https://picsum.photos/seed/TH-013/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>11999.00 TRY</g:price>
+      <g:price>329.00 USD</g:price>
       <g:brand>Bose</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Audio &gt; Headphones</g:google_product_category>
@@ -191,13 +191,13 @@
     </item>
 
     <item>
-      <g:id>TH-014</g:id>
-      <title>Canon EOS R6 Mark II Aynasız Fotoğraf Makinesi</title>
-      <description>24.2MP tam çerçeve sensör, saniyede 40 kare sürekli çekim, 4K 60p video kaydı ve çift kart yuvası.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-014</link>
+      <g:id>TH-EN-014</g:id>
+      <title>Canon EOS R6 Mark II Mirrorless Camera</title>
+      <description>24.2MP full-frame sensor, 40fps continuous shooting, 4K 60p video, and dual card slots.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-014</link>
       <g:image_link>https://picsum.photos/seed/TH-014/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>89999.00 TRY</g:price>
+      <g:price>2499.00 USD</g:price>
       <g:brand>Canon</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Cameras &amp; Optics &gt; Cameras</g:google_product_category>
@@ -205,13 +205,13 @@
     </item>
 
     <item>
-      <g:id>TH-015</g:id>
-      <title>Sony Alpha A7 IV Tam Çerçeve Fotoğraf Makinesi</title>
-      <description>33MP Exmor R sensör, 4K 60p video, gerçek zamanlı takip otomatik odaklama ve 759 noktalı AF sistemi.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-015</link>
+      <g:id>TH-EN-015</g:id>
+      <title>Sony Alpha A7 IV Full-Frame Camera</title>
+      <description>33MP Exmor R sensor, 4K 60p video, real-time tracking AF, and 759-point AF system.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-015</link>
       <g:image_link>https://picsum.photos/seed/TH-015/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>99999.00 TRY</g:price>
+      <g:price>2799.00 USD</g:price>
       <g:brand>Sony</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Cameras &amp; Optics &gt; Cameras</g:google_product_category>
@@ -219,14 +219,14 @@
     </item>
 
     <item>
-      <g:id>TH-016</g:id>
-      <title>PlayStation 5 Slim Konsol</title>
-      <description>1TB SSD, DualSense kablosuz kontrolcü ve 4K UHD Blu-ray sürücülü Sony PS5 Slim konsol.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-016</link>
+      <g:id>TH-EN-016</g:id>
+      <title>PlayStation 5 Slim Console</title>
+      <description>Sony PS5 Slim with 1TB SSD, DualSense wireless controller, and 4K UHD Blu-ray drive.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-016</link>
       <g:image_link>https://picsum.photos/seed/TH-016/600/600</g:image_link>
       <g:additional_image_link>https://picsum.photos/seed/TH-016a/600/600</g:additional_image_link>
       <g:availability>in stock</g:availability>
-      <g:price>24999.00 TRY</g:price>
+      <g:price>449.00 USD</g:price>
       <g:brand>Sony</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Video Game Consoles</g:google_product_category>
@@ -234,13 +234,13 @@
     </item>
 
     <item>
-      <g:id>TH-017</g:id>
-      <title>Xbox Series X 1TB Konsol</title>
-      <description>Şimdiye kadarki en güçlü Xbox, 120 FPS'ye kadar 4K oyun deneyimi ve birden fazla oyunda Hızlı Devam etme özelliği.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-017</link>
+      <g:id>TH-EN-017</g:id>
+      <title>Xbox Series X 1TB Console</title>
+      <description>Most powerful Xbox ever, 4K gaming up to 120fps, and Quick Resume on multiple games.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-017</link>
       <g:image_link>https://picsum.photos/seed/TH-017/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>22999.00 TRY</g:price>
+      <g:price>499.00 USD</g:price>
       <g:brand>Microsoft</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Video Game Consoles</g:google_product_category>
@@ -248,13 +248,13 @@
     </item>
 
     <item>
-      <g:id>TH-018</g:id>
+      <g:id>TH-EN-018</g:id>
       <title>Nintendo Switch OLED Model</title>
-      <description>7 inç canlı OLED ekran, geliştirilmiş ses sistemi, geniş ayarlanabilir stand ve 64GB dahili depolama.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-018</link>
+      <description>7-inch vibrant OLED screen, enhanced audio, wide adjustable stand, and 64GB internal storage.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-018</link>
       <g:image_link>https://picsum.photos/seed/TH-018/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>14999.00 TRY</g:price>
+      <g:price>349.00 USD</g:price>
       <g:brand>Nintendo</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Video Game Consoles</g:google_product_category>
@@ -262,13 +262,13 @@
     </item>
 
     <item>
-      <g:id>TH-019</g:id>
+      <g:id>TH-EN-019</g:id>
       <title>Apple Watch Series 9 GPS 45mm</title>
-      <description>S9 çip, Her Zaman Açık Retina ekran, kan oksijeni ölçümü, EKG ve çift dokunuş hareketi desteği.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-019</link>
+      <description>S9 chip, Always-On Retina display, blood oxygen, ECG, and double-tap gesture.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-019</link>
       <g:image_link>https://picsum.photos/seed/TH-019/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>18999.00 TRY</g:price>
+      <g:price>429.00 USD</g:price>
       <g:brand>Apple</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Wearable Technology</g:google_product_category>
@@ -276,13 +276,13 @@
     </item>
 
     <item>
-      <g:id>TH-020</g:id>
-      <title>Garmin Fenix 7 Safir Solar</title>
-      <description>Güneş enerjisiyle şarj, gelişmiş antrenman metrikleri ve sağlam safir kristalli çok sporlu GPS akıllı saat.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-020</link>
+      <g:id>TH-EN-020</g:id>
+      <title>Garmin Fenix 7 Sapphire Solar</title>
+      <description>Multisport GPS smartwatch with solar charging, advanced training metrics, and rugged sapphire crystal.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-020</link>
       <g:image_link>https://picsum.photos/seed/TH-020/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>21999.00 TRY</g:price>
+      <g:price>599.00 USD</g:price>
       <g:brand>Garmin</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Sports &gt; Watches</g:google_product_category>
@@ -290,13 +290,13 @@
     </item>
 
     <item>
-      <g:id>TH-021</g:id>
+      <g:id>TH-EN-021</g:id>
       <title>Samsung Galaxy Watch 6 Classic 47mm</title>
-      <description>Dönen çerçeve, gelişmiş sağlık takibi, 60 saatlik pil ömrü ve Samsung tarafından Wear OS desteği.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-021</link>
+      <description>Rotating bezel, advanced health tracking, 60-hour battery, and Wear OS by Samsung.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-021</link>
       <g:image_link>https://picsum.photos/seed/TH-021/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>9999.00 TRY</g:price>
+      <g:price>279.00 USD</g:price>
       <g:brand>Samsung</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Watches</g:google_product_category>
@@ -304,13 +304,13 @@
     </item>
 
     <item>
-      <g:id>TH-022</g:id>
+      <g:id>TH-EN-022</g:id>
       <title>DJI Mini 3 Pro Drone</title>
-      <description>249g altında katlanabilir hafif drone, 4K HDR video, 34 dakika uçuş süresi ve engel algılama sensörleri.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-022</link>
+      <description>Lightweight folding drone under 249g, 4K HDR video, 34-minute flight time, and obstacle sensing.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-022</link>
       <g:image_link>https://picsum.photos/seed/TH-022/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>19999.00 TRY</g:price>
+      <g:price>559.00 USD</g:price>
       <g:brand>DJI</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Cameras &amp; Optics</g:google_product_category>
@@ -318,13 +318,13 @@
     </item>
 
     <item>
-      <g:id>TH-023</g:id>
-      <title>Anker PowerCore 20000mAh Taşınabilir Şarj Cihazı</title>
-      <description>20000mAh kapasiteli, 22.5W PD hızlı şarj destekli, USB-C giriş/çıkışlı ve düşük akım modu özellikli.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-023</link>
+      <g:id>TH-EN-023</g:id>
+      <title>Anker PowerCore 20000mAh Power Bank</title>
+      <description>20000mAh capacity, 22.5W PD fast charging, USB-C input/output, and trickle charge mode.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-023</link>
       <g:image_link>https://picsum.photos/seed/TH-023/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>1299.00 TRY</g:price>
+      <g:price>35.00 USD</g:price>
       <g:brand>Anker</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Electronic Accessories</g:google_product_category>
@@ -332,13 +332,13 @@
     </item>
 
     <item>
-      <g:id>TH-024</g:id>
-      <title>Logitech MX Master 3S Kablosuz Mouse</title>
-      <description>8K DPI sensör, sessiz tıklama mekanizması, USB-C şarj ve MagSpeed manyetik kaydırma tekerleği ile üretkenlik odaklı tasarım.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-024</link>
+      <g:id>TH-EN-024</g:id>
+      <title>Logitech MX Master 3S Wireless Mouse</title>
+      <description>8K DPI sensor, quiet clicks, USB-C charging, and Magspeed scrolling for productivity.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-024</link>
       <g:image_link>https://picsum.photos/seed/TH-024/600/600</g:image_link>
       <g:availability>in stock</g:availability>
-      <g:price>3499.00 TRY</g:price>
+      <g:price>99.00 USD</g:price>
       <g:brand>Logitech</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Computers &gt; Computer Accessories</g:google_product_category>
@@ -346,13 +346,13 @@
     </item>
 
     <item>
-      <g:id>TH-025</g:id>
-      <title>Razer BlackWidow V4 Pro Mekanik Klavye</title>
-      <description>Razer Green dokunsal anahtarlar, doubleshot ABS tuş kapakları, Chroma RGB aydınlatma ve komut kadranı.</description>
-      <link>https://techhub.demo.marketplace.com/p/TH-025</link>
+      <g:id>TH-EN-025</g:id>
+      <title>Razer BlackWidow V4 Pro Mechanical Keyboard</title>
+      <description>Razer Green tactile switches, doubleshot ABS keycaps, Chroma RGB, and command dial.</description>
+      <link>https://techhub.demo.marketplace.com/p/TH-EN-025</link>
       <g:image_link>https://picsum.photos/seed/TH-025/600/600</g:image_link>
       <g:availability>out of stock</g:availability>
-      <g:price>4999.00 TRY</g:price>
+      <g:price>139.00 USD</g:price>
       <g:brand>Razer</g:brand>
       <g:condition>new</g:condition>
       <g:google_product_category>Electronics &gt; Computers &gt; Computer Accessories</g:google_product_category>

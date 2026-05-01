@@ -5,6 +5,7 @@ import { ArrowLeft, X, Plus, Upload, Loader2 } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
 import { CATEGORIES } from '@/constants/categories'
+import type { ProductLocale } from '@/types'
 
 export function SellerProductFormPage() {
   const { productId } = useParams({ strict: false })
@@ -23,6 +24,7 @@ export function SellerProductFormPage() {
     tags: '',
     active: true,
   })
+  const [locale, setLocale] = useState<ProductLocale>('EN')
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [newImageUrl, setNewImageUrl] = useState('')
   const [unit, setUnit] = useState('Pcs')
@@ -48,6 +50,7 @@ export function SellerProductFormPage() {
         tags: product.attributes?.tags ?? '',
         active: product.active,
       })
+      setLocale((product.locale as ProductLocale | undefined) ?? 'EN')
       setImageUrls(product.images ?? [])
       setUnit((product.attributes?.unit as string | undefined) ?? 'Pcs')
     }
@@ -86,6 +89,7 @@ export function SellerProductFormPage() {
     price: parseFloat(form.price),
     stock: parseInt(form.stock),
     category: form.categoryId,
+    locale,
     brand: form.brand || undefined,
     images: imageUrls,
     active: form.active,
@@ -282,19 +286,42 @@ export function SellerProductFormPage() {
           </div>
         </div>
 
-        {/* Price */}
-        <div className="sm:w-1/2">
-          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Price</label>
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="0.00"
-            value={form.price}
-            onChange={(e) => setForm({ ...form, price: e.target.value })}
-            required
-            className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
-          />
+        {/* Locale + Price */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:w-full">
+          <div>
+            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Catalog locale</label>
+            <div className="flex h-10 border border-[#dce0e5] rounded-[6px] overflow-hidden">
+              {(['EN', 'TR'] as ProductLocale[]).map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  onClick={() => setLocale(l)}
+                  className={`flex-1 text-[14px] font-medium transition-colors ${
+                    locale === l
+                      ? 'bg-[#3348ff] text-white'
+                      : 'bg-white text-[#6f7c8e] hover:bg-[#f6f7f9]'
+                  }`}
+                >
+                  {l === 'EN' ? '🇬🇧 EN ($)' : '🇹🇷 TR (₺)'}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">
+              Price <span className="text-[#6f7c8e] font-normal">({locale === 'TR' ? '₺ TRY' : '$ USD'})</span>
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              value={form.price}
+              onChange={(e) => setForm({ ...form, price: e.target.value })}
+              required
+              className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
+            />
+          </div>
         </div>
 
         {/* Active toggle */}

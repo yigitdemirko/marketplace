@@ -9,6 +9,8 @@ import { useAuthStore } from '@/store/authStore'
 import { ordersApi } from '@/api/orders'
 import { paymentsApi } from '@/api/payments'
 import { cn } from '@/lib/utils'
+import { useLocaleStore } from '@/store/localeStore'
+import { formatPrice } from '@/lib/formatPrice'
 
 type CheckoutStep = 'shipping' | 'payment'
 type DeliveryMethod = 'pickup' | 'standard' | 'express'
@@ -60,6 +62,7 @@ function OrderSummary({
   deliveryCost: number
 }) {
   const { items } = useCartStore()
+  const { locale } = useLocaleStore()
   const discount: number = 0
   const tax = subtotal * TAX_RATE
   const total = subtotal + deliveryCost + tax - discount
@@ -84,7 +87,7 @@ function OrderSummary({
             </figcaption>
             <div className="text-right">
               <span className="text-sm text-[#6f7c8e] whitespace-nowrap">
-                ${(item.price * item.quantity).toFixed(2)}
+                {formatPrice(item.price * item.quantity, item.locale ?? 'EN')}
               </span>
             </div>
           </figure>
@@ -112,19 +115,19 @@ function OrderSummary({
       <ul className="flex flex-col gap-2">
         <li className="flex items-center justify-between text-sm text-[#14181f]">
           <span>Subtotal:</span>
-          <span>${subtotal.toFixed(2)}</span>
+          <span>{formatPrice(subtotal, locale)}</span>
         </li>
         <li className="flex items-center justify-between text-sm text-[#14181f]">
           <span>Discount:</span>
-          <span>{discount === 0 ? '$0.00' : `- $${discount.toFixed(2)}`}</span>
+          <span>{discount === 0 ? formatPrice(0, locale) : `- ${formatPrice(discount, locale)}`}</span>
         </li>
         <li className="flex items-center justify-between text-sm text-[#14181f]">
           <span>Delivery cost:</span>
-          <span>${deliveryCost.toFixed(2)}</span>
+          <span>{formatPrice(deliveryCost, locale)}</span>
         </li>
         <li className="flex items-center justify-between text-sm text-[#14181f]">
           <span>Tax:</span>
-          <span>${tax.toFixed(2)}</span>
+          <span>{formatPrice(tax, locale)}</span>
         </li>
       </ul>
 
@@ -132,7 +135,7 @@ function OrderSummary({
 
       <dl className="flex items-center justify-between">
         <dt className="text-[#14181f]">Total:</dt>
-        <dd className="font-semibold text-xl text-[#14181f]">${total.toFixed(2)}</dd>
+        <dd className="font-semibold text-xl text-[#14181f]">{formatPrice(total, locale)}</dd>
       </dl>
     </div>
   )
@@ -141,6 +144,7 @@ function OrderSummary({
 export function CheckoutPage() {
   const { items, totalAmount, clearCart } = useCartStore()
   const { user, isAuthenticated } = useAuthStore()
+  const { locale } = useLocaleStore()
   const navigate = useNavigate()
 
   const [step, setStep] = useState<CheckoutStep>('shipping')
@@ -459,7 +463,7 @@ export function CheckoutPage() {
                       Back to shipping
                     </Button>
                     <Button type="submit" disabled={loading} className="gap-2 bg-primary text-white hover:bg-primary/90">
-                      {loading ? 'Processing…' : `Pay $${total.toFixed(2)}`}
+                      {loading ? 'Processing…' : `Pay ${formatPrice(total, locale)}`}
                       {!loading && <ChevronRight className="size-4" />}
                     </Button>
                   </div>

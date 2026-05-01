@@ -35,6 +35,7 @@ public class SearchService {
             String brand,
             BigDecimal priceMin,
             BigDecimal priceMax,
+            String locale,
             Pageable pageable) {
 
         BoolQuery.Builder bool = new BoolQuery.Builder();
@@ -58,6 +59,10 @@ public class SearchService {
             if (priceMax != null) nb.lte(priceMax.doubleValue());
             NumberRangeQuery numberRange = nb.build();
             bool.filter(RangeQuery.of(r -> r.number(numberRange))._toQuery());
+        }
+
+        if (locale != null && !locale.isBlank()) {
+            bool.filter(TermQuery.of(t -> t.field("locale").value(locale))._toQuery());
         }
 
         NativeQuery nativeQuery = NativeQuery.builder()
@@ -108,7 +113,8 @@ public class SearchService {
                 doc.isActive(),
                 doc.getImages(),
                 doc.getAttributes(),
-                doc.getBrand()
+                doc.getBrand(),
+                doc.getLocale()
         );
     }
 }

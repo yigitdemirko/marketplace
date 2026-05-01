@@ -13,6 +13,7 @@ public record ProductResponse(
         BigDecimal price,
         Integer stock,
         String categoryId,
+        String locale,
         String brand,
         List<String> images,
         Map<String, String> attributes,

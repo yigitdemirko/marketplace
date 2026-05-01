@@ -6,6 +6,8 @@ export interface User {
     storeName?: string
   }
   
+  export type ProductLocale = 'EN' | 'TR'
+
   export interface Product {
     id: string
     sellerId: string
@@ -14,6 +16,7 @@ export interface User {
     price: number
     stock: number
     categoryId: string
+    locale?: ProductLocale
     brand?: string
     images: string[]
     attributes: Record<string, string>
@@ -100,4 +103,5 @@ export interface User {
     price: number
     quantity: number
     image?: string
+    locale?: ProductLocale
   }

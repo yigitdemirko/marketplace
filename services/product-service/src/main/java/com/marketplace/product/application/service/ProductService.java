@@ -7,6 +7,7 @@ import com.marketplace.product.api.v1.dto.response.BatchCreateFailure;
 import com.marketplace.product.api.v1.dto.response.BatchCreateResponse;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.api.v1.dto.response.SellerCategoryResponse;
+import com.marketplace.product.api.v1.dto.response.SellerLocaleResponse;
 import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
 import com.marketplace.product.api.v1.dto.response.ValidatedProductResponse;
 import com.marketplace.product.domain.model.Product;
@@ -66,7 +67,10 @@ public class ProductService {
         );
     }
 
-    public Page<ProductResponse> getAllProducts(Pageable pageable) {
+    public Page<ProductResponse> getAllProducts(String locale, Pageable pageable) {
+        if (locale != null && !locale.isBlank()) {
+            return productRepository.findByLocaleAndActiveTrue(locale, pageable).map(this::toResponse);
+        }
         return productRepository.findByActiveTrue(pageable).map(this::toResponse);
     }
 
@@ -86,6 +90,17 @@ public class ProductService {
     public List<SellerCategoryResponse> getSellerCategories(String sellerId) {
         return productRepository.aggregateCategoryCountsBySellerId(sellerId).stream()
                 .map(c -> new SellerCategoryResponse(c.getCategoryId(), c.getCount()))
+                .toList();
+    }
+
+    public Page<ProductResponse> getProductsBySellerAndLocale(String sellerId, String locale, Pageable pageable) {
+        return productRepository.findBySellerIdAndLocaleAndActiveTrue(sellerId, locale, pageable)
+                .map(this::toResponse);
+    }
+
+    public List<SellerLocaleResponse> getSellerLocales(String sellerId) {
+        return productRepository.aggregateLocaleCountsBySellerId(sellerId).stream()
+                .map(l -> new SellerLocaleResponse(l.getLocale(), l.getCount()))
                 .toList();
     }
 
@@ -143,6 +158,7 @@ public class ProductService {
         if (request.price() != null) product.setPrice(request.price());
         if (request.stock() != null) product.setStock(request.stock());
         if (request.category() != null) product.setCategoryId(request.category().name());
+        if (request.locale() != null) product.setLocale(request.locale().name());
         if (request.brand() != null) product.setBrand(request.brand());
         if (request.images() != null) product.setImages(request.images());
         if (request.attributes() != null) product.setAttributes(request.attributes());
@@ -174,6 +190,7 @@ public class ProductService {
                 request.stock(),
                 request.category().name()
         );
+        product.setLocale(request.locale().name());
         product.setBrand(request.brand());
         if (request.images() != null) product.setImages(request.images());
         if (request.attributes() != null) product.setAttributes(request.attributes());
@@ -189,6 +206,7 @@ public class ProductService {
                 product.getPrice(),
                 product.getStock(),
                 product.getCategoryId(),
+                product.getLocale(),
                 product.getBrand(),
                 product.getImages(),
                 product.getAttributes(),

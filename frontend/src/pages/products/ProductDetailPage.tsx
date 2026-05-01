@@ -17,6 +17,7 @@ import { usersApi } from '@/api/users'
 import { useCartStore } from '@/store/cartStore'
 import { useAddedToCartFeedback } from '@/lib/cartFeedback'
 import { getCategoryLabel } from '@/constants/categories'
+import { formatPrice } from '@/lib/formatPrice'
 
 const TABS = ['Description', 'Reviews', 'Company', 'Usage guide']
 
@@ -61,6 +62,7 @@ export function ProductDetailPage() {
       price: product.price,
       quantity,
       image: product.images?.[0],
+      locale: product.locale,
     })
     notifyAdded()
   }
@@ -283,7 +285,7 @@ export function ProductDetailPage() {
             <div className="flex flex-col gap-1">
               <span className="text-[15px] text-[#525e6f] tracking-tight">Price</span>
               <span className="font-semibold text-[20px] text-[#14181f] leading-[1.4]">
-                ${product.price.toFixed(2)}
+                {formatPrice(product.price, product.locale ?? 'EN')}
               </span>
             </div>
 

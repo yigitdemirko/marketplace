@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useCartStore } from '@/store/cartStore'
 import { useAddedToCartFeedback } from '@/lib/cartFeedback'
 import type { Product } from '@/types'
+import { formatPrice } from '@/lib/formatPrice'
 
 interface ProductCardProps {
   product: Product
@@ -31,6 +32,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
       price: product.price,
       quantity: 1,
       image: mainImage,
+      locale: product.locale,
     })
     notifyAdded()
   }
@@ -68,7 +70,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
         </div>
 
         <p className="text-[15px] font-semibold text-[#14181f] mt-auto">
-          ${Number(product.price).toFixed(2)}
+          {formatPrice(product.price, product.locale ?? 'EN')}
         </p>
 
         <button

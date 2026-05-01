@@ -6,8 +6,10 @@ import { productsApi } from '@/api/products'
 import { feedsApi } from '@/api/feeds'
 import { useAuthStore } from '@/store/authStore'
 import { getCategoryLabel } from '@/constants/categories'
+import { formatPrice } from '@/lib/formatPrice'
 import { CatalogStatsCards } from './components/CatalogStatsCards'
 import { ImportXmlModal } from './components/ImportXmlModal'
+import type { ProductLocale } from '@/types'
 
 export function SellerCatalogPage() {
   const { user } = useAuthStore()
@@ -15,6 +17,7 @@ export function SellerCatalogPage() {
   const queryClient = useQueryClient()
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [localeFilter, setLocaleFilter] = useState<ProductLocale | 'all'>('all')
   const [importOpen, setImportOpen] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [page, setPage] = useState(0)
@@ -55,9 +58,11 @@ export function SellerCatalogPage() {
         (p.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
       const matchesStatus =
         statusFilter === 'all' || (statusFilter === 'active' ? p.active : !p.active)
-      return matchesSearch && matchesStatus
+      const matchesLocale =
+        localeFilter === 'all' || p.locale === localeFilter
+      return matchesSearch && matchesStatus && matchesLocale
     })
-  }, [productsQuery.data, searchQuery, statusFilter])
+  }, [productsQuery.data, searchQuery, statusFilter, localeFilter])
 
   const totalPages = productsQuery.data?.totalPages ?? 1
   const totalElements = productsQuery.data?.totalElements ?? 0
@@ -78,6 +83,23 @@ export function SellerCatalogPage() {
   return (
     <div>
       <CatalogStatsCards stats={statsQuery.data} isLoading={statsQuery.isLoading} />
+
+      {/* Locale tabs */}
+      <div className="flex items-center gap-1 mb-4">
+        {(['all', 'EN', 'TR'] as const).map((l) => (
+          <button
+            key={l}
+            onClick={() => { setLocaleFilter(l); setPage(0) }}
+            className={`h-8 px-4 text-[13px] font-medium rounded-[6px] transition-colors ${
+              localeFilter === l
+                ? 'bg-[#3348ff] text-white'
+                : 'bg-white border border-[#dce0e5] text-[#6f7c8e] hover:bg-[#f6f7f9]'
+            }`}
+          >
+            {l === 'all' ? 'All' : l === 'EN' ? '🇬🇧 EN' : '🇹🇷 TR'}
+          </button>
+        ))}
+      </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-5">
         <input
@@ -195,7 +217,7 @@ export function SellerCatalogPage() {
                 </td>
                 <td className="px-4 py-3 text-[#14181f]">{product.brand ?? '—'}</td>
                 <td className="px-4 py-3 text-[#6f7c8e]">{getCategoryLabel(product.categoryId)}</td>
-                <td className="px-4 py-3 text-right font-medium text-[#14181f]">${product.price.toFixed(2)}</td>
+                <td className="px-4 py-3 text-right font-medium text-[#14181f]">{formatPrice(product.price, product.locale ?? 'EN')}</td>
                 <td className="px-4 py-3 text-right text-[#6f7c8e]">{product.stock}</td>
                 <td className="px-4 py-3">
                   {product.active ? (

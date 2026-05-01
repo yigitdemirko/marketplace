@@ -4,6 +4,8 @@ import { ClipboardList, ShoppingBag, UserCircle, LogOut, Menu, X } from 'lucide-
 import { useAuthStore } from '@/store/authStore'
 import { useCartStore } from '@/store/cartStore'
 import { useCartDrawer } from '@/store/cartDrawerStore'
+import { useLocaleStore } from '@/store/localeStore'
+import { useQueryClient } from '@tanstack/react-query'
 
 const CART_DRAWER_EXCLUDED = ['/cart', '/checkout']
 
@@ -14,9 +16,19 @@ export function Navbar() {
   const navigate = useNavigate()
   const { location } = useRouterState()
   const openDrawer = useCartDrawer((s) => s.open)
+  const { locale, setLocale } = useLocaleStore()
+  const queryClient = useQueryClient()
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All category')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const handleLocaleToggle = () => {
+    const next = locale === 'EN' ? 'TR' : 'EN'
+    setLocale(next)
+    queryClient.invalidateQueries({ queryKey: ['products'] })
+    queryClient.invalidateQueries({ queryKey: ['search'] })
+    queryClient.invalidateQueries({ queryKey: ['seller-store-products'] })
+  }
 
   const handleCartClick = (e: React.MouseEvent) => {
     const isExcluded =
@@ -91,6 +103,16 @@ export function Navbar() {
 
         {/* Desktop right icons */}
         <div className="hidden lg:flex items-center gap-5 ml-auto shrink-0">
+          {/* Locale switcher */}
+          <button
+            onClick={handleLocaleToggle}
+            className="flex flex-col items-center gap-0.5 cursor-pointer"
+            title={locale === 'EN' ? 'Switch to Turkish catalog' : 'Switch to English catalog'}
+          >
+            <span className="text-[16px] leading-none">{locale === 'EN' ? '🇬🇧' : '🇹🇷'}</span>
+            <span className="text-[11px] text-[#6f7c8e]">{locale}</span>
+          </button>
+
           {isBuyer ? (
             <Link to="/orders" className="flex flex-col items-center gap-0.5 cursor-pointer">
               <ClipboardList className="h-5 w-5 text-[#6f7c8e]" />

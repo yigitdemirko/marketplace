@@ -15,5 +15,6 @@ public record SearchResponse(
         boolean active,
         List<String> images,
         Map<String, String> attributes,
-        String brand
+        String brand,
+        String locale
 ) {}

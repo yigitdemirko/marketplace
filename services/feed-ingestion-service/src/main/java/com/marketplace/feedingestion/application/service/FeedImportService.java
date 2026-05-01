@@ -49,7 +49,7 @@ public class FeedImportService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public ImportJobResponse importFeed(String sellerId, MultipartFile file) {
+    public ImportJobResponse importFeed(String sellerId, MultipartFile file, String locale) {
         ImportJob job = ImportJob.create(sellerId, file.getOriginalFilename());
         importJobRepository.save(job);
 
@@ -68,7 +68,7 @@ public class FeedImportService {
         for (int i = 0; i < items.size(); i++) {
             GoogleMerchantItem item = items.get(i);
             try {
-                CreateProductRequest request = mapToRequest(item);
+                CreateProductRequest request = mapToRequest(item, locale);
                 validRequests.add(request);
                 validIndexes.add(i);
             } catch (Exception ex) {
@@ -123,7 +123,7 @@ public class FeedImportService {
         return toResponse(job, deserializeErrors(job.getErrors()));
     }
 
-    private CreateProductRequest mapToRequest(GoogleMerchantItem item) {
+    private CreateProductRequest mapToRequest(GoogleMerchantItem item, String locale) {
         if (item.getId() == null || item.getId().isBlank()) {
             throw new IllegalArgumentException("Missing g:id");
         }
@@ -165,6 +165,7 @@ public class FeedImportService {
                 price,
                 stock,
                 category,
+                locale,
                 item.getBrand(),
                 images,
                 attributes

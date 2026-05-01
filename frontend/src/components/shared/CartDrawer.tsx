@@ -3,10 +3,13 @@ import { useNavigate } from '@tanstack/react-router'
 import { X, Trash2, Minus, Plus } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { useCartDrawer } from '@/store/cartDrawerStore'
+import { useLocaleStore } from '@/store/localeStore'
+import { formatPrice } from '@/lib/formatPrice'
 
 export function CartDrawer() {
   const { isOpen, close } = useCartDrawer()
   const { items, removeItem, updateQuantity, totalAmount, totalItems } = useCartStore()
+  const { locale } = useLocaleStore()
   const navigate = useNavigate()
 
   // lock body scroll when open
@@ -146,7 +149,7 @@ export function CartDrawer() {
 
                       {/* Line price */}
                       <span className="text-[15px] text-[#525e6f] tracking-[-0.3px] whitespace-nowrap">
-                        ${item.price.toFixed(2)} × {item.quantity}
+                        {formatPrice(item.price, item.locale ?? 'EN')} × {item.quantity}
                       </span>
                     </div>
                   </div>
@@ -156,7 +159,7 @@ export function CartDrawer() {
               {/* Subtotal */}
               <div className="flex items-center justify-between text-[18px] font-medium text-[#14181f]">
                 <span>Subtotal:</span>
-                <span>${totalAmount().toFixed(2)}</span>
+                <span>{formatPrice(totalAmount(), locale)}</span>
               </div>
             </div>
           )}
