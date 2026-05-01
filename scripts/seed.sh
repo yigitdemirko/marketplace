@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 # Seeds demo data into the marketplace stack.
 #
-#   - 2 sellers (TechHub, HomeStyle)
+#   - 8 sellers (TechHub, SportZone, KitchenPlus, FreshMarket,
+#                FashionX, WatchBox, BeautyShop, HomeStyle)
 #   - 5 buyers
-#   - 50 products imported via the feed-ingestion service
+#   - 194 products imported via the feed-ingestion service (dummyjson-based XMLs)
 #   - ~5-10 orders placed across buyers
+#
+# NOTE: Legacy picsum-based XMLs (seller-techhub.xml, seller-homestyle.xml,
+#       seller-techhub-en.xml, seller-homestyle-en.xml) are intentionally
+#       skipped. They are kept in docs/seed for reference only.
 #
 # Idempotent at the user level: re-running falls back to login when an account
 # already exists. Re-running, however, will create duplicate products and orders
@@ -16,7 +21,7 @@
 
 set -euo pipefail
 
-GATEWAY="${GATEWAY_URL:-http://localhost:8080}"
+GATEWAY="${GATEWAY_URL:-https://api.bilbos-shop.com}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SEED_DIR="$ROOT/docs/seed"
 PASSWORD="Demo1234"
@@ -54,8 +59,19 @@ require_cmd curl
 require_cmd jq
 require_cmd uuidgen
 
-[ -f "$SEED_DIR/seller-techhub.xml" ]   || fail "Missing $SEED_DIR/seller-techhub.xml"
-[ -f "$SEED_DIR/seller-homestyle.xml" ] || fail "Missing $SEED_DIR/seller-homestyle.xml"
+FEED_FILES=(
+  seller-techhub-dj.xml
+  seller-sportzone.xml
+  seller-kitchenplus.xml
+  seller-freshmarket.xml
+  seller-fashionx.xml
+  seller-watchbox.xml
+  seller-beautyshop.xml
+  seller-homestyle-dj.xml
+)
+for f in "${FEED_FILES[@]}"; do
+  [ -f "$SEED_DIR/$f" ] || fail "Missing $SEED_DIR/$f"
+done
 
 # --- wait for gateway -----------------------------------------------------
 log "Waiting for gateway at $GATEWAY ..."
@@ -100,23 +116,41 @@ register_or_login_buyer() {
 }
 
 # --- sellers --------------------------------------------------------------
-log "Creating sellers ..."
-SELLER1_ID=$(register_or_login_seller "techhub@demo.marketplace.com" "TechHub Electronics" "1112223334" "+905551112233")
-ok "Seller: TechHub Electronics ($SELLER1_ID)"
+# Format: "email|storeName|taxNumber|phone|feedFile"
+SELLER_DEFS=(
+  "info@techhub.com|TechHub Elektronik|1112223334|+905551112233|seller-techhub-dj.xml"
+  "info@sportzone.com|SportZone Spor ve Araclar|2223334445|+905552223344|seller-sportzone.xml"
+  "info@kitchenplus.com|KitchenPlus Mutfak|3334445556|+905553334455|seller-kitchenplus.xml"
+  "info@freshmarket.com|FreshMarket Gida|4445556667|+905554445566|seller-freshmarket.xml"
+  "info@fashionx.com|FashionX Moda|5556667778|+905555556677|seller-fashionx.xml"
+  "info@watchbox.com|WatchBox Saat ve Aksesuar|6667778889|+905556667788|seller-watchbox.xml"
+  "info@beautyshop.com|BeautyShop Guzellik|7778889990|+905557778899|seller-beautyshop.xml"
+  "info@homestyle.com|HomeStyle Ev ve Dekorasyon|9998887776|+905558889900|seller-homestyle-dj.xml"
+)
 
-SELLER2_ID=$(register_or_login_seller "homestyle@demo.marketplace.com" "HomeStyle Marketplace" "9998887776" "+905554445566")
-ok "Seller: HomeStyle Marketplace ($SELLER2_ID)"
+log "Creating sellers ..."
+SELLER_IDS=()
+SELLER_EMAILS=()
+SELLER_FEEDS=()
+for entry in "${SELLER_DEFS[@]}"; do
+  IFS='|' read -r email store tax phone feed <<< "$entry"
+  sid=$(register_or_login_seller "$email" "$store" "$tax" "$phone")
+  SELLER_IDS+=("$sid")
+  SELLER_EMAILS+=("$email")
+  SELLER_FEEDS+=("$feed")
+  ok "Seller: $store ($sid)"
+done
 
 # --- buyers ---------------------------------------------------------------
 log "Creating buyers ..."
 BUYER_IDS=()
 BUYER_EMAILS=()
 BUYERS=(
-  "ahmet@demo.marketplace.com|Ahmet|Yilmaz"
-  "ayse@demo.marketplace.com|Ayse|Kara"
-  "mehmet@demo.marketplace.com|Mehmet|Demir"
-  "elif@demo.marketplace.com|Elif|Sahin"
-  "can@demo.marketplace.com|Can|Ozturk"
+  "ahmet.yilmaz@gmail.com|Ahmet|Yilmaz"
+  "ayse.kara@gmail.com|Ayse|Kara"
+  "mehmet.demir@hotmail.com|Mehmet|Demir"
+  "elif.sahin@gmail.com|Elif|Sahin"
+  "can.ozturk@yahoo.com|Can|Ozturk"
 )
 for entry in "${BUYERS[@]}"; do
   IFS='|' read -r email first last <<< "$entry"
@@ -139,8 +173,9 @@ import_feed() {
   ok "$label: $s products imported, $f failed"
 }
 
-import_feed "TechHub"   "$SEED_DIR/seller-techhub.xml"   "$SELLER1_ID"
-import_feed "HomeStyle" "$SEED_DIR/seller-homestyle.xml" "$SELLER2_ID"
+for i in "${!SELLER_IDS[@]}"; do
+  import_feed "${SELLER_EMAILS[$i]%%@*}" "$SEED_DIR/${SELLER_FEEDS[$i]}" "${SELLER_IDS[$i]}"
+done
 
 # --- orders ---------------------------------------------------------------
 log "Fetching product catalog ..."
@@ -229,8 +264,9 @@ echo
 ok "Seed complete."
 echo
 echo "  Sellers (password: $PASSWORD):"
-echo "    techhub@demo.marketplace.com"
-echo "    homestyle@demo.marketplace.com"
+for email in "${SELLER_EMAILS[@]}"; do
+  echo "    $email"
+done
 echo
 echo "  Buyers (password: $PASSWORD):"
 for entry in "${BUYERS[@]}"; do

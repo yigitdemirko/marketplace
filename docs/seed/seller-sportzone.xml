@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+  <channel>
+    <title>SportZone Spor &amp; Araçlar</title>
+    <link>https://sportzone.bilbos-shop.com</link>
+    <description>SportZone satıcısı için demo ürün beslemesi — TR lokali, TRY fiyatları</description>
+
+    <item>
+      <g:id>SZ-001</g:id>
+      <title>Generic Motorcycle</title>
+      <description>Generic Motors marka Generic Motorcycle, güçlü motoru ve dinamik tasarımıyla yol performansının sembolü. Her türlü arazi koşuluna uygun, güvenli ve konforlu bir sürüş deneyimi sunar. Kullanıcı puanı: 4.9/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-001</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/motorcycle/generic-motorcycle/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/motorcycle/generic-motorcycle/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>136000.00 TRY</g:price>
+      <g:brand>Generic Motors</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Motorcycles</g:google_product_category>
+      <g:quantity>34</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-002</g:id>
+      <title>Kawasaki Z800</title>
+      <description>Kawasaki marka Kawasaki Z800, güçlü motoru ve dinamik tasarımıyla yol performansının sembolü. Her türlü arazi koşuluna uygun, güvenli ve konforlu bir sürüş deneyimi sunar. Kullanıcı puanı: 4.0/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-002</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/motorcycle/kawasaki-z800/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/motorcycle/kawasaki-z800/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>306000.00 TRY</g:price>
+      <g:brand>Kawasaki</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Motorcycles</g:google_product_category>
+      <g:quantity>52</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-003</g:id>
+      <title>MotoGP CI.H1</title>
+      <description>MotoGP marka MotoGP CI.H1, güçlü motoru ve dinamik tasarımıyla yol performansının sembolü. Her türlü arazi koşuluna uygun, güvenli ve konforlu bir sürüş deneyimi sunar. Kullanıcı puanı: 3.0/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-003</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/motorcycle/motogp-ci.h1/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/motorcycle/motogp-ci.h1/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>510000.00 TRY</g:price>
+      <g:brand>MotoGP</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Motorcycles</g:google_product_category>
+      <g:quantity>10</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-004</g:id>
+      <title>Scooter Motorcycle</title>
+      <description>ScootMaster marka Scooter Motorcycle, güçlü motoru ve dinamik tasarımıyla yol performansının sembolü. Her türlü arazi koşuluna uygun, güvenli ve konforlu bir sürüş deneyimi sunar. Kullanıcı puanı: 2.5/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-004</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/motorcycle/scooter-motorcycle/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/motorcycle/scooter-motorcycle/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>102000.00 TRY</g:price>
+      <g:brand>ScootMaster</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Motorcycles</g:google_product_category>
+      <g:quantity>84</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-005</g:id>
+      <title>Sportbike Motorcycle</title>
+      <description>SpeedMaster marka Sportbike Motorcycle, güçlü motoru ve dinamik tasarımıyla yol performansının sembolü. Her türlü arazi koşuluna uygun, güvenli ve konforlu bir sürüş deneyimi sunar. Kullanıcı puanı: 3.9/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-005</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/motorcycle/sportbike-motorcycle/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/motorcycle/sportbike-motorcycle/2.webp</g:additional_image_link>
+      <g:availability>out of stock</g:availability>
+      <g:price>255000.00 TRY</g:price>
+      <g:brand>SpeedMaster</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Motorcycles</g:google_product_category>
+    </item>
+
+    <item>
+      <g:id>SZ-006</g:id>
+      <title>American Football</title>
+      <description>American Football, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.9/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-006</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/american-football/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>680.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>53</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-007</g:id>
+      <title>Baseball Ball</title>
+      <description>Baseball Ball, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 2.6/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-007</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/baseball-ball/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>306.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>100</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-008</g:id>
+      <title>Baseball Glove</title>
+      <description>Baseball Glove, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.0/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-008</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/baseball-glove/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/sports-accessories/baseball-glove/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>850.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>22</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-009</g:id>
+      <title>Basketball</title>
+      <description>Basketball, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.7/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-009</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/basketball/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>510.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>75</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-010</g:id>
+      <title>Basketball Rim</title>
+      <description>Basketball Rim, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.6/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-010</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/basketball-rim/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1360.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>43</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-011</g:id>
+      <title>Cricket Ball</title>
+      <description>Cricket Ball, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 3.5/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-011</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/cricket-ball/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>442.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>30</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-012</g:id>
+      <title>Cricket Bat</title>
+      <description>Cricket Bat, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 3.2/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-012</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/cricket-bat/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1020.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>98</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-013</g:id>
+      <title>Cricket Helmet</title>
+      <description>Cricket Helmet, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.7/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-013</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/cricket-helmet/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/sports-accessories/cricket-helmet/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1530.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>10</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-014</g:id>
+      <title>Cricket Wicket</title>
+      <description>Cricket Wicket, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.7/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-014</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/cricket-wicket/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1020.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>25</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-015</g:id>
+      <title>Feather Shuttlecock</title>
+      <description>Feather Shuttlecock, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 2.9/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-015</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/feather-shuttlecock/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>204.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>95</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-016</g:id>
+      <title>Football</title>
+      <description>Football, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 3.3/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-016</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/football/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>612.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>96</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-017</g:id>
+      <title>Golf Ball</title>
+      <description>Golf Ball, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.3/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-017</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/golf-ball/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>340.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>84</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-018</g:id>
+      <title>Iron Golf</title>
+      <description>Iron Golf, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.4/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-018</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/iron-golf/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1700.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>90</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-019</g:id>
+      <title>Metal Baseball Bat</title>
+      <description>Metal Baseball Bat, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.7/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-019</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/metal-baseball-bat/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1020.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>16</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-020</g:id>
+      <title>Tennis Ball</title>
+      <description>Tennis Ball, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.1/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-020</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/tennis-ball/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>238.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>28</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-021</g:id>
+      <title>Tennis Racket</title>
+      <description>Tennis Racket, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 4.0/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-021</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/tennis-racket/thumbnail.webp</g:image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1700.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+      <g:quantity>6</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-022</g:id>
+      <title>Volleyball</title>
+      <description>Volleyball, sporcu performansını destekleyen yüksek kaliteli bir spor aksesuarı. Yoğun antrenman koşullarına dayanıklı ve ergonomik tasarıma sahip. Kullanıcı puanı: 3.8/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-022</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/sports-accessories/volleyball/thumbnail.webp</g:image_link>
+      <g:availability>out of stock</g:availability>
+      <g:price>408.00 TRY</g:price>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Sporting Goods &gt; Sports</g:google_product_category>
+    </item>
+
+    <item>
+      <g:id>SZ-023</g:id>
+      <title>300 Touring</title>
+      <description>Chrysler marka 300 Touring, geniş iç mekanı ve zengin donanım paketiyle seyahatlere ideal bir araç. Güvenli yapısı ve ekonomik yakıt tüketimiyle tercih edilen model. Kullanıcı puanı: 4.0/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-023</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/vehicle/300-touring/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/vehicle/300-touring/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>986000.00 TRY</g:price>
+      <g:brand>Chrysler</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Cars</g:google_product_category>
+      <g:quantity>54</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-024</g:id>
+      <title>Charger SXT RWD</title>
+      <description>Dodge marka Charger SXT RWD, geniş iç mekanı ve zengin donanım paketiyle seyahatlere ideal bir araç. Güvenli yapısı ve ekonomik yakıt tüketimiyle tercih edilen model. Kullanıcı puanı: 2.6/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-024</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/vehicle/charger-sxt-rwd/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/vehicle/charger-sxt-rwd/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1122000.00 TRY</g:price>
+      <g:brand>Dodge</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Cars</g:google_product_category>
+      <g:quantity>57</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-025</g:id>
+      <title>Dodge Hornet GT Plus</title>
+      <description>Dodge marka Dodge Hornet GT Plus, geniş iç mekanı ve zengin donanım paketiyle seyahatlere ideal bir araç. Güvenli yapısı ve ekonomik yakıt tüketimiyle tercih edilen model. Kullanıcı puanı: 2.6/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-025</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/vehicle/dodge-hornet-gt-plus/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/vehicle/dodge-hornet-gt-plus/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>850000.00 TRY</g:price>
+      <g:brand>Dodge</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Cars</g:google_product_category>
+      <g:quantity>82</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-026</g:id>
+      <title>Durango SXT RWD</title>
+      <description>Dodge marka Durango SXT RWD, geniş iç mekanı ve zengin donanım paketiyle seyahatlere ideal bir araç. Güvenli yapısı ve ekonomik yakıt tüketimiyle tercih edilen model. Kullanıcı puanı: 4.1/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-026</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/vehicle/durango-sxt-rwd/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/vehicle/durango-sxt-rwd/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1258000.00 TRY</g:price>
+      <g:brand>Dodge</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Cars</g:google_product_category>
+      <g:quantity>95</g:quantity>
+    </item>
+
+    <item>
+      <g:id>SZ-027</g:id>
+      <title>Pacifica Touring</title>
+      <description>Chrysler marka Pacifica Touring, geniş iç mekanı ve zengin donanım paketiyle seyahatlere ideal bir araç. Güvenli yapısı ve ekonomik yakıt tüketimiyle tercih edilen model. Kullanıcı puanı: 3.6/5.</description>
+      <link>https://sportzone.bilbos-shop.com/p/SZ-027</link>
+      <g:image_link>https://cdn.dummyjson.com/product-images/vehicle/pacifica-touring/thumbnail.webp</g:image_link>
+      <g:additional_image_link>https://cdn.dummyjson.com/product-images/vehicle/pacifica-touring/2.webp</g:additional_image_link>
+      <g:availability>in stock</g:availability>
+      <g:price>1088000.00 TRY</g:price>
+      <g:brand>Chrysler</g:brand>
+      <g:condition>new</g:condition>
+      <g:google_product_category>Vehicles &gt; Cars</g:google_product_category>
+      <g:quantity>53</g:quantity>
+    </item>
+
+  </channel>
+</rss>

@@ -57,6 +57,14 @@ management:
   endpoint:
     health:
       show-details: always
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+api:
+  server-url: ${API_SERVER_URL:http://localhost:8080}
 ---
 management:
   tracing:

@@ -17,7 +17,7 @@ export function SellerCTASection() {
                 Become a seller
               </p>
               <h2 className="text-[28px] lg:text-[36px] font-bold text-white leading-snug mb-4">
-                An easy way to start<br />selling on Marketplace
+                An easy way to start<br />selling on Bilbo's
               </h2>
               <p className="text-[15px] text-white/70 leading-relaxed">
                 Join thousands of sellers reaching millions of buyers. Set up your store in minutes

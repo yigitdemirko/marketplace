@@ -16,32 +16,32 @@ public class NotificationService {
     public void sendOrderCreatedNotification(String recipientEmail, String orderId) {
         sendEmail(
                 recipientEmail,
-                "Order Created - " + orderId,
-                "Your order " + orderId + " has been created successfully and is being processed."
+                "Bilbo's — Order Received: " + orderId,
+                "Thank you for your order! Your order " + orderId + " has been received and is being processed.\n\nBilbo's — bilbos-shop.com"
         );
     }
 
     public void sendPaymentCompletedNotification(String recipientEmail, String orderId) {
         sendEmail(
                 recipientEmail,
-                "Payment Confirmed - " + orderId,
-                "Payment for your order " + orderId + " has been completed successfully."
+                "Bilbo's — Payment Confirmed: " + orderId,
+                "Great news! Payment for your order " + orderId + " has been confirmed. We will notify you once your items are on their way.\n\nBilbo's — bilbos-shop.com"
         );
     }
 
     public void sendPaymentFailedNotification(String recipientEmail, String orderId, String reason) {
         sendEmail(
                 recipientEmail,
-                "Payment Failed - " + orderId,
-                "Payment for your order " + orderId + " has failed. Reason: " + reason
+                "Bilbo's — Payment Failed: " + orderId,
+                "Unfortunately, the payment for your order " + orderId + " could not be processed. Reason: " + reason + "\n\nPlease try again at bilbos-shop.com"
         );
     }
 
     public void sendOrderCancelledNotification(String recipientEmail, String orderId) {
         sendEmail(
                 recipientEmail,
-                "Order Cancelled - " + orderId,
-                "Your order " + orderId + " has been cancelled."
+                "Bilbo's — Order Cancelled: " + orderId,
+                "Your order " + orderId + " has been cancelled. If you have any questions, please visit bilbos-shop.com\n\nBilbo's — bilbos-shop.com"
         );
     }
 

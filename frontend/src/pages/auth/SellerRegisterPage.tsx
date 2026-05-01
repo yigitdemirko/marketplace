@@ -62,7 +62,7 @@ export function SellerRegisterPage() {
               <span className="font-bold text-[#14181f] text-[16px]">Seller Panel</span>
             </div>
             <h1 className="text-3xl font-bold text-foreground">Create Seller Account</h1>
-            <p className="text-base text-muted-foreground">Start selling on our marketplace</p>
+            <p className="text-base text-muted-foreground">Start selling on Bilbo's</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-7">
