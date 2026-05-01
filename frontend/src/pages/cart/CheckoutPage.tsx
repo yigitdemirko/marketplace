@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { ChevronLeft, ChevronRight, ChevronDown, Check, Package } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Package } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -60,7 +60,7 @@ function OrderSummary({
   deliveryCost: number
 }) {
   const { items } = useCartStore()
-  const discount = 0
+  const discount: number = 0
   const tax = subtotal * TAX_RATE
   const total = subtotal + deliveryCost + tax - discount
 
@@ -148,19 +148,16 @@ export function CheckoutPage() {
   const [coupon, setCoupon] = useState('')
 
   const [contact, setContact] = useState({
-    fullName: user ? user.email.split('@')[0] : '',
-    phone: '+90 ',
+    name: '',
+    surname: '',
     email: user?.email ?? '',
-    whatsapp: '',
-    marketingOptIn: true,
   })
 
   const [shippingForm, setShippingForm] = useState({
-    country: 'Turkey',
     city: '',
     postalCode: '',
-    address: '',
-    comment: '',
+    addressLine1: '',
+    addressLine2: '',
   })
 
   const [cardForm, setCardForm] = useState({
@@ -202,10 +199,10 @@ export function CheckoutPage() {
     try {
       const idempotencyKey = `order-${Date.now()}-${Math.random().toString(36).slice(2)}`
       const shippingAddress = [
-        shippingForm.address,
+        shippingForm.addressLine1,
+        shippingForm.addressLine2,
         shippingForm.city,
         shippingForm.postalCode,
-        shippingForm.country,
       ]
         .filter(Boolean)
         .join(', ')
@@ -263,58 +260,34 @@ export function CheckoutPage() {
                   <article className="mb-5">
                     <h4 className="mb-5 text-xl font-semibold text-[#14181f]">Contact information</h4>
                     <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-4 mb-6">
-                      <FormField label="Full name">
+                      <FormField label="Name">
                         <Input
-                          value={contact.fullName}
-                          onChange={(e) => setContact({ ...contact, fullName: e.target.value })}
+                          value={contact.name}
+                          onChange={(e) => setContact({ ...contact, name: e.target.value })}
                           placeholder="Type here"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                           required
                         />
                       </FormField>
-                      <FormField label="Phone">
+                      <FormField label="Surname">
                         <Input
-                          type="tel"
-                          value={contact.phone}
-                          onChange={(e) => setContact({ ...contact, phone: e.target.value })}
+                          value={contact.surname}
+                          onChange={(e) => setContact({ ...contact, surname: e.target.value })}
+                          placeholder="Type here"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                           required
                         />
                       </FormField>
-                      <FormField label="Email" optional>
+                      <FormField label="Email" className="md:col-span-2">
                         <Input
                           type="email"
                           value={contact.email}
                           onChange={(e) => setContact({ ...contact, email: e.target.value })}
                           placeholder="Type here"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
+                          required
                         />
                       </FormField>
-                      <FormField label="Whatsapp" optional>
-                        <Input
-                          type="tel"
-                          value={contact.whatsapp}
-                          onChange={(e) => setContact({ ...contact, whatsapp: e.target.value })}
-                          placeholder="Type here"
-                          className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
-                        />
-                      </FormField>
-
-                      <label className="col-span-full flex cursor-pointer items-center gap-2 select-none">
-                        <button
-                          type="button"
-                          role="checkbox"
-                          aria-checked={contact.marketingOptIn}
-                          onClick={() => setContact({ ...contact, marketingOptIn: !contact.marketingOptIn })}
-                          className={cn(
-                            'size-5 shrink-0 rounded flex items-center justify-center border-2 transition-colors',
-                            contact.marketingOptIn ? 'bg-primary border-primary' : 'border-[#dce0e5] bg-white',
-                          )}
-                        >
-                          {contact.marketingOptIn && <Check className="size-3 text-white" strokeWidth={3} />}
-                        </button>
-                        <span className="text-sm text-[#14181f]">Email me weekly offers</span>
-                      </label>
                     </fieldset>
                     <hr className="border-[#dce0e5]" />
                   </article>
@@ -323,26 +296,8 @@ export function CheckoutPage() {
                   <article className="mb-5">
                     <h4 className="mb-5 text-xl font-semibold text-[#14181f]">Shipping address</h4>
 
-                    <fieldset className="grid grid-cols-1 lg:grid-cols-12 gap-x-3 gap-y-4 mb-4">
-                      <FormField label="Country" className="lg:col-span-4">
-                        <div className="relative">
-                          <select
-                            value={shippingForm.country}
-                            onChange={(e) => setShippingForm({ ...shippingForm, country: e.target.value })}
-                            className="h-10 w-full appearance-none rounded-lg border border-[#dce0e5] bg-white px-3 text-sm text-[#14181f] outline-none focus:ring-2 focus:ring-ring/40"
-                          >
-                            <option>Turkey</option>
-                            <option>United States</option>
-                            <option>Germany</option>
-                            <option>United Kingdom</option>
-                            <option>France</option>
-                            <option>Netherlands</option>
-                          </select>
-                          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 size-4 text-[#525e6f]" />
-                        </div>
-                      </FormField>
-
-                      <FormField label="City" className="lg:col-span-4">
+                    <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-4 mb-4">
+                      <FormField label="City">
                         <Input
                           value={shippingForm.city}
                           onChange={(e) => setShippingForm({ ...shippingForm, city: e.target.value })}
@@ -352,32 +307,32 @@ export function CheckoutPage() {
                         />
                       </FormField>
 
-                      <FormField label="Postal code" className="lg:col-span-4">
+                      <FormField label="Postal code">
                         <Input
                           value={shippingForm.postalCode}
                           onChange={(e) => setShippingForm({ ...shippingForm, postalCode: e.target.value })}
                           placeholder=""
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
+                          required
                         />
                       </FormField>
 
-                      <FormField label="Address" className="lg:col-span-12">
+                      <FormField label="Address line 1" className="md:col-span-2">
                         <Input
-                          value={shippingForm.address}
-                          onChange={(e) => setShippingForm({ ...shippingForm, address: e.target.value })}
-                          placeholder="Street name, district"
+                          value={shippingForm.addressLine1}
+                          onChange={(e) => setShippingForm({ ...shippingForm, addressLine1: e.target.value })}
+                          placeholder="Street name, building"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                           required
                         />
                       </FormField>
 
-                      <FormField label="Additional comment" className="lg:col-span-12">
-                        <textarea
-                          value={shippingForm.comment}
-                          onChange={(e) => setShippingForm({ ...shippingForm, comment: e.target.value })}
-                          placeholder="Have something to say?"
-                          rows={3}
-                          className="w-full resize-none rounded-lg border border-[#dce0e5] bg-white px-3 py-2 text-sm text-[#14181f] placeholder:text-[#929eaa] outline-none focus:ring-2 focus:ring-ring/40"
+                      <FormField label="Address line 2" className="md:col-span-2">
+                        <Input
+                          value={shippingForm.addressLine2}
+                          onChange={(e) => setShippingForm({ ...shippingForm, addressLine2: e.target.value })}
+                          placeholder="Apartment, suite, floor (optional)"
+                          className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                         />
                       </FormField>
                     </fieldset>
