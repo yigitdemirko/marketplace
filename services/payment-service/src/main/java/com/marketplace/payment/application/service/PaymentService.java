@@ -5,9 +5,9 @@ import com.marketplace.payment.api.v1.dto.request.ProcessPaymentRequest;
 import com.marketplace.payment.api.v1.dto.response.PaymentResponse;
 import com.marketplace.payment.domain.model.Payment;
 import com.marketplace.payment.domain.repository.PaymentRepository;
-import com.marketplace.payment.infrastructure.client.OrderClient;
+import com.marketplace.payment.infrastructure.client.OrderServiceGateway;
 import com.marketplace.payment.infrastructure.client.OrderSummary;
-import com.marketplace.payment.infrastructure.iyzico.IyzicoPaymentService;
+import com.marketplace.payment.infrastructure.iyzico.IyzicoGateway;
 import com.marketplace.payment.infrastructure.messaging.PaymentEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +25,9 @@ public class PaymentService {
     private static final Set<String> PAYABLE_STATUSES = Set.of("PAYMENT_PENDING", "STOCK_RESERVING");
 
     private final PaymentRepository paymentRepository;
-    private final IyzicoPaymentService iyzicoPaymentService;
+    private final IyzicoGateway iyzicoGateway;
     private final PaymentEventPublisher eventPublisher;
-    private final OrderClient orderClient;
+    private final OrderServiceGateway orderServiceGateway;
 
     @Transactional
     public PaymentResponse processPayment(String userId, ProcessPaymentRequest request) {
@@ -36,7 +36,7 @@ public class PaymentService {
                     throw new RuntimeException("Payment already processed");
                 });
 
-        OrderSummary order = orderClient.getOrder(request.orderId(), userId);
+        OrderSummary order = orderServiceGateway.getOrder(request.orderId(), userId);
         if (!PAYABLE_STATUSES.contains(order.status())) {
             throw new RuntimeException("Order is not payable in status: " + order.status());
         }
@@ -57,7 +57,7 @@ public class PaymentService {
         paymentCard.setCvc(request.cvc());
 
         try {
-            com.iyzipay.model.Payment result = iyzicoPaymentService.processPayment(
+            com.iyzipay.model.Payment result = iyzicoGateway.processPayment(
                     request.orderId(),
                     userId,
                     amount,

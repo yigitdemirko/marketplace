@@ -1,5 +1,7 @@
 package com.marketplace.payment.config;
 
+import com.marketplace.payment.infrastructure.client.OrderServiceUnavailableException;
+import com.marketplace.payment.infrastructure.iyzico.IyzicoUnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,14 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler({OrderServiceUnavailableException.class, IyzicoUnavailableException.class})
+    public ResponseEntity<Map<String, String>> handleServiceUnavailable(RuntimeException ex) {
+        log.warn("Downstream service unavailable: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Map.of("message", ex.getMessage()));
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
