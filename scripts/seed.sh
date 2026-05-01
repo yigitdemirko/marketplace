@@ -153,6 +153,28 @@ PRODUCT_IDS=()
 while IFS= read -r pid; do PRODUCT_IDS+=("$pid"); done < <(jq -r '.content[] | select(.stock > 0) | .id' "$TMP/products")
 [ "${#PRODUCT_IDS[@]}" -ge 5 ] || fail "Not enough in-stock products to place orders"
 
+place_payment() {
+  local order_id=$1 buyer_id=$2
+  local idem
+  idem=$(uuidgen)
+  local body
+  body=$(jq -nc \
+    --arg oid "$order_id" --arg key "pay-$idem" \
+    '{orderId:$oid, idempotencyKey:$key, cardHolderName:"Test User",
+      cardNumber:"5528790000000008", expireMonth:"12", expireYear:"2030", cvc:"123"}')
+  local code
+  code=$(curl -sS -X POST "$GATEWAY/api/v1/payments" \
+    -H "Content-Type: application/json" \
+    -H "X-User-Id: $buyer_id" \
+    -d "$body" \
+    -o "$TMP/last" -w "%{http_code}")
+  if [ "$code" = "201" ]; then
+    ok "  Payment confirmed for order $order_id"
+  else
+    echo "  ! Payment failed for order $order_id (HTTP $code): $(cat "$TMP/last")" >&2
+  fi
+}
+
 place_order() {
   local buyer_id=$1 buyer_email=$2 num_items=$3
   local items='[]' picked=()
@@ -185,6 +207,7 @@ place_order() {
     local oid
     oid=$(jq -r '.id' "$TMP/last")
     ok "Order $oid by $buyer_email (${#picked[@]} items)"
+    place_payment "$oid" "$buyer_id"
   else
     echo "  ! Order failed for $buyer_email (HTTP $code): $(cat "$TMP/last")" >&2
   fi

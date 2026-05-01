@@ -172,6 +172,20 @@ public class OrderService {
         return toResponse(orderRepository.save(order));
     }
 
+    @Transactional
+    public void autoDeliverShippedOrders() {
+        List<Order> shipped = orderRepository.findByStatus(OrderStatus.SHIPPED);
+        for (Order order : shipped) {
+            try {
+                order.markAsDelivered();
+                orderRepository.save(order);
+                log.info("Auto-delivered order: orderId={}", order.getId());
+            } catch (Exception e) {
+                log.warn("Auto-delivery skipped for orderId={}: {}", order.getId(), e.getMessage());
+            }
+        }
+    }
+
     @Transactional(readOnly = true)
     public SellerStatsResponse getSellerStats(String sellerId) {
         List<Order> orders = orderRepository.findBySellerIdOrderByCreatedAtDesc(sellerId);

@@ -28,7 +28,7 @@ export function SellerCatalogPage() {
   })
 
   const statsQuery = useQuery({
-    queryKey: ['seller-stats', user?.userId],
+    queryKey: ['seller-catalog-stats', user?.userId],
     queryFn: () => productsApi.getSellerStats(user!.userId),
     enabled: !!user,
   })
@@ -43,7 +43,7 @@ export function SellerCatalogPage() {
     mutationFn: (productId: string) => productsApi.delete(productId, user!.userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['seller-products', user?.userId] })
-      queryClient.invalidateQueries({ queryKey: ['seller-stats'] })
+      queryClient.invalidateQueries({ queryKey: ['seller-catalog-stats'] })
     },
   })
 
@@ -64,7 +64,7 @@ export function SellerCatalogPage() {
 
   const handleImportSuccess = () => {
     queryClient.invalidateQueries({ queryKey: ['seller-products', user?.userId] })
-    queryClient.invalidateQueries({ queryKey: ['seller-stats'] })
+    queryClient.invalidateQueries({ queryKey: ['seller-catalog-stats'] })
     queryClient.invalidateQueries({ queryKey: ['seller-imports'] })
     setPage(0)
   }
