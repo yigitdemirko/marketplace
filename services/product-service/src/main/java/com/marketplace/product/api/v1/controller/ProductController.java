@@ -5,6 +5,7 @@ import com.marketplace.product.api.v1.dto.request.UpdateProductRequest;
 import com.marketplace.product.api.v1.dto.request.ValidateProductRequest;
 import com.marketplace.product.api.v1.dto.response.BatchCreateResponse;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
+import com.marketplace.product.api.v1.dto.response.SellerCategoryResponse;
 import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
 import com.marketplace.product.api.v1.dto.response.ValidatedProductResponse;
 import com.marketplace.product.application.service.ImageUploadService;
@@ -73,6 +74,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getSellerStats(sellerId));
     }
 
+    @GetMapping("/seller/{sellerId}/categories")
+    public ResponseEntity<List<SellerCategoryResponse>> getSellerCategories(@PathVariable String sellerId) {
+        return ResponseEntity.ok(productService.getSellerCategories(sellerId));
+    }
+
     @GetMapping("/categories")
     public ResponseEntity<List<Map<String, String>>> getCategories() {
         List<Map<String, String>> categories = Arrays.stream(Category.values())
@@ -97,7 +103,11 @@ public class ProductController {
     @GetMapping("/seller/{sellerId}")
     public ResponseEntity<Page<ProductResponse>> getProductsBySeller(
             @PathVariable String sellerId,
+            @RequestParam(required = false) String categoryId,
             @PageableDefault(size = 20) Pageable pageable) {
+        if (categoryId != null && !categoryId.isBlank()) {
+            return ResponseEntity.ok(productService.getProductsBySellerAndCategory(sellerId, categoryId, pageable));
+        }
         return ResponseEntity.ok(productService.getProductsBySeller(sellerId, pageable));
     }
 

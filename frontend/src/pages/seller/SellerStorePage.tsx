@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, ShieldCheck, Package, Store } from 'lucide-react'
+import { ArrowLeft, ShieldCheck, Package, Store, Tag } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { usersApi } from '@/api/users'
 import { ProductCard } from '@/components/shared/ProductCard'
+import { getCategoryLabel } from '@/constants/categories'
 
 function SellerAvatar({ sellerId }: { sellerId: string }) {
   const initials = sellerId.slice(0, 2).toUpperCase()
@@ -19,6 +20,7 @@ export function SellerStorePage() {
   const { sellerId } = useParams({ strict: false })
   const navigate = useNavigate()
   const [page, setPage] = useState(0)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   const { data: profileData } = useQuery({
     queryKey: ['seller-public-profile', sellerId],
@@ -26,17 +28,30 @@ export function SellerStorePage() {
     enabled: !!sellerId,
   })
 
+  const { data: categories } = useQuery({
+    queryKey: ['seller-store-categories', sellerId],
+    queryFn: () => productsApi.getSellerCategories(sellerId!),
+    enabled: !!sellerId,
+  })
+
   const { data, isLoading } = useQuery({
-    queryKey: ['seller-store-products', sellerId, page],
-    queryFn: () => productsApi.getBySeller(sellerId!, page, 12),
+    queryKey: ['seller-store-products', sellerId, page, selectedCategory],
+    queryFn: () => productsApi.getBySeller(sellerId!, page, 12, selectedCategory ?? undefined),
     enabled: !!sellerId,
   })
 
   const displayName = profileData?.storeName ?? sellerId
+  const totalAcrossStore = categories?.reduce((sum, c) => sum + c.count, 0) ?? 0
 
   if (!sellerId) return null
 
   const totalProducts = data?.totalElements ?? 0
+  const headerTitle = selectedCategory ? getCategoryLabel(selectedCategory) : 'All products'
+
+  const handleSelectCategory = (categoryId: string | null) => {
+    setSelectedCategory(categoryId)
+    setPage(0)
+  }
 
   return (
     <div className="-mx-4 -mt-8">
@@ -87,7 +102,7 @@ export function SellerStorePage() {
                   </span>
                 </div>
                 <p className="text-[14px] text-[#6f7c8e] mt-0.5">
-                  {isLoading ? '...' : `${totalProducts} product${totalProducts !== 1 ? 's' : ''}`}
+                  {isLoading ? '...' : `${totalAcrossStore || totalProducts} product${(totalAcrossStore || totalProducts) !== 1 ? 's' : ''}`}
                 </p>
               </div>
             </div>
@@ -100,20 +115,60 @@ export function SellerStorePage() {
         <div className="flex flex-col lg:flex-row gap-6 items-start">
 
           {/* Left sidebar */}
-          <aside className="w-full lg:w-[220px] lg:shrink-0 lg:sticky lg:top-[80px]">
+          <aside className="w-full lg:w-[240px] lg:shrink-0 lg:sticky lg:top-[80px]">
             <nav className="bg-white border border-[#dce0e5] rounded-[8px] overflow-hidden">
               <div className="px-3 py-2 border-b border-[#dce0e5]">
                 <p className="text-[11px] font-semibold text-[#6f7c8e] uppercase tracking-widest">
                   Store navigation
                 </p>
               </div>
-              <ul>
+              <ul className="max-h-[60vh] overflow-y-auto">
                 <li>
-                  <span className="flex items-center gap-2 px-4 py-2.5 text-[14px] font-semibold text-[#3348ff] bg-[#eef0ff] border-l-2 border-[#3348ff]">
-                    <Package className="h-4 w-4 shrink-0" />
-                    All products
-                  </span>
+                  <button
+                    onClick={() => handleSelectCategory(null)}
+                    className={`w-full flex items-center justify-between gap-2 px-4 py-2.5 text-[14px] transition-colors text-left ${
+                      selectedCategory === null
+                        ? 'font-semibold text-[#3348ff] bg-[#eef0ff] border-l-2 border-[#3348ff]'
+                        : 'text-[#14181f] hover:bg-[#f6f7f9] border-l-2 border-transparent'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2 min-w-0">
+                      <Package className="h-4 w-4 shrink-0" />
+                      <span className="truncate">All products</span>
+                    </span>
+                    {totalAcrossStore > 0 && (
+                      <span className="text-[12px] text-[#6f7c8e] shrink-0">{totalAcrossStore}</span>
+                    )}
+                  </button>
                 </li>
+                {categories && categories.length > 0 && (
+                  <li className="border-t border-[#dce0e5] mt-1 pt-1">
+                    <p className="px-4 py-1 text-[11px] font-semibold text-[#6f7c8e] uppercase tracking-widest">
+                      Categories
+                    </p>
+                  </li>
+                )}
+                {categories?.map((c) => {
+                  const isActive = selectedCategory === c.categoryId
+                  return (
+                    <li key={c.categoryId}>
+                      <button
+                        onClick={() => handleSelectCategory(c.categoryId)}
+                        className={`w-full flex items-center justify-between gap-2 px-4 py-2.5 text-[14px] transition-colors text-left ${
+                          isActive
+                            ? 'font-semibold text-[#3348ff] bg-[#eef0ff] border-l-2 border-[#3348ff]'
+                            : 'text-[#14181f] hover:bg-[#f6f7f9] border-l-2 border-transparent'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2 min-w-0">
+                          <Tag className="h-4 w-4 shrink-0" />
+                          <span className="truncate">{getCategoryLabel(c.categoryId)}</span>
+                        </span>
+                        <span className="text-[12px] text-[#6f7c8e] shrink-0">{c.count}</span>
+                      </button>
+                    </li>
+                  )
+                })}
               </ul>
             </nav>
           </aside>
@@ -121,7 +176,7 @@ export function SellerStorePage() {
           {/* Right: products */}
           <main className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[18px] font-semibold text-[#14181f]">All products</h2>
+              <h2 className="text-[18px] font-semibold text-[#14181f]">{headerTitle}</h2>
               {!isLoading && (
                 <span className="text-[14px] text-[#6f7c8e]">
                   {totalProducts} result{totalProducts !== 1 ? 's' : ''}
@@ -190,7 +245,11 @@ export function SellerStorePage() {
             {!isLoading && (!data || data.content.length === 0) && (
               <div className="flex flex-col items-center justify-center py-24 text-[#6f7c8e] gap-3">
                 <Package className="h-10 w-10 text-[#dce0e5]" />
-                <p className="text-[15px]">This seller has no active products yet.</p>
+                <p className="text-[15px]">
+                  {selectedCategory
+                    ? 'No products in this category.'
+                    : 'This seller has no active products yet.'}
+                </p>
               </div>
             )}
           </main>
