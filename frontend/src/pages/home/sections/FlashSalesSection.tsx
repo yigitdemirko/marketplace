@@ -1,120 +1,70 @@
-import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { Package } from 'lucide-react'
 import { productsApi } from '@/api/products'
 
-const DEALS_END = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-
 const DISCOUNT_LABELS = ['-25%', '-12%', '-33%', '-15%', '-25%']
-
-function useCountdown(target: Date) {
-  const [now, setNow] = useState(new Date())
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(id)
-  }, [])
-  const diff = Math.max(0, target.getTime() - now.getTime())
-  return {
-    days: Math.floor(diff / 86400000),
-    hours: Math.floor((diff % 86400000) / 3600000),
-    mins: Math.floor((diff % 3600000) / 60000),
-    secs: Math.floor((diff % 60000) / 1000),
-  }
-}
-
-interface CountdownBoxProps {
-  value: number
-  label: string
-}
-
-function CountdownBox({ value, label }: CountdownBoxProps) {
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <div className="min-w-[44px] h-[44px] bg-[#f6f7f9] border border-[#dce0e5] rounded-[6px] flex items-center justify-center font-semibold text-[18px] text-[#14181f] tabular-nums px-2">
-        {String(value).padStart(2, '0')}
-      </div>
-      <span className="text-[11px] text-[#6f7c8e]">{label}</span>
-    </div>
-  )
-}
 
 export function FlashSalesSection() {
   const navigate = useNavigate()
-  const { days, hours, mins, secs } = useCountdown(DEALS_END)
 
   const { data, isLoading } = useQuery({
     queryKey: ['products', 'deals'],
     queryFn: () => productsApi.getAll(0, 5),
   })
 
-  return (
-    <section className="bg-white py-8">
-      <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div className="flex items-baseline gap-2 flex-wrap">
-            <h2 className="text-[24px] font-semibold text-[#14181f]">Deals and offers</h2>
-            <span className="text-[15px] text-[#6f7c8e]">Hygiene equipments</span>
-          </div>
+  const products = data?.content.slice(0, 5) ?? []
 
-          {/* Countdown */}
-          <div className="flex items-end gap-2 flex-wrap">
-            <CountdownBox value={days} label="Days" />
-            <span className="text-[18px] font-semibold text-[#14181f] mb-5">:</span>
-            <CountdownBox value={hours} label="Hours" />
-            <span className="text-[18px] font-semibold text-[#14181f] mb-5">:</span>
-            <CountdownBox value={mins} label="Mins" />
-            <span className="text-[18px] font-semibold text-[#14181f] mb-5">:</span>
-            <CountdownBox value={secs} label="Secs" />
+  return (
+    <section className="py-5 bg-[#f6f7f9]">
+      <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
+        <div className="bg-white rounded-[8px] border border-[#dce0e5] overflow-hidden">
+          <div className="flex flex-col md:flex-row">
+
+            {/* Left sidebar — header only */}
+            <div className="md:w-[220px] lg:w-[240px] shrink-0 p-6 border-b md:border-b-0 md:border-r border-[#dce0e5] flex flex-col justify-center">
+              <h2 className="text-[20px] font-semibold text-[#14181f] mb-2">Deals and offers</h2>
+              <p className="text-[14px] text-[#6f7c8e]">Electronics &amp; Gadgets</p>
+            </div>
+
+            {/* Right — 5-column product grid */}
+            <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 divide-x divide-y divide-[#dce0e5] border-t md:border-t-0 border-[#dce0e5]">
+              {isLoading &&
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="h-[220px] bg-[#f6f7f9] animate-pulse" />
+                ))}
+
+              {!isLoading &&
+                products.map((product, index) => (
+                  <div
+                    key={product.id}
+                    className="p-4 flex flex-col items-center text-center cursor-pointer hover:bg-[#f6f7f9] transition-colors"
+                    onClick={() =>
+                      navigate({ to: '/products/$productId', params: { productId: product.id } })
+                    }
+                  >
+                    <div className="w-full aspect-square bg-[#f6f7f9] rounded-[6px] overflow-hidden flex items-center justify-center mb-3">
+                      {product.images?.length > 0 ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-full h-full object-contain mix-blend-multiply"
+                        />
+                      ) : (
+                        <Package className="h-10 w-10 text-gray-300" />
+                      )}
+                    </div>
+                    <p className="text-[13px] text-[#525e6f] line-clamp-2 mb-3 flex-1">
+                      {product.name}
+                    </p>
+                    <span className="bg-red-100 text-red-600 text-[12px] font-semibold px-3 py-1 rounded-full">
+                      {DISCOUNT_LABELS[index % DISCOUNT_LABELS.length]}
+                    </span>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
-
-        {/* Products */}
-        {isLoading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-[240px] bg-[#f6f7f9] animate-pulse rounded-[8px]" />
-            ))}
-          </div>
-        )}
-
-        {data && data.content.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {data.content.slice(0, 5).map((product, index) => (
-              <div
-                key={product.id}
-                className="bg-white border border-[#dce0e5] rounded-[8px] overflow-hidden cursor-pointer hover:shadow-md transition-shadow relative"
-                onClick={() =>
-                  navigate({ to: '/products/$productId', params: { productId: product.id } })
-                }
-              >
-                {/* Discount badge */}
-                <span className="absolute top-2 left-2 bg-[#fa3434] text-white text-[12px] font-semibold px-2 py-0.5 rounded-[4px] z-10">
-                  {DISCOUNT_LABELS[index % DISCOUNT_LABELS.length]}
-                </span>
-
-                {/* Image */}
-                <div className="aspect-square bg-[#f6f7f9] overflow-hidden flex items-center justify-center">
-                  {product.images && product.images.length > 0 ? (
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      className="w-full h-full object-contain mix-blend-multiply"
-                    />
-                  ) : (
-                    <Package className="h-12 w-12 text-gray-300" />
-                  )}
-                </div>
-
-                {/* Info */}
-                <div className="px-3 py-3">
-                  <p className="text-[15px] text-[#14181f] truncate">{product.name}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </section>
   )

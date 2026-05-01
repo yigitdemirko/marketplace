@@ -39,18 +39,6 @@ interface Props {
   initialPage?: number
 }
 
-function StarRating({ value = 4 }: { value?: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star
-          key={i}
-          className={`h-4 w-4 ${i <= value ? 'fill-[#db6e00] text-[#db6e00]' : 'fill-[#cbd3db] text-[#cbd3db]'}`}
-        />
-      ))}
-    </div>
-  )
-}
 
 function SearchProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((state) => state.addItem)
@@ -61,13 +49,13 @@ function SearchProductCard({ product }: { product: Product }) {
 
   return (
     <div
-      className="bg-white rounded-xl cursor-pointer"
+      className="bg-white rounded-[12px] cursor-pointer"
       onClick={() => navigate({ to: '/products/$productId', params: { productId: product.id } })}
     >
       {/* Image area */}
-      <div className="relative bg-[#edf0f2] rounded-xl h-[296px] overflow-hidden">
+      <div className="relative bg-[#edf0f2] rounded-[12px] h-[270px] overflow-hidden">
         {mainImage ? (
-          <img src={mainImage} alt={product.name} className="w-full h-full object-cover" />
+          <img src={mainImage} alt={product.name} className="w-full h-full object-contain mix-blend-multiply" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <ShoppingCart className="h-16 w-16 text-[#cbd3db]" />
@@ -75,36 +63,36 @@ function SearchProductCard({ product }: { product: Product }) {
         )}
         <button
           aria-label="Toggle wishlist"
-          className="absolute top-2.5 right-2.5 p-2 bg-white border border-[#dce0e5] rounded-lg shadow-sm"
+          className="absolute top-2 right-2 w-10 h-10 flex items-center justify-center bg-white/40 rounded-[8px] hover:bg-white/70 transition-colors"
           onClick={(e) => {
             e.stopPropagation()
             setWishlisted((p) => !p)
           }}
         >
           <Heart
-            className={`h-[22px] w-[22px] ${wishlisted ? 'fill-[#3348ff] text-[#3348ff]' : 'text-[#6f7c8e]'}`}
+            className={`h-[22px] w-[22px] transition-colors ${wishlisted ? 'fill-[#3348ff] text-[#3348ff]' : 'text-[#6f7c8e]'}`}
           />
         </button>
       </div>
 
       {/* Info */}
-      <div className="flex flex-col gap-2 pt-3">
+      <div className="flex flex-col gap-2 py-3">
         <p className="text-[15px] text-[#14181f] leading-[1.4] line-clamp-2 tracking-[-0.3px]">
           {product.name}
         </p>
 
-        <div className="flex items-center gap-2.5">
-          <StarRating value={4} />
-          <span className="text-[15px] text-[#db6e00] tracking-[-0.3px]">4.5</span>
-          <span className="text-[15px] text-[#6f7c8e] tracking-[-0.3px]">(0 orders)</span>
+        <div className="flex items-center gap-1.5">
+          <Star className="h-[15px] w-[15px] fill-[#db6e00] text-[#db6e00]" />
+          <span className="text-[13px] text-[#6f7c8e]">4.5</span>
+          <span className="text-[13px] text-[#6f7c8e]">(0 orders)</span>
         </div>
 
-        <p className="text-[18px] font-semibold text-[#3348ff]">
-          ${Number(product.price).toFixed(2)} USD
+        <p className="text-[15px] font-semibold text-[#14181f]">
+          ${Number(product.price).toFixed(2)}
         </p>
 
         <button
-          className="w-full h-10 bg-[#edf0f2] rounded-lg flex items-center justify-center gap-2 text-[15px] font-medium text-[#14181f] hover:bg-[#e2e7ec] transition-colors disabled:opacity-50"
+          className="w-full py-2 px-3 bg-[#e0edff] rounded-[8px] flex items-center justify-center gap-2 text-[15px] font-medium text-[#3348ff] hover:bg-[#c7dfff] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isOutOfStock}
           onClick={(e) => {
             e.stopPropagation()

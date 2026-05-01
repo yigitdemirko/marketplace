@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { ShoppingCart, Heart, Eye } from 'lucide-react'
+import { ShoppingCart, Heart, Package } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { useCartStore } from '@/store/cartStore'
-import { cn } from '@/lib/utils'
+import { Star } from 'lucide-react'
 import type { Product } from '@/types'
 
 interface ProductCardProps {
@@ -15,8 +13,15 @@ interface ProductCardProps {
 export function ProductCard({ product, onClick }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem)
   const navigate = useNavigate()
-  const [isWishlisted, setIsWishlisted] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
+  const [wishlisted, setWishlisted] = useState(false)
+
+  const mainImage = product.images?.[0]
+  const isOutOfStock = product.stock === 0
+
+  const handleClick = () => {
+    if (onClick) onClick()
+    else navigate({ to: '/products/$productId', params: { productId: product.id } })
+  }
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -26,127 +31,69 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
       name: product.name,
       price: product.price,
       quantity: 1,
+      image: mainImage,
     })
   }
 
-  const handleWishlist = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setIsWishlisted((prev) => !prev)
-  }
-
-  const handleQuickView = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    onClick?.()
-  }
-
-  const mainImage = product.images?.[0]
-  const isOutOfStock = product.stock === 0
-  const isLowStock = product.stock > 0 && product.stock <= 5
-
   return (
     <div
-      className="group relative flex flex-col bg-card rounded-xl overflow-hidden ring-1 ring-foreground/10 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
-      onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="bg-white rounded-[12px] cursor-pointer"
+      onClick={handleClick}
     >
-      {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-secondary">
+      {/* Image area */}
+      <div className="relative bg-[#edf0f2] rounded-[12px] h-[270px] overflow-hidden">
         {mainImage ? (
           <img
             src={mainImage}
             alt={product.name}
-            className={cn(
-              'w-full h-full object-cover transition-transform duration-500',
-              isHovered && 'scale-110',
-            )}
+            className="w-full h-full object-contain mix-blend-multiply"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <ShoppingCart className="h-14 w-14 text-muted-foreground/30" />
+            <Package className="h-16 w-16 text-[#cbd3db]" />
           </div>
         )}
 
-        {/* Stock badge */}
-        <div className="absolute top-3 left-3">
-          {isOutOfStock && (
-            <Badge variant="secondary" className="text-xs shadow-sm">
-              Out of Stock
-            </Badge>
-          )}
-          {isLowStock && (
-            <Badge variant="destructive" className="text-xs shadow-sm">
-              Low Stock
-            </Badge>
-          )}
-        </div>
-
-        {/* Wishlist */}
+        {/* Wishlist button */}
         <button
-          className={cn(
-            'absolute top-3 right-3 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-sm',
-            'transition-all duration-200 hover:scale-110 hover:bg-white',
-            isWishlisted ? 'text-destructive' : 'text-muted-foreground',
-          )}
-          onClick={handleWishlist}
           aria-label="Toggle wishlist"
-        >
-          <Heart className={cn('h-4 w-4', isWishlisted && 'fill-current')} />
-        </button>
-
-        {/* Hover action bar */}
-        <div
-          className={cn(
-            'absolute inset-x-0 bottom-0 flex gap-2 p-3',
-            'bg-gradient-to-t from-black/60 to-transparent',
-            'transition-all duration-300',
-            isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none',
-          )}
-        >
-          <Button
-            className="flex-1 h-9 text-xs bg-white text-foreground hover:bg-white/90 font-semibold"
-            onClick={handleAddToCart}
-            disabled={isOutOfStock}
-          >
-            <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
-            {isOutOfStock ? 'Sold Out' : 'Add to Cart'}
-          </Button>
-          <Button
-            className="h-9 w-9 p-0 bg-white text-foreground hover:bg-white/90"
-            onClick={handleQuickView}
-            aria-label="Quick view"
-          >
-            <Eye className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-col gap-1 p-3 pb-4">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium truncate">
-          {product.categoryId || 'Product'}
-        </p>
-        <h3 className="font-semibold text-sm leading-snug line-clamp-2 text-card-foreground">
-          {product.name}
-        </h3>
-        <div className="flex items-center justify-between mt-1.5">
-          <span className="text-base font-bold text-primary">
-            ₺{product.price.toFixed(2)}
-          </span>
-          {product.stock > 0 && (
-            <span className="text-[11px] text-muted-foreground">
-              {product.stock} in stock
-            </span>
-          )}
-        </div>
-        <button
+          className="absolute top-2 right-2 w-10 h-10 flex items-center justify-center bg-white/40 rounded-[8px] hover:bg-white/70 transition-colors"
           onClick={(e) => {
             e.stopPropagation()
-            navigate({ to: '/store/$sellerId', params: { sellerId: product.sellerId } })
+            setWishlisted((p) => !p)
           }}
-          className="mt-1.5 text-[11px] text-muted-foreground hover:text-primary transition-colors text-left truncate w-full"
         >
-          Visit store →
+          <Heart
+            className={`h-[22px] w-[22px] transition-colors ${
+              wishlisted ? 'fill-[#3348ff] text-[#3348ff]' : 'text-[#6f7c8e]'
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* Info */}
+      <div className="flex flex-col gap-2 py-3">
+        <p className="text-[15px] text-[#14181f] leading-[1.4] line-clamp-2 tracking-[-0.3px]">
+          {product.name}
+        </p>
+
+        <div className="flex items-center gap-1.5">
+          <Star className="h-[15px] w-[15px] fill-[#db6e00] text-[#db6e00]" />
+          <span className="text-[13px] text-[#6f7c8e]">4.5</span>
+          <span className="text-[13px] text-[#6f7c8e]">(0 orders)</span>
+        </div>
+
+        <p className="text-[15px] font-semibold text-[#14181f]">
+          ${Number(product.price).toFixed(2)}
+        </p>
+
+        <button
+          className="w-full py-2 px-3 bg-[#e0edff] rounded-[8px] flex items-center justify-center gap-2 text-[15px] font-medium text-[#3348ff] hover:bg-[#c7dfff] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isOutOfStock}
+          onClick={handleAddToCart}
+        >
+          <ShoppingCart className="h-5 w-5" />
+          {isOutOfStock ? 'Out of Stock' : 'Add to cart'}
         </button>
       </div>
     </div>

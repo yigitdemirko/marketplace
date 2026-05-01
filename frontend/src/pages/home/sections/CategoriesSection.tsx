@@ -1,90 +1,129 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQueries } from '@tanstack/react-query'
 import { useNavigate, Link } from '@tanstack/react-router'
-import { ArrowRight, Package } from 'lucide-react'
+import { Package } from 'lucide-react'
 import { EMPTY_SEARCH } from '@/routes/search'
 import { productsApi } from '@/api/products'
 import type { CategoryId } from '@/constants/categories'
+import type { Product } from '@/types'
 
 interface CategorySectionProps {
-  bannerBg: string
-  bannerEmoji: string
+  bannerImage: string
   bannerTitle: string
-  categoryId: CategoryId
+  categoryIds: CategoryId[]
+  exploreCategoryId: CategoryId
 }
 
-function CategorySection({ bannerBg, bannerEmoji, bannerTitle, categoryId }: CategorySectionProps) {
+function CategorySection({
+  bannerImage,
+  bannerTitle,
+  categoryIds,
+  exploreCategoryId,
+}: CategorySectionProps) {
   const navigate = useNavigate()
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['products', 'category-section', categoryId],
-    queryFn: () => productsApi.getByCategory(categoryId, 0, 8),
+  const results = useQueries({
+    queries: categoryIds.map((id) => ({
+      queryKey: ['products', 'category-section', id],
+      queryFn: () => productsApi.getByCategory(id, 0, 8),
+    })),
   })
 
-  return (
-    <section className="bg-white py-8">
-      <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-5">
-          {/* Left banner */}
-          <div
-            className={`${bannerBg} hidden lg:flex w-[300px] shrink-0 rounded-[8px] p-6 flex-col justify-end min-h-[300px] relative overflow-hidden`}
-          >
-            <span className="absolute top-4 right-4 text-[80px] opacity-20 leading-none select-none">
-              {bannerEmoji}
-            </span>
-            <h3 className="text-[20px] font-semibold text-[#14181f] mb-2 relative z-10">
-              {bannerTitle}
-            </h3>
-            <Link
-              to="/search"
-              search={EMPTY_SEARCH}
-              className="flex items-center gap-1 text-[15px] text-[#3348ff] font-medium relative z-10 w-fit hover:underline"
-            >
-              Explore all <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+  const isLoading = results.some((r) => r.isLoading)
 
-          {/* Right product grid */}
+  const products: Product[] = []
+  const seen = new Set<string>()
+  for (const r of results) {
+    if (r.data) {
+      for (const p of r.data.content) {
+        if (!seen.has(p.id)) {
+          seen.add(p.id)
+          products.push(p)
+        }
+      }
+    }
+  }
+  const displayProducts = products.slice(0, 8)
+
+  return (
+    <section className="pb-5 bg-[#f6f7f9]">
+      <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
+        <div className="bg-white rounded-[8px] border border-[#dce0e5] overflow-hidden flex flex-col md:flex-row">
+
+          {/* Left banner */}
+          <aside
+            className="md:w-[220px] lg:w-[260px] shrink-0 border-b md:border-b-0 md:border-r border-[#dce0e5] bg-cover bg-center relative min-h-[200px]"
+            style={{ backgroundImage: `url(${bannerImage})` }}
+          >
+            <div className="absolute inset-0 bg-white/60" />
+            <div className="relative z-10 p-6 flex flex-col justify-end h-full">
+              <h3 className="text-[20px] font-semibold text-[#14181f] mb-4 leading-snug">
+                {bannerTitle}
+              </h3>
+              <Link
+                to="/search"
+                search={{ ...EMPTY_SEARCH, category: exploreCategoryId }}
+                className="inline-flex items-center gap-1 border border-[#14181f] rounded-[6px] px-4 py-2 text-[14px] font-medium text-[#14181f] hover:bg-[#14181f] hover:text-white transition-colors w-fit bg-white/80"
+              >
+                Explore all
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 6C9 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+            </div>
+          </aside>
+
+          {/* Product grid */}
           <div className="flex-1">
             {isLoading && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="h-[160px] bg-muted animate-pulse rounded-[8px]" />
+                  <li key={i} className="h-[120px] bg-[#f6f7f9] animate-pulse border-r border-b border-[#dce0e5]" />
                 ))}
-              </div>
+              </ul>
             )}
 
-            {data && data.content.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {data.content.slice(0, 8).map((product) => (
-                  <div
+            {!isLoading && displayProducts.length > 0 && (
+              <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {displayProducts.map((product) => (
+                  <li
                     key={product.id}
-                    className="border border-[#dce0e5] rounded-[8px] overflow-hidden cursor-pointer hover:shadow-sm transition-shadow"
+                    className="border-r border-b border-[#dce0e5] last:border-r-0 cursor-pointer hover:bg-[#f6f7f9] transition-colors"
                     onClick={() =>
                       navigate({ to: '/products/$productId', params: { productId: product.id } })
                     }
                   >
-                    {/* Image */}
-                    <div className="aspect-square bg-[#f6f7f9] overflow-hidden flex items-center justify-center">
-                      {product.images && product.images.length > 0 ? (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="w-full h-full object-contain mix-blend-multiply"
-                        />
-                      ) : (
-                        <Package className="h-10 w-10 text-gray-300" />
-                      )}
-                    </div>
+                    <div className="p-4 relative min-h-[110px] flex flex-col justify-between">
+                      {/* Image floated right */}
+                      <div className="absolute top-3 right-3 w-[70px] h-[70px] shrink-0 overflow-hidden rounded-[4px] bg-[#f6f7f9] flex items-center justify-center">
+                        {product.images && product.images.length > 0 ? (
+                          <img
+                            src={product.images[0]}
+                            alt={product.name}
+                            className="w-full h-full object-contain mix-blend-multiply"
+                          />
+                        ) : (
+                          <Package className="h-6 w-6 text-gray-300" />
+                        )}
+                      </div>
 
-                    {/* Info */}
-                    <div className="px-3 py-2">
-                      <p className="text-[13px] text-[#14181f] truncate">{product.name}</p>
-                      <p className="text-[13px] text-[#6f7c8e]">
-                        From ${product.price.toFixed(2)}
-                      </p>
+                      {/* Text — leaves room for image */}
+                      <div className="pr-[82px]">
+                        <p className="text-[13px] text-[#14181f] hover:text-[#3348ff] line-clamp-2 mb-2">
+                          {product.name}
+                        </p>
+                        <p className="text-[12px] text-[#6f7c8e]">
+                          From<br />${product.price.toFixed(2)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </li>
                 ))}
+              </ul>
+            )}
+
+            {!isLoading && displayProducts.length === 0 && (
+              <div className="flex items-center justify-center h-[200px] text-[#6f7c8e] text-[14px]">
+                No products available
               </div>
             )}
           </div>
@@ -97,10 +136,10 @@ function CategorySection({ bannerBg, bannerEmoji, bannerTitle, categoryId }: Cat
 export function HomeOutdoorSection() {
   return (
     <CategorySection
-      bannerBg="bg-[#d4edda]"
-      bannerEmoji="🏠"
-      bannerTitle="Home & Outdoor"
-      categoryId="HOME_OUTDOOR"
+      bannerImage="/banners/category-interior.jpg"
+      bannerTitle="Home and outdoor items"
+      categoryIds={['HOME_OUTDOOR', 'KITCHEN', 'FURNITURE', 'HOME_APPLIANCES', 'GARDEN']}
+      exploreCategoryId="HOME_OUTDOOR"
     />
   )
 }
@@ -108,10 +147,10 @@ export function HomeOutdoorSection() {
 export function ElectronicsSection() {
   return (
     <CategorySection
-      bannerBg="bg-[#d0e8ff]"
-      bannerEmoji="📱"
-      bannerTitle="Consumer Electronics & Gadgets"
-      categoryId="ELECTRONICS"
+      bannerImage="/banners/category-tech.jpg"
+      bannerTitle="Consumer electronics and gadgets"
+      categoryIds={['ELECTRONICS', 'PHONES_TABLETS', 'COMPUTERS', 'AUDIO', 'CAMERAS', 'GAMING', 'WEARABLES']}
+      exploreCategoryId="ELECTRONICS"
     />
   )
 }
