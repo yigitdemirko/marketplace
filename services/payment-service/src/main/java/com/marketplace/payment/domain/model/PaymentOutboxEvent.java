@@ -1,0 +1,55 @@
+package com.marketplace.payment.domain.model;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "outbox_events")
+@Getter
+@Setter
+public class PaymentOutboxEvent {
+
+    @Id
+    private String id;
+
+    @Column(nullable = false)
+    private String eventType;
+
+    @Column(nullable = false)
+    private String aggregateId;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String payload;
+
+    @Column(nullable = false)
+    private boolean processed = false;
+
+    private LocalDateTime processedAt;
+
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    public static PaymentOutboxEvent create(String eventType, String aggregateId, String payload) {
+        PaymentOutboxEvent event = new PaymentOutboxEvent();
+        event.id = UUID.randomUUID().toString();
+        event.eventType = eventType;
+        event.aggregateId = aggregateId;
+        event.payload = payload;
+        event.createdAt = LocalDateTime.now();
+        return event;
+    }
+
+    public void markProcessed() {
+        this.processed = true;
+        this.processedAt = LocalDateTime.now();
+    }
+}
