@@ -1,7 +1,7 @@
 import { ShoppingCart, Package, Star } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useCartStore } from '@/store/cartStore'
-import { useCartDrawer } from '@/store/cartDrawerStore'
+import { useAddedToCartFeedback } from '@/lib/cartFeedback'
 import type { Product } from '@/types'
 
 interface ProductCardProps {
@@ -11,7 +11,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem)
-  const openDrawer = useCartDrawer((s) => s.open)
+  const notifyAdded = useAddedToCartFeedback()
   const navigate = useNavigate()
 
   const mainImage = product.images?.[0]
@@ -32,7 +32,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
       quantity: 1,
       image: mainImage,
     })
-    openDrawer()
+    notifyAdded()
   }
 
   return (
@@ -46,7 +46,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
           <img
             src={mainImage}
             alt={product.name}
-            className="w-full h-full object-contain mix-blend-multiply"
+            className="w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -56,7 +56,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
       </div>
 
       {/* Info */}
-      <div className="flex flex-col gap-2 py-3 flex-1">
+      <div className="flex flex-col gap-2 px-3 py-3 flex-1">
         <p className="text-[15px] text-[#14181f] leading-[1.4] line-clamp-2 min-h-[42px] tracking-[-0.3px]">
           {product.name}
         </p>

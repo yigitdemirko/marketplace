@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { ShoppingCart, ChevronDown, Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { productsApi, type SearchFilters } from '@/api/products'
 import { useCartStore } from '@/store/cartStore'
-import { useCartDrawer } from '@/store/cartDrawerStore'
+import { useAddedToCartFeedback } from '@/lib/cartFeedback'
 import { CATEGORIES, getCategoryLabel } from '@/constants/categories'
 import type { Product } from '@/types'
 
@@ -43,7 +43,7 @@ interface Props {
 
 function SearchProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((state) => state.addItem)
-  const openDrawer = useCartDrawer((s) => s.open)
+  const notifyAdded = useAddedToCartFeedback()
   const navigate = useNavigate()
   const mainImage = product.images?.[0]
   const isOutOfStock = product.stock === 0
@@ -65,7 +65,7 @@ function SearchProductCard({ product }: { product: Product }) {
       </div>
 
       {/* Info */}
-      <div className="flex flex-col gap-2 py-3 flex-1">
+      <div className="flex flex-col gap-2 px-3 py-3 flex-1">
         <p className="text-[15px] text-[#14181f] leading-[1.4] line-clamp-2 min-h-[42px] tracking-[-0.3px]">
           {product.name}
         </p>
@@ -93,7 +93,7 @@ function SearchProductCard({ product }: { product: Product }) {
               quantity: 1,
               image: mainImage,
             })
-            openDrawer()
+            notifyAdded()
           }}
         >
           <ShoppingCart className="h-5 w-5" />
