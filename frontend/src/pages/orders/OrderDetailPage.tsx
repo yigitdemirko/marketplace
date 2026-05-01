@@ -1,11 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Package } from 'lucide-react'
 import { ordersApi } from '@/api/orders'
+import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
 import type { Order } from '@/types'
 
@@ -31,6 +32,14 @@ export function OrderDetailPage() {
     queryKey: ['order', orderId],
     queryFn: () => ordersApi.getById(orderId!, user!.userId),
     enabled: !!orderId && !!user,
+  })
+
+  // Fetch product details for each order item to get names + images
+  const productQueries = useQueries({
+    queries: (order?.items ?? []).map((item) => ({
+      queryKey: ['product', item.productId],
+      queryFn: () => productsApi.getById(item.productId),
+    })),
   })
 
   const cancelMutation = useMutation({
@@ -75,24 +84,46 @@ export function OrderDetailPage() {
         <CardHeader>
           <CardTitle>Items</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          {order.items.map((item) => (
-            <div key={item.id} className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-sm">{item.productId}</p>
-                <p className="text-sm text-muted-foreground">
-                  {item.quantity} × ₺{item.unitPrice.toFixed(2)}
+        <CardContent className="space-y-4">
+          {order.items.map((item, index) => {
+            const product = productQueries[index]?.data
+            const image = product?.images?.[0]
+            const name = product?.name ?? item.productId
+
+            return (
+              <div key={item.id} className="flex items-center gap-4">
+                {/* Product image */}
+                <div className="w-[60px] h-[60px] shrink-0 rounded-[8px] bg-[#edf0f2] overflow-hidden flex items-center justify-center">
+                  {image ? (
+                    <img
+                      src={image}
+                      alt={name}
+                      className="w-full h-full object-contain mix-blend-multiply"
+                    />
+                  ) : (
+                    <Package className="h-6 w-6 text-[#cbd3db]" />
+                  )}
+                </div>
+
+                {/* Details */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-medium text-[#14181f] truncate">{name}</p>
+                  <p className="text-[13px] text-[#6f7c8e]">
+                    {item.quantity} × ${item.unitPrice.toFixed(2)}
+                  </p>
+                </div>
+
+                <p className="text-[15px] font-semibold text-[#14181f] shrink-0">
+                  ${(item.quantity * item.unitPrice).toFixed(2)}
                 </p>
               </div>
-              <p className="font-medium">
-                ₺{(item.quantity * item.unitPrice).toFixed(2)}
-              </p>
-            </div>
-          ))}
+            )
+          })}
+
           <Separator />
-          <div className="flex justify-between font-bold">
+          <div className="flex justify-between font-bold text-[16px]">
             <span>Total</span>
-            <span>₺{order.totalAmount.toFixed(2)}</span>
+            <span>${order.totalAmount.toFixed(2)}</span>
           </div>
         </CardContent>
       </Card>

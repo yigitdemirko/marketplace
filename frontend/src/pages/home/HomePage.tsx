@@ -3,7 +3,6 @@ import { FlashSalesSection } from '@/pages/home/sections/FlashSalesSection'
 import { HomeOutdoorSection, ElectronicsSection } from '@/pages/home/sections/CategoriesSection'
 import { RecommendedSection } from '@/pages/home/sections/BestsellerSection'
 import { SellerCTASection } from '@/pages/home/sections/DealsSection'
-import { FeaturesSection } from '@/pages/home/sections/ExploreProductsSection'
 import { Footer } from '@/components/layout/Footer'
 
 export function HomePage() {
@@ -15,7 +14,6 @@ export function HomePage() {
       <ElectronicsSection />
       <RecommendedSection />
       <SellerCTASection />
-      <FeaturesSection />
       <Footer />
     </div>
   )
