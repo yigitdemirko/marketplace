@@ -170,4 +170,7 @@
   body {
     @apply bg-background text-foreground;
   }
+  button, a, [role="button"], select, label {
+    cursor: pointer;
+  }
 }

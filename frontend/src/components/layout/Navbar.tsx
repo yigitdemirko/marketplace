@@ -1,17 +1,32 @@
 import { useState } from 'react'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { ClipboardList, ShoppingBag, UserCircle, LogOut, Menu, X } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { useCartStore } from '@/store/cartStore'
+import { useCartDrawer } from '@/store/cartDrawerStore'
+
+const CART_DRAWER_EXCLUDED = ['/cart', '/checkout']
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore()
   const isBuyer = isAuthenticated && user?.accountType === 'BUYER'
   const totalItems = useCartStore((state) => state.totalItems())
   const navigate = useNavigate()
+  const { location } = useRouterState()
+  const openDrawer = useCartDrawer((s) => s.open)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All category')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const handleCartClick = (e: React.MouseEvent) => {
+    const isExcluded =
+      CART_DRAWER_EXCLUDED.includes(location.pathname) ||
+      location.pathname.startsWith('/orders')
+    if (!isExcluded) {
+      e.preventDefault()
+      openDrawer()
+    }
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -83,7 +98,7 @@ export function Navbar() {
             </div>
           )}
 
-          <Link to="/cart" className="flex flex-col items-center gap-0.5 relative">
+          <Link to="/cart" onClick={handleCartClick} className="flex flex-col items-center gap-0.5 relative">
             <div className="relative">
               <ShoppingBag className="h-5 w-5 text-[#6f7c8e]" />
               {totalItems > 0 && (
@@ -121,7 +136,7 @@ export function Navbar() {
 
         {/* Mobile right: cart + hamburger */}
         <div className="flex lg:hidden items-center gap-3 ml-auto shrink-0">
-          <Link to="/cart" className="relative">
+          <Link to="/cart" onClick={handleCartClick} className="relative">
             <ShoppingBag className="h-6 w-6 text-[#6f7c8e]" />
             {totalItems > 0 && (
               <span className="absolute -top-1.5 -right-1.5 bg-[#fa3434] text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none">
