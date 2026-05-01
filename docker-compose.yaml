@@ -55,15 +55,52 @@ services:
       retries: 10
 
 
-  zipkin:
-    image: openzipkin/zipkin:3
+  tempo:
+    image: grafana/tempo:2.6.1
+    command: ["-config.file=/etc/tempo/tempo.yaml"]
     ports:
+      - "3200:3200"
       - "9411:9411"
+    volumes:
+      - ./infrastructure/tempo/tempo.yaml:/etc/tempo/tempo.yaml
+      - tempo-data:/tmp/tempo
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:9411/health || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3200/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=7d"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/healthy || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    ports:
+      - "3001:3000"
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+    volumes:
+      - ./infrastructure/grafana/provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+      - tempo
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.0
@@ -274,3 +311,6 @@ volumes:
   postgres-data:
   mongo-data:
   elasticsearch-data:
+  tempo-data:
+  prometheus-data:
+  grafana-data:

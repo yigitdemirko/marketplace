@@ -45,7 +45,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,circuitbreakers,circuitbreakerevents
+        include: health,info,prometheus,circuitbreakers,circuitbreakerevents
   endpoint:
     health:
       show-details: always
@@ -76,7 +76,7 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: http://${ZIPKIN_HOST:zipkin}:9411/api/v2/spans
+      endpoint: http://${ZIPKIN_HOST:tempo}:9411/api/v2/spans
 
 logging:
   pattern:
