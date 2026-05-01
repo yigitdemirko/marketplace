@@ -12,8 +12,8 @@ export interface ProcessPaymentRequest {
 }
 
 export const paymentsApi = {
-  process: (data: ProcessPaymentRequest) =>
-    apiClient.post<Payment>('/api/v1/payments', data),
+  process: (data: ProcessPaymentRequest, userId: string) =>
+    apiClient.post<Payment>('/api/v1/payments', data, { 'X-User-Id': userId }),
 
   getByOrderId: (orderId: string) =>
     apiClient.get<Payment>(`/api/v1/payments/order/${orderId}`),

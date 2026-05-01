@@ -47,7 +47,7 @@ export function CheckoutPage() {
         orderId: order.id,
         idempotencyKey: `pay-${idempotencyKey}`,
         ...cardForm,
-      })
+      }, user.userId)
 
       clearCart()
       setSuccess(true)
@@ -92,6 +92,11 @@ export function CheckoutPage() {
             </div>
           </CardContent>
         </Card>
+
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+          <p className="font-semibold mb-1">Sandbox test card</p>
+          <p className="font-mono">5528790000000008 &nbsp; 12 / 2030 &nbsp; CVC: 123</p>
+        </div>
 
         <Card>
           <CardHeader>
