@@ -48,6 +48,14 @@ export interface UpdateProductRequest {
   attributes?: Record<string, string>
 }
 
+export interface SearchFilters {
+  query?: string
+  categoryId?: string
+  brand?: string
+  priceMin?: number
+  priceMax?: number
+}
+
 export const productsApi = {
   getAll: (page = 0, size = 20) =>
     apiClient.get<PageResponse<Product>>(`/api/v1/products?page=${page}&size=${size}`),
@@ -66,6 +74,19 @@ export const productsApi = {
 
   search: (query: string, page = 0, size = 20) =>
     apiClient.get<PageResponse<Product>>(`/api/v1/search?query=${query}&page=${page}&size=${size}`),
+
+  searchWithFilters: (filters: SearchFilters, page = 0, size = 9, sort?: string) => {
+    const params = new URLSearchParams()
+    if (filters.query) params.set('query', filters.query)
+    if (filters.categoryId) params.set('categoryId', filters.categoryId)
+    if (filters.brand) params.set('brand', filters.brand)
+    if (filters.priceMin !== undefined && filters.priceMin > 0) params.set('priceMin', filters.priceMin.toString())
+    if (filters.priceMax !== undefined && filters.priceMax < 99000) params.set('priceMax', filters.priceMax.toString())
+    if (sort && sort !== 'newest') params.set('sort', sort)
+    params.set('page', page.toString())
+    params.set('size', size.toString())
+    return apiClient.get<PageResponse<Product>>(`/api/v1/search?${params}`)
+  },
 
   create: (data: CreateProductRequest, sellerId: string) =>
     apiClient.post<Product>('/api/v1/products', data, { 'X-Seller-Id': sellerId }),

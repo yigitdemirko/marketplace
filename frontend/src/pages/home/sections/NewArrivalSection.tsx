@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { EMPTY_SEARCH } from '@/routes/search'
 
 const items = [
   {
@@ -53,6 +54,7 @@ export function NewArrivalSection() {
           {/* Large left: PS5 */}
           <Link
             to="/search"
+            search={EMPTY_SEARCH}
             className={`${items[0].bg} rounded flex flex-col justify-end p-8 min-h-[300px] lg:min-h-0 group`}
           >
             <div className="flex-1 flex items-center justify-center text-5xl sm:text-8xl mb-4">
@@ -72,6 +74,7 @@ export function NewArrivalSection() {
             {/* Top: Women's */}
             <Link
               to="/search"
+              search={EMPTY_SEARCH}
               className={`${items[1].bg} rounded flex items-end p-8 group`}
             >
               <div className="flex-1 flex items-center justify-end text-7xl pr-4">
@@ -92,6 +95,7 @@ export function NewArrivalSection() {
                 <Link
                   key={item.id}
                   to="/search"
+                  search={EMPTY_SEARCH}
                   className={`${item.bg} rounded flex flex-col items-center justify-end p-6 group`}
                 >
                   <div className="text-5xl mb-4">{item.emoji}</div>

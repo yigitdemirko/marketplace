@@ -33,10 +33,15 @@ export function Navbar() {
     setMobileMenuOpen(false)
     navigate({
       to: '/search',
-      search: {
+      search: () => ({
         q: query.trim() || undefined,
         category: category !== 'All category' ? category : undefined,
-      },
+        brand: undefined,
+        priceMin: undefined,
+        priceMax: undefined,
+        sort: undefined,
+        page: undefined,
+      }),
     })
   }
 

@@ -4,7 +4,7 @@ import { SellerLayout } from './SellerLayout'
 import { CartDrawer } from '@/components/shared/CartDrawer'
 
 const FULLSCREEN_ROUTES = ['/login', '/register', '/seller/login', '/seller/register']
-const NO_CONTAINER_ROUTES = ['/', '/checkout']
+const NO_CONTAINER_ROUTES = ['/', '/checkout', '/search']
 
 export function Layout() {
   const { location } = useRouterState()

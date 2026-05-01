@@ -14,5 +14,6 @@ public record SearchResponse(
         Integer stock,
         boolean active,
         List<String> images,
-        Map<String, String> attributes
+        Map<String, String> attributes,
+        String brand
 ) {}
