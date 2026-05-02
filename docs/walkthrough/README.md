@@ -2,10 +2,6 @@
 
 [← Ana README / Main README](../../README.md)
 
-Her servis için 5 dakikalık anlatım notları. İki dilli: önce Türkçe, sonra İngilizce. Mülakat hazırlığı, code-review onboarding ve takım içi knowledge-sharing için.
-
-5-minute talking notes per service. Bilingual: Turkish first, then English. For interview prep, code-review onboarding, and team knowledge-sharing.
-
 ## Servisler / Services
 
 | Servis | Walkthrough |
