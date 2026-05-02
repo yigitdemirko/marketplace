@@ -47,6 +47,14 @@ public class JwtUtil {
         return extractClaims(token).getSubject();
     }
 
+    public String extractEmail(String token) {
+        return extractClaims(token).get("email", String.class);
+    }
+
+    public String extractAccountType(String token) {
+        return extractClaims(token).get("accountType", String.class);
+    }
+
     public boolean isTokenValid(String token) {
         try {
             extractClaims(token);

@@ -110,6 +110,9 @@ springdoc:
         url: /api-docs/feed-ingestion-service
     server-url: ${API_SERVER_URL:http://localhost:8080}
 
+jwt:
+  secret: ${JWT_SECRET}
+
 eureka:
   client:
     service-url:

@@ -7,6 +7,7 @@ import { useCartStore } from '@/store/cartStore'
 import { useCartDrawer } from '@/store/cartDrawerStore'
 import { useToastStore } from '@/store/toastStore'
 import { searchApi } from '@/api/search'
+import { authApi } from '@/api/auth'
 import { formatPrice } from '@/lib/formatPrice'
 
 const CART_DRAWER_EXCLUDED = ['/cart', '/checkout']
@@ -202,7 +203,7 @@ export function Navbar() {
                 </span>
               </Link>
               <button
-                onClick={() => { logout(); showToast('Çıkış yapıldı') }}
+                onClick={() => { authApi.logout().finally(() => { logout(); showToast('Çıkış yapıldı') }) }}
                 className="flex flex-col items-center gap-0.5 cursor-pointer"
               >
                 <LogOut className="h-6 w-6 text-[#6f7c8e]" />
@@ -268,7 +269,7 @@ export function Navbar() {
           <div className="flex items-center justify-around border-t border-[#dce0e5] pt-4">
             {isBuyer ? (
               <button
-                onClick={() => { logout(); showToast('Çıkış yapıldı'); setMobileMenuOpen(false) }}
+                onClick={() => { authApi.logout().finally(() => { logout(); showToast('Çıkış yapıldı'); setMobileMenuOpen(false) }) }}
                 className="flex flex-col items-center gap-1"
               >
                 <LogOut className="h-6 w-6 text-[#6f7c8e]" />

@@ -4,20 +4,13 @@ import type { ImportJob, PageResponse } from '@/types'
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 async function uploadFeed(file: File, sellerId: string): Promise<ImportJob> {
-  const token = localStorage.getItem('token')
-  const headers: Record<string, string> = {
-    'X-Seller-Id': sellerId,
-  }
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
-  }
-
   const formData = new FormData()
   formData.append('file', file)
 
   const response = await fetch(`${BASE_URL}/api/v1/feeds/import`, {
     method: 'POST',
-    headers,
+    headers: { 'X-Seller-Id': sellerId },
+    credentials: 'include',
     body: formData,
   })
 

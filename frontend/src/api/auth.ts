@@ -30,4 +30,13 @@ export const authApi = {
 
   registerSeller: (data: SellerRegisterRequest) =>
     apiClient.post<User>('/api/v1/auth/seller/register', data),
+
+  me: () =>
+    apiClient.get<User>('/api/v1/auth/me'),
+
+  logout: () =>
+    apiClient.post<void>('/api/v1/auth/logout', null),
+
+  logoutAll: () =>
+    apiClient.post<void>('/api/v1/auth/logout-all', null),
 }

@@ -4,16 +4,12 @@ import type { Product, PageResponse, SellerStats } from '@/types'
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 async function uploadImage(file: File): Promise<string> {
-  const token = localStorage.getItem('token')
-  const headers: Record<string, string> = {}
-  if (token) headers['Authorization'] = `Bearer ${token}`
-
   const formData = new FormData()
   formData.append('file', file)
 
   const response = await fetch(`${BASE_URL}/api/v1/products/images/upload`, {
     method: 'POST',
-    headers,
+    credentials: 'include',
     body: formData,
   })
 
