@@ -195,15 +195,15 @@ export function Navbar() {
           </Link>
 
           {isBuyer ? (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-5">
               <Link to="/account" className="flex flex-col items-center gap-0.5">
                 <UserCircle className="h-6 w-6 text-[#6f7c8e]" />
-                <span className="text-[11px] text-[#6f7c8e] max-w-[64px] truncate">
-                  {user?.email?.substring(0, 8)}
+                <span className="text-[11px] text-[#6f7c8e] max-w-[80px] truncate">
+                  {user?.firstName ? `Hoşgeldin ${user.firstName}!` : user?.email?.split('@')[0]}
                 </span>
               </Link>
               <button
-                onClick={() => { authApi.logout().finally(() => { logout(); showToast('Çıkış yapıldı') }) }}
+                onClick={() => { authApi.logout().finally(() => { logout(); showToast('Çıkış yapıldı'); }) }}
                 className="flex flex-col items-center gap-0.5 cursor-pointer"
               >
                 <LogOut className="h-6 w-6 text-[#6f7c8e]" />

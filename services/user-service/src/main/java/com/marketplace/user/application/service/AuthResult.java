@@ -6,5 +6,7 @@ public record AuthResult(
         String userId,
         String email,
         String accountType,
-        String storeName
+        String storeName,
+        String firstName,
+        String lastName
 ) {}
