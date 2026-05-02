@@ -1,6 +1,6 @@
 export const CATEGORIES = [
   // Electronics
-  { id: 'ELECTRONICS', label: 'Tüketici Elektroniği & Gadget' },
+  { id: 'ELECTRONICS', label: 'Elektronik & Aksesuar' },
   { id: 'COMPUTERS', label: 'Bilgisayar & Laptop' },
   { id: 'PHONES_TABLETS', label: 'Telefon & Tablet' },
   { id: 'CAMERAS', label: 'Kamera & Fotoğraf' },
