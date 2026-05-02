@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ChevronLeft, ChevronRight, Package, MapPin, CreditCard, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -45,7 +45,6 @@ function OrderSummary({ coupon, onCouponChange, subtotal, deliveryCost }: {
 }) {
   const { items } = useCartStore()
   const tax = subtotal * TAX_RATE
-  const total = subtotal + deliveryCost + tax
 
   return (
     <div className="p-5 md:p-10 bg-[#f6f7f9] h-full">
