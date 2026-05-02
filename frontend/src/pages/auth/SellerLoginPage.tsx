@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { sellerPath } from '@/lib/sellerBase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -34,7 +33,7 @@ export function SellerLoginPage() {
       setAuth(user)
 
       const params = new URLSearchParams(window.location.search)
-      navigate({ to: (params.get('redirect') ?? sellerPath('')) as '/seller' })
+      navigate({ to: (params.get('redirect') ?? '/') as '/' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Giriş başarısız')
     } finally {
@@ -109,14 +108,14 @@ export function SellerLoginPage() {
 
             <p className="text-sm text-center text-muted-foreground">
               Satıcı hesabınız yok mu?{' '}
-              <a href="/seller/register" className="text-primary hover:underline font-medium">
+              <a href="/register" className="text-primary hover:underline font-medium">
                 Satıcı olarak kayıt ol
               </a>
             </p>
 
             <p className="text-sm text-center text-muted-foreground">
               Alışveriş mi yapacaksınız?{' '}
-              <a href="/login" className="text-primary hover:underline font-medium">
+              <a href={`${import.meta.env.VITE_BUYER_URL ?? ''}/login`} className="text-primary hover:underline font-medium">
                 Alıcı girişi
               </a>
             </p>

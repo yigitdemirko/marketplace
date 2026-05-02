@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { sellerPath } from '@/lib/sellerBase'
 import {
   Truck,
   Banknote,
@@ -237,7 +236,7 @@ export function SellerDashboardPage() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button
-                        onClick={() => navigate({ to: sellerPath('/orders') as '/seller/orders' })}
+                        onClick={() => navigate({ to: '/orders' })}
                         className="h-7 px-3 text-[12px] font-medium border border-[#dce0e5] rounded-[4px] bg-white hover:bg-[#f6f7f9] transition-colors text-[#14181f]"
                       >
                         Detay

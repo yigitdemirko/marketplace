@@ -7,19 +7,18 @@ import {
   UserCircle,
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
-import { sellerPath } from '@/lib/sellerBase'
 
 const NAV_ITEMS = [
-  { label: 'Panel', icon: LayoutDashboard, to: sellerPath('') },
-  { label: 'Tüm siparişler', icon: Truck, to: sellerPath('/orders') },
-  { label: 'Katalog', icon: Package2, to: sellerPath('/products') },
-]
+  { label: 'Panel', icon: LayoutDashboard, to: '/' },
+  { label: 'Tüm siparişler', icon: Truck, to: '/orders' },
+  { label: 'Katalog', icon: Package2, to: '/products' },
+] as const
 
 const PAGE_TITLES: Record<string, string> = {
-  [sellerPath('')]: 'Panel',
-  [sellerPath('/orders')]: 'Tüm siparişler',
-  [sellerPath('/products')]: 'Katalog',
-  [sellerPath('/products/new')]: 'Ürün ekle',
+  '/': 'Panel',
+  '/orders': 'Tüm siparişler',
+  '/products': 'Katalog',
+  '/products/new': 'Ürün ekle',
 }
 
 export function SellerLayout() {
@@ -30,22 +29,17 @@ export function SellerLayout() {
 
   useEffect(() => {
     if (!isSeller) {
-      navigate({ to: sellerPath('/login') as '/seller/login', replace: true })
+      navigate({ to: '/login', replace: true })
     }
   }, [isSeller, navigate])
 
   if (!isSeller) return null
 
   const pathname = location.pathname
-  const pageTitle = Object.keys(PAGE_TITLES)
+  const matchedKey = Object.keys(PAGE_TITLES)
     .sort((a, b) => b.length - a.length)
     .find((k) => pathname === k || pathname.startsWith(k + '/'))
-    ? PAGE_TITLES[
-        Object.keys(PAGE_TITLES)
-          .sort((a, b) => b.length - a.length)
-          .find((k) => pathname === k || pathname.startsWith(k + '/'))!
-      ]
-    : 'Satıcı Paneli'
+  const pageTitle = matchedKey ? PAGE_TITLES[matchedKey] : 'Satıcı Paneli'
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -63,12 +57,11 @@ export function SellerLayout() {
         <nav className="flex-1 p-2 mt-1 overflow-y-auto">
           <ul className="space-y-0.5">
             {NAV_ITEMS.map(({ label, icon: Icon, to }) => {
-              const isActive =
-                to === sellerPath('') ? pathname === sellerPath('') : pathname.startsWith(to)
+              const isActive = to === '/' ? pathname === '/' : pathname.startsWith(to)
               return (
                 <li key={to}>
                   <Link
-                    to={to as '/seller'}
+                    to={to as never}
                     className={`flex items-center gap-3 px-3 py-2 rounded-[6px] text-[14px] font-medium transition-colors ${
                       isActive
                         ? 'bg-white text-[#3348ff] shadow-sm'
@@ -110,11 +103,11 @@ export function SellerLayout() {
       {/* Mobile bottom tab bar */}
       <nav className="flex lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#dce0e5]">
         {NAV_ITEMS.map(({ label, icon: Icon, to }) => {
-          const isActive = to === sellerPath('') ? pathname === sellerPath('') : pathname.startsWith(to)
+          const isActive = to === '/' ? pathname === '/' : pathname.startsWith(to)
           return (
             <Link
               key={to}
-              to={to as '/seller'}
+              to={to as never}
               className={`flex-1 flex flex-col items-center gap-1 py-2 text-[11px] font-medium transition-colors ${
                 isActive ? 'text-[#3348ff]' : 'text-[#6f7c8e]'
               }`}

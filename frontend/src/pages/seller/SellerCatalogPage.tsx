@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { sellerPath } from '@/lib/sellerBase'
 import { Plus, Pencil, Trash2, Package, Upload, Copy, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { feedsApi } from '@/api/feeds'
@@ -113,7 +112,7 @@ export function SellerCatalogPage() {
             XML içe aktar
           </button>
           <button
-            onClick={() => navigate({ to: sellerPath('/products/new') as '/seller/products/new' })}
+            onClick={() => navigate({ to: '/products/new' } as never)}
             className="h-9 px-4 text-[14px] font-medium bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[6px] flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
@@ -153,7 +152,7 @@ export function SellerCatalogPage() {
                     <>
                       Henüz ürün yok.{' '}
                       <button
-                        onClick={() => navigate({ to: sellerPath('/products/new') as '/seller/products/new' })}
+                        onClick={() => navigate({ to: '/products/new' } as never)}
                         className="text-[#3348ff] hover:underline"
                       >
                         İlk ürününüzü ekleyin
@@ -221,9 +220,9 @@ export function SellerCatalogPage() {
                     <button
                       onClick={() =>
                         navigate({
-                          to: sellerPath('/products/$productId/edit') as '/seller/products/$productId/edit',
+                          to: '/products/$productId/edit',
                           params: { productId: product.id },
-                        })
+                        } as never)
                       }
                       className="h-7 px-2.5 text-[12px] font-medium border border-[#dce0e5] rounded-[4px] bg-white hover:bg-[#f6f7f9] text-[#14181f] flex items-center gap-1"
                     >

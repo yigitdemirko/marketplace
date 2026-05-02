@@ -151,7 +151,7 @@ export function RegisterPage() {
 
             <p className="text-sm text-center text-muted-foreground">
               Platformumuzda satış yapmak ister misiniz?{' '}
-              <a href="/seller/register" className="text-primary hover:underline font-medium">
+              <a href={`${import.meta.env.VITE_SELLER_URL ?? ''}/register`} className="text-primary hover:underline font-medium">
                 Satıcı olarak kayıt ol
               </a>
             </p>
