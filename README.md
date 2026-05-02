@@ -78,8 +78,8 @@ Cross-cutting infrastructure (not shown above to keep the diagram readable):
 
 | Service | Port | Description | Stack |
 |---------|------|-------------|-------|
-| api-gateway | 8080 | Routes requests to services | Spring Cloud Gateway |
-| user-service | 8081 | Authentication, buyer/seller registration | Spring Boot, PostgreSQL, JWT |
+| api-gateway | 8080 | Routes requests, JWT cookie validation, identity header injection | Spring Cloud Gateway |
+| user-service | 8081 | Auth, buyer/seller registration, rotating refresh tokens | Spring Boot, PostgreSQL, Redis, JWT |
 | product-service | 8082 | Product CRUD, inventory | Spring Boot, MongoDB, Redis |
 | search-service | 8083 | Full-text product search | Spring Boot, Elasticsearch |
 | order-service | 8084 | Order management, Saga pattern | Spring Boot, PostgreSQL, Kafka |
@@ -97,7 +97,7 @@ Cross-cutting infrastructure (not shown above to keep the diagram readable):
 - **Apache Kafka** — event-driven communication
 - **PostgreSQL** — relational data (users, orders, payments)
 - **MongoDB** — product catalog
-- **Redis** — caching
+- **Redis** — caching, refresh token session storage
 - **Elasticsearch** — product search
 - **Iyzico** — payment processing
 - **Flyway** — database migrations
@@ -114,6 +114,63 @@ Cross-cutting infrastructure (not shown above to keep the diagram readable):
 - **Nginx** — frontend serving
 - **Hetzner Cloud** — production hosting
 - **GitHub Actions** — CI/CD
+
+## Authentication
+
+The platform uses a dual-token, httpOnly cookie-based auth flow. No tokens are ever stored in `localStorage` or readable from JavaScript.
+
+### Token design
+
+| Token | TTL | Storage | Cookie flags |
+|-------|-----|---------|--------------|
+| Access token (signed JWT) | 15 min | httpOnly cookie, `Path=/` | `Secure; SameSite=Lax` |
+| Refresh token (opaque random) | 7 days | httpOnly cookie, `Path=/api/v1/auth/refresh` | `Secure; SameSite=Lax` |
+
+The refresh token's `Path` restriction means the browser only attaches it to requests going to the refresh endpoint — it is never accidentally sent elsewhere.
+
+### Token storage (server-side)
+
+Refresh tokens are stored in two layers:
+
+- **Redis** (`auth:refresh:{sha256(token)} → userId`, TTL 7 days) — fast lookup on every refresh call.
+- **PostgreSQL** (`refresh_tokens` table) — audit trail, `revoked` flag, `ip`, `user_agent`, `session_id`. Survives Redis eviction.
+
+Multi-session: each login issues an independent token pair. A user can be logged in on phone and laptop simultaneously.
+
+### Refresh flow
+
+```
+POST /api/v1/auth/refresh   (browser sends refresh_token cookie automatically)
+  → hash token → lookup Redis
+  → if found: mark old token revoked in Redis + DB
+              issue new access token + new refresh token (rotation)
+              set new cookies
+  → if not found: token expired or already rotated
+```
+
+### Replay attack detection
+
+If a **revoked** refresh token is presented (e.g. the token was already rotated but an attacker replayed the old one), all active sessions for that user are immediately revoked in Redis and the database, forcing a full re-login on every device.
+
+### API Gateway JWT filter
+
+The gateway strips incoming `X-User-Id`, `X-User-Email`, and `X-Account-Type` headers (prevents injection), then reads the `access_token` cookie, validates the JWT, and re-adds those headers for downstream services. Downstream services trust gateway-supplied headers and do not re-validate tokens.
+
+### Auth endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/v1/auth/login` | Issue access + refresh tokens as cookies |
+| `POST` | `/api/v1/auth/buyer/register` | Register buyer, issue cookies |
+| `POST` | `/api/v1/auth/seller/register` | Register seller, issue cookies |
+| `POST` | `/api/v1/auth/refresh` | Rotate refresh token, reissue access token |
+| `POST` | `/api/v1/auth/logout` | Revoke current session, clear cookies |
+| `POST` | `/api/v1/auth/logout-all` | Revoke all sessions for user |
+| `GET`  | `/api/v1/auth/me` | Return user info from access token cookie |
+
+### Frontend session restore
+
+On every page load the React app calls `GET /api/v1/auth/me`. If the access token cookie is valid the user is restored to authenticated state silently. If the access token has expired, the `apiClient` 401 interceptor calls `/api/v1/auth/refresh` automatically, drains any queued requests, and retries. If refresh also fails the store is cleared and the user is redirected to `/login`.
 
 ## Order Saga
 
@@ -226,8 +283,18 @@ pnpm dev
 Create a `.env` file in the root directory:
 
 ```env
+# Auth
+JWT_SECRET=your-secret-key-min-32-chars
+
+# Cookies (leave COOKIE_DOMAIN blank for localhost)
+COOKIE_DOMAIN=
+COOKIE_SECURE=false   # set true in production (requires HTTPS)
+
+# Payment
 IYZICO_API_KEY=your-sandbox-api-key
 IYZICO_SECRET_KEY=your-sandbox-secret-key
+
+# Email
 MAIL_USERNAME=your-email@gmail.com
 MAIL_PASSWORD=your-app-password
 ```

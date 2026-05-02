@@ -6,23 +6,25 @@ interface RequestOptions {
   headers?: Record<string, string>
 }
 
-async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-  const token = localStorage.getItem('token')
+let isRefreshing = false
+let pendingRequests: Array<() => void> = []
 
+async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...options.headers,
-  }
-
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
   }
 
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     method: options.method ?? 'GET',
     headers,
     body: options.body ? JSON.stringify(options.body) : undefined,
+    credentials: 'include',
   })
+
+  if (response.status === 401 && !endpoint.includes('/api/v1/auth/')) {
+    return handle401<T>(endpoint, options)
+  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: 'An error occurred' }))
@@ -34,6 +36,41 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   }
 
   return response.json()
+}
+
+async function handle401<T>(endpoint: string, options: RequestOptions): Promise<T> {
+  if (isRefreshing) {
+    // Queue this request until refresh completes
+    return new Promise<T>((resolve, reject) => {
+      pendingRequests.push(() => {
+        request<T>(endpoint, options).then(resolve).catch(reject)
+      })
+    })
+  }
+
+  isRefreshing = true
+  try {
+    const refreshResponse = await fetch(`${BASE_URL}/api/v1/auth/refresh`, {
+      method: 'POST',
+      credentials: 'include',
+    })
+
+    if (refreshResponse.ok) {
+      // Drain queued requests
+      pendingRequests.forEach((fn) => fn())
+      pendingRequests = []
+      return request<T>(endpoint, options)
+    } else {
+      // Refresh failed — force logout
+      pendingRequests = []
+      const { useAuthStore } = await import('@/store/authStore')
+      useAuthStore.getState().logout()
+      window.location.href = '/login'
+      throw new Error('Session expired')
+    }
+  } finally {
+    isRefreshing = false
+  }
 }
 
 export const apiClient = {

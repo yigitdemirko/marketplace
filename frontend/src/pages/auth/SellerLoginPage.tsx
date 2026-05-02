@@ -29,7 +29,6 @@ export function SellerLoginPage() {
         return
       }
 
-      localStorage.setItem('token', user.token)
       setAuth(user)
 
       const params = new URLSearchParams(window.location.search)

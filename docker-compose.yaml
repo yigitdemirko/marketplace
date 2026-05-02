@@ -170,6 +170,7 @@ services:
       FRONTEND_URL: ${FRONTEND_URL}
       SELLER_URL: ${SELLER_URL}
       API_SERVER_URL: ${API_SERVER_URL}
+      JWT_SECRET: ${JWT_SECRET}
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -183,10 +184,15 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      REDIS_HOST: redis
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:}
+      COOKIE_SECURE: "true"
       EUREKA_HOST: discovery-server
       API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
       discovery-server:
         condition: service_healthy

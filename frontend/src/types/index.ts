@@ -2,7 +2,6 @@ export interface User {
     userId: string
     email: string
     accountType: 'BUYER' | 'SELLER'
-    token: string
     storeName?: string
   }
   

@@ -30,7 +30,6 @@ export function RegisterPage() {
     setLoading(true)
     try {
       const user = await authApi.registerBuyer(form)
-      localStorage.setItem('token', user.token)
       setAuth(user)
       const params = new URLSearchParams(window.location.search)
       navigate({ to: params.get('redirect') ?? '/' })

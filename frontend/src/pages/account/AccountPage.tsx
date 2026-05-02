@@ -15,6 +15,7 @@ import { ordersApi } from '@/api/orders'
 import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
 import { useToastStore } from '@/store/toastStore'
+import { authApi } from '@/api/auth'
 import { formatPrice } from '@/lib/formatPrice'
 import type { Order, OrderItem } from '@/types'
 
@@ -176,9 +177,11 @@ export function AccountPage() {
   }, [isAuthenticated, user?.accountType])
 
   const handleLogout = () => {
-    logout()
-    showToast('Çıkış yapıldı')
-    navigate({ to: '/' })
+    authApi.logout().finally(() => {
+      logout()
+      showToast('Çıkış yapıldı')
+      navigate({ to: '/' })
+    })
   }
 
   const { data: orders, isLoading } = useQuery({

@@ -1,16 +1,27 @@
+import { useEffect } from 'react'
 import { Outlet, useRouterState } from '@tanstack/react-router'
 import { Navbar } from './Navbar'
 import { CartDrawer } from '@/components/shared/CartDrawer'
 import { Toast } from '@/components/shared/Toast'
 import { NavigationProgress } from '@/components/shared/NavigationProgress'
+import { useAuthStore } from '@/store/authStore'
+import { authApi } from '@/api/auth'
 
 const FULLSCREEN_ROUTES = ['/login', '/register']
 const NO_CONTAINER_ROUTES = ['/', '/checkout', '/search', '/account']
 
 export function Layout() {
   const { location } = useRouterState()
+  const { setAuth, setRestoring } = useAuthStore()
   const isFullscreen = FULLSCREEN_ROUTES.includes(location.pathname)
   const isNoContainer = NO_CONTAINER_ROUTES.includes(location.pathname)
+
+  // Restore session from httpOnly cookie on first load
+  useEffect(() => {
+    authApi.me()
+      .then((user) => setAuth(user))
+      .catch(() => setRestoring(false))
+  }, [])
 
   if (isFullscreen) {
     return (
