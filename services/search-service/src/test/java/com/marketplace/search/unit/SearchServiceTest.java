@@ -13,14 +13,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @Tag("unit")
@@ -55,6 +59,7 @@ class SearchServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void should_SearchByQuery_When_QueryIsNotBlank() {
         ProductDocument doc = ProductDocument.builder()
                 .id("prod-1")
@@ -63,8 +68,14 @@ class SearchServiceTest {
                 .active(true)
                 .build();
 
-        when(productSearchRepository.findByNameContainingAndActiveTrue(anyString(), any()))
-                .thenReturn(new PageImpl<>(List.of(doc)));
+        SearchHit<ProductDocument> hit = mock(SearchHit.class);
+        when(hit.getContent()).thenReturn(doc);
+
+        SearchHits<ProductDocument> hits = mock(SearchHits.class);
+        when(hits.getSearchHits()).thenReturn(List.of(hit));
+        when(hits.getTotalHits()).thenReturn(1L);
+
+        when(elasticsearchOperations.search(any(NativeQuery.class), eq(ProductDocument.class))).thenReturn(hits);
 
         Page<SearchResponse> result = searchService.search("Shoes", PageRequest.of(0, 20));
 
@@ -94,7 +105,7 @@ class SearchServiceTest {
                 .active(true)
                 .build();
 
-        when(productSearchRepository.findByCategoryIdAndActiveTrue(anyString(), any()))
+        when(productSearchRepository.findByCategoryIdAndActiveTrue(any(), any()))
                 .thenReturn(new PageImpl<>(List.of(doc)));
 
         Page<SearchResponse> result = searchService.searchByCategory("cat-001", PageRequest.of(0, 20));
