@@ -50,7 +50,4 @@ public class ProductDocument {
 
     @Field(type = FieldType.Keyword)
     private String brand;
-
-    @Field(type = FieldType.Keyword)
-    private String locale;
 }

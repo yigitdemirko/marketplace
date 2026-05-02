@@ -31,10 +31,9 @@ public class SearchController {
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) BigDecimal priceMin,
             @RequestParam(required = false) BigDecimal priceMax,
-            @RequestParam(required = false) String locale,
             @PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(
-                searchService.searchWithFilters(query, categoryId, brand, priceMin, priceMax, locale, pageable));
+                searchService.searchWithFilters(query, categoryId, brand, priceMin, priceMax, pageable));
     }
 
     @GetMapping("/seller/{sellerId}")

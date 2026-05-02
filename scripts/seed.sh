@@ -7,9 +7,8 @@
 #   - 194 products imported via the feed-ingestion service (dummyjson-based XMLs)
 #   - ~5-10 orders placed across buyers
 #
-# NOTE: Legacy picsum-based XMLs (seller-techhub.xml, seller-homestyle.xml,
-#       seller-techhub-en.xml, seller-homestyle-en.xml) are intentionally
-#       skipped. They are kept in docs/seed for reference only.
+# NOTE: Legacy picsum-based XMLs (seller-techhub.xml, seller-homestyle.xml)
+#       are intentionally skipped. They are kept in docs/seed for reference only.
 #
 # Idempotent at the user level: re-running falls back to login when an account
 # already exists. Re-running, however, will create duplicate products and orders

@@ -27,7 +27,6 @@ public class ProductEventPublisher {
         event.put("price", product.getPrice());
         event.put("stock", product.getStock());
         event.put("categoryId", product.getCategoryId());
-        event.put("locale", product.getLocale());
         event.put("images", product.getImages());
         event.put("attributes", product.getAttributes());
         event.put("active", product.isActive());

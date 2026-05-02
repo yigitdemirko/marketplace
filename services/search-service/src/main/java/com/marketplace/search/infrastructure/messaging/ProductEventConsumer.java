@@ -32,7 +32,6 @@ public class ProductEventConsumer {
                 .stock(event.get("stock") != null ?
                         ((Number) event.get("stock")).intValue() : null)
                 .categoryId((String) event.get("categoryId"))
-                .locale((String) event.get("locale"))
                 .brand((String) event.get("brand"))
                 .images((List<String>) event.get("images"))
                 .attributes((Map<String, String>) event.get("attributes"))

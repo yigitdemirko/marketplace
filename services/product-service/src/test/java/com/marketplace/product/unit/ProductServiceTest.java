@@ -4,7 +4,6 @@ import com.marketplace.product.api.v1.dto.request.CreateProductRequest;
 import com.marketplace.product.api.v1.dto.response.ProductResponse;
 import com.marketplace.product.application.service.ProductService;
 import com.marketplace.product.domain.model.Category;
-import com.marketplace.product.domain.model.Locale;
 import com.marketplace.product.domain.model.Product;
 import com.marketplace.product.domain.repository.ProductRepository;
 import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
@@ -44,7 +43,7 @@ class ProductServiceTest {
     void should_CreateProduct_Successfully() {
         CreateProductRequest request = new CreateProductRequest(
                 "Test Product", "Description", BigDecimal.valueOf(99.99),
-                100, Category.ELECTRONICS, Locale.EN, "Acme", null, null
+                100, Category.ELECTRONICS, "Acme", null, null
         );
 
         Product mockProduct = Product.create("seller-123", request.name(),
@@ -67,7 +66,7 @@ class ProductServiceTest {
         Page<Product> page = new PageImpl<>(List.of(mockProduct));
         when(productRepository.findByActiveTrue(any())).thenReturn(page);
 
-        Page<ProductResponse> result = productService.getAllProducts(null, PageRequest.of(0, 20));
+        Page<ProductResponse> result = productService.getAllProducts(PageRequest.of(0, 20));
 
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getContent().get(0).name()).isEqualTo("Product");

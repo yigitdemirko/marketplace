@@ -73,7 +73,6 @@ public class ReindexService {
                 .price(p.get("price") != null ? new BigDecimal(p.get("price").toString()) : null)
                 .stock(p.get("stock") != null ? ((Number) p.get("stock")).intValue() : null)
                 .categoryId((String) p.get("categoryId"))
-                .locale((String) p.get("locale"))
                 .brand((String) p.get("brand"))
                 .images((List<String>) p.get("images"))
                 .attributes((Map<String, String>) p.get("attributes"))
