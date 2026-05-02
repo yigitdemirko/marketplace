@@ -10,7 +10,13 @@ import {
   Package,
   ShoppingCart,
 } from 'lucide-react'
-import { useCartStore } from '@/store/cartStore'
+import {
+  useBasket,
+  useAddBasketItem,
+  useRemoveBasketItem,
+  useSetBasketItem,
+  useClearBasket,
+} from '@/hooks/useBasket'
 import { useAuthStore } from '@/store/authStore'
 import { useToastStore } from '@/store/toastStore'
 import { productsApi } from '@/api/products'
@@ -19,6 +25,8 @@ import { formatPrice } from '@/lib/formatPrice'
 
 const DELIVERY_COST = 25
 const TAX_RATE = 0.08
+const PAYMENT_MAX_AMOUNT = Number(import.meta.env.VITE_PAYMENT_MAX_AMOUNT ?? 100000)
+const PAYMENT_MAX_AMOUNT_WARN = PAYMENT_MAX_AMOUNT * 0.9
 
 function SuggestedProductCard({
   product,
@@ -71,7 +79,11 @@ function SuggestedProductCard({
 }
 
 export function CartPage() {
-  const { items, removeItem, updateQuantity, clearCart, addItem, totalAmount, totalItems } = useCartStore()
+  const { items, totalItems, totalAmount } = useBasket()
+  const addItem = useAddBasketItem()
+  const removeItem = useRemoveBasketItem()
+  const updateQuantity = useSetBasketItem()
+  const clearCart = useClearBasket()
   const { isAuthenticated } = useAuthStore()
   const showToast = useToastStore((s) => s.show)
   const navigate = useNavigate()
@@ -99,9 +111,11 @@ export function CartPage() {
     })
   }
 
-  const subtotal = totalAmount()
+  const subtotal = totalAmount
   const tax = subtotal * TAX_RATE
   const total = subtotal + DELIVERY_COST + tax
+  const overLimit = total > PAYMENT_MAX_AMOUNT
+  const nearLimit = total > PAYMENT_MAX_AMOUNT_WARN && !overLimit
 
   const deliveryDate = new Date()
   deliveryDate.setDate(deliveryDate.getDate() + 5)
@@ -133,7 +147,18 @@ export function CartPage() {
       <div className="max-w-[1180px] mx-auto px-4 py-8">
 
         <h1 className="text-[24px] font-semibold text-[#14181f] mb-1">Sepetiniz</h1>
-        <p className="text-[15px] text-[#6f7c8e] mb-6">Sepetinizde {totalItems()} ürün</p>
+        <p className="text-[15px] text-[#6f7c8e] mb-6">Sepetinizde {totalItems} ürün</p>
+
+        {overLimit && (
+          <div className="mb-5 rounded-[8px] border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-700">
+            Sepet tutarınız {formatPrice(PAYMENT_MAX_AMOUNT)} limitini aşıyor. Lütfen ürün çıkarın veya adetleri azaltın.
+          </div>
+        )}
+        {nearLimit && (
+          <div className="mb-5 rounded-[8px] border border-amber-200 bg-amber-50 px-4 py-3 text-[14px] text-amber-700">
+            Sepet tutarınız {formatPrice(PAYMENT_MAX_AMOUNT)} limitine yaklaşıyor.
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-5 items-start">
 
@@ -144,8 +169,8 @@ export function CartPage() {
                 {index > 0 && <div className="h-px bg-[#dce0e5]" />}
                 <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 p-4">
                   <div className="shrink-0 size-[60px] bg-[#f6f6f8] border border-[#dce0e5] rounded-[6px] overflow-hidden flex items-center justify-center">
-                    {item.image ? (
-                      <img src={item.image} alt={item.name} className="w-full h-full object-contain mix-blend-multiply" />
+                    {item.imageUrl ? (
+                      <img src={item.imageUrl} alt={item.name} className="w-full h-full object-contain mix-blend-multiply" />
                     ) : (
                       <Package className="h-6 w-6 text-gray-300" />
                     )}
@@ -153,13 +178,13 @@ export function CartPage() {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-[15px] font-semibold text-[#14181f] leading-snug truncate">{item.name}</p>
-                    <p className="text-[13px] text-[#6f7c8e] mt-0.5">Fiyat: {formatPrice(item.price)} / adet</p>
+                    <p className="text-[13px] text-[#6f7c8e] mt-0.5">Fiyat: {formatPrice(item.currentPrice)} / adet</p>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
                     <select
                       value={item.quantity}
-                      onChange={(e) => updateQuantity(item.productId, Number(e.target.value))}
+                      onChange={(e) => updateQuantity.mutate({ productId: item.productId, quantity: Number(e.target.value) })}
                       className="border border-[#dce0e5] rounded-[6px] text-[14px] text-[#14181f] px-2 py-1.5 bg-white outline-none cursor-pointer focus:border-[#3348ff]"
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
@@ -176,7 +201,7 @@ export function CartPage() {
                     </button>
 
                     <button
-                      onClick={() => { removeItem(item.productId); showToast('Ürün sepetten çıkarıldı') }}
+                      onClick={() => { removeItem.mutate(item.productId); showToast('Ürün sepetten çıkarıldı') }}
                       className="p-1.5 rounded hover:bg-[#f6f7f9] transition-colors"
                       aria-label="Ürünü kaldır"
                     >
@@ -185,7 +210,7 @@ export function CartPage() {
                   </div>
 
                   <div className="shrink-0 min-w-0 sm:min-w-[96px] text-right ml-auto sm:ml-0">
-                    <p className="text-[15px] font-semibold text-[#14181f]">{formatPrice(item.price * item.quantity)}</p>
+                    <p className="text-[15px] font-semibold text-[#14181f]">{formatPrice(item.lineTotal)}</p>
                   </div>
                 </div>
               </div>
@@ -193,7 +218,7 @@ export function CartPage() {
 
             <div className="h-px bg-[#dce0e5]" />
             <div className="px-4 py-3">
-              <button onClick={() => { clearCart(); showToast('Sepet boşaltıldı') }} className="text-[14px] text-[#3348ff] hover:underline">
+              <button onClick={() => { clearCart.mutate(); showToast('Sepet boşaltıldı') }} className="text-[14px] text-[#3348ff] hover:underline">
                 Sepeti boşalt
               </button>
             </div>
@@ -203,7 +228,7 @@ export function CartPage() {
           <div className="bg-white border border-[#dce0e5] rounded-[8px] p-4 sticky top-4">
             <div className="space-y-3 mb-4">
               <div className="flex justify-between text-[15px]">
-                <span className="text-[#6f7c8e]">{totalItems()} ürün:</span>
+                <span className="text-[#6f7c8e]">{totalItems} ürün:</span>
                 <span className="text-[#14181f] font-medium">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-[15px]">
@@ -225,7 +250,9 @@ export function CartPage() {
 
             <button
               onClick={handleCheckout}
-              className="w-full h-[48px] bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[8px] text-[15px] font-medium flex items-center justify-center gap-2 transition-colors mb-4"
+              disabled={overLimit}
+              className="w-full h-[48px] bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[8px] text-[15px] font-medium flex items-center justify-center gap-2 transition-colors mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              title={overLimit ? `Sepet tutarı ${formatPrice(PAYMENT_MAX_AMOUNT)}'i aşıyor` : undefined}
             >
               Ödemeye geç <ArrowRight className="h-4 w-4" />
             </button>
@@ -249,13 +276,15 @@ export function CartPage() {
                   key={product.id}
                   product={product}
                   onAddToCart={() =>
-                    addItem({
+                    addItem.mutate({
                       productId: product.id,
-                      sellerId: product.sellerId,
-                      name: product.name,
-                      price: product.price,
                       quantity: 1,
-                      image: product.images?.[0],
+                      snapshot: {
+                        sellerId: product.sellerId,
+                        name: product.name,
+                        price: product.price,
+                        image: product.images?.[0],
+                      },
                     })
                   }
                 />

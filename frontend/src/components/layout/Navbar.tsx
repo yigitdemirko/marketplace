@@ -3,11 +3,12 @@ import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { ShoppingBag, UserCircle, LogOut, Menu, X, Search } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
-import { useCartStore } from '@/store/cartStore'
 import { useCartDrawer } from '@/store/cartDrawerStore'
 import { useToastStore } from '@/store/toastStore'
 import { searchApi } from '@/api/search'
 import { authApi } from '@/api/auth'
+import { useBasket } from '@/hooks/useBasket'
+import { useAuthFlow } from '@/hooks/useAuthFlow'
 import { formatPrice } from '@/lib/formatPrice'
 import { NotificationBell } from './NotificationBell'
 
@@ -23,10 +24,11 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export function Navbar() {
-  const { user, isAuthenticated, logout } = useAuthStore()
+  const { user, isAuthenticated } = useAuthStore()
+  const { onLogout } = useAuthFlow()
   const showToast = useToastStore((s) => s.show)
   const isBuyer = isAuthenticated && user?.accountType === 'BUYER'
-  const totalItems = useCartStore((state) => state.totalItems())
+  const { totalItems } = useBasket()
   const navigate = useNavigate()
   const { location } = useRouterState()
   const openDrawer = useCartDrawer((s) => s.open)
@@ -205,7 +207,7 @@ export function Navbar() {
                 </span>
               </Link>
               <button
-                onClick={() => { authApi.logout().finally(() => { logout(); showToast('Çıkış yapıldı'); }) }}
+                onClick={() => { authApi.logout().finally(() => { onLogout(); showToast('Çıkış yapıldı'); }) }}
                 className="flex flex-col items-center gap-0.5 cursor-pointer"
               >
                 <LogOut className="h-6 w-6 text-[#6f7c8e]" />
@@ -271,7 +273,7 @@ export function Navbar() {
           <div className="flex items-center justify-around border-t border-[#dce0e5] pt-4">
             {isBuyer ? (
               <button
-                onClick={() => { authApi.logout().finally(() => { logout(); showToast('Çıkış yapıldı'); setMobileMenuOpen(false) }) }}
+                onClick={() => { authApi.logout().finally(() => { onLogout(); showToast('Çıkış yapıldı'); setMobileMenuOpen(false) }) }}
                 className="flex flex-col items-center gap-1"
               >
                 <LogOut className="h-6 w-6 text-[#6f7c8e]" />
