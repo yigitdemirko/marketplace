@@ -25,6 +25,7 @@ public class SecurityConfig {
                                 "/api/v1/auth/**",
                                 "/api/v1/users/seller/**",
                                 "/api/v1/users/*/contact",
+                                "/api/v1/profile/**",
                                 "/actuator/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
