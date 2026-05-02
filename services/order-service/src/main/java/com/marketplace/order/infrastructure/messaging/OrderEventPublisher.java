@@ -2,15 +2,15 @@ package com.marketplace.order.infrastructure.messaging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.common.events.OrderCancelledEvent;
+import com.marketplace.common.events.OrderCreatedEvent;
+import com.marketplace.common.messaging.KafkaTopics;
 import com.marketplace.order.domain.model.Order;
 import com.marketplace.order.domain.model.OutboxEvent;
 import com.marketplace.order.domain.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -21,33 +21,29 @@ public class OrderEventPublisher {
     private final ObjectMapper objectMapper;
 
     public void publishOrderCreated(Order order) {
-        Map<String, Object> event = new HashMap<>();
-        event.put("orderId", order.getId());
-        event.put("userId", order.getUserId());
-        event.put("items", order.getItems().stream().map(item -> {
-            Map<String, Object> itemMap = new HashMap<>();
-            itemMap.put("productId", item.getProductId());
-            itemMap.put("sellerId", item.getSellerId());
-            itemMap.put("quantity", item.getQuantity());
-            itemMap.put("unitPrice", item.getUnitPrice());
-            return itemMap;
-        }).toList());
-        event.put("totalAmount", order.getTotalAmount());
-
-        saveOutbox("order.created", order.getId(), event);
+        OrderCreatedEvent event = new OrderCreatedEvent(
+                order.getId(),
+                order.getUserId(),
+                order.getItems().stream()
+                        .map(item -> new OrderCreatedEvent.Item(
+                                item.getProductId(),
+                                item.getSellerId(),
+                                item.getQuantity(),
+                                item.getUnitPrice()))
+                        .toList(),
+                order.getTotalAmount()
+        );
+        saveOutbox(KafkaTopics.ORDER_CREATED, order.getId(), event);
         log.info("Order created event queued: orderId={}", order.getId());
     }
 
     public void publishOrderCancelled(Order order) {
-        Map<String, Object> event = new HashMap<>();
-        event.put("orderId", order.getId());
-        event.put("userId", order.getUserId());
-
-        saveOutbox("order.cancelled", order.getId(), event);
+        OrderCancelledEvent event = new OrderCancelledEvent(order.getId(), order.getUserId());
+        saveOutbox(KafkaTopics.ORDER_CANCELLED, order.getId(), event);
         log.info("Order cancelled event queued: orderId={}", order.getId());
     }
 
-    private void saveOutbox(String eventType, String aggregateId, Map<String, Object> payload) {
+    private void saveOutbox(String eventType, String aggregateId, Object payload) {
         try {
             String json = objectMapper.writeValueAsString(payload);
             outboxEventRepository.save(OutboxEvent.create(eventType, aggregateId, json));

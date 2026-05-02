@@ -2,15 +2,15 @@ package com.marketplace.payment.infrastructure.messaging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.common.events.PaymentCompletedEvent;
+import com.marketplace.common.events.PaymentFailedEvent;
+import com.marketplace.common.messaging.KafkaTopics;
 import com.marketplace.payment.domain.model.Payment;
 import com.marketplace.payment.domain.model.PaymentOutboxEvent;
 import com.marketplace.payment.domain.repository.PaymentOutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -21,28 +21,28 @@ public class PaymentEventPublisher {
     private final ObjectMapper objectMapper;
 
     public void publishPaymentCompleted(Payment payment) {
-        Map<String, Object> event = new HashMap<>();
-        event.put("paymentId", payment.getId());
-        event.put("orderId", payment.getOrderId());
-        event.put("userId", payment.getUserId());
-        event.put("amount", payment.getAmount());
-
-        saveOutbox("payment.completed", payment.getOrderId(), event);
+        PaymentCompletedEvent event = new PaymentCompletedEvent(
+                payment.getId(),
+                payment.getOrderId(),
+                payment.getUserId(),
+                payment.getAmount()
+        );
+        saveOutbox(KafkaTopics.PAYMENT_COMPLETED, payment.getOrderId(), event);
         log.info("Payment completed event queued: orderId={}", payment.getOrderId());
     }
 
     public void publishPaymentFailed(Payment payment) {
-        Map<String, Object> event = new HashMap<>();
-        event.put("paymentId", payment.getId());
-        event.put("orderId", payment.getOrderId());
-        event.put("userId", payment.getUserId());
-        event.put("reason", payment.getFailureReason());
-
-        saveOutbox("payment.failed", payment.getOrderId(), event);
+        PaymentFailedEvent event = new PaymentFailedEvent(
+                payment.getId(),
+                payment.getOrderId(),
+                payment.getUserId(),
+                payment.getFailureReason()
+        );
+        saveOutbox(KafkaTopics.PAYMENT_FAILED, payment.getOrderId(), event);
         log.info("Payment failed event queued: orderId={}", payment.getOrderId());
     }
 
-    private void saveOutbox(String eventType, String aggregateId, Map<String, Object> payload) {
+    private void saveOutbox(String eventType, String aggregateId, Object payload) {
         try {
             String json = objectMapper.writeValueAsString(payload);
             outboxRepository.save(PaymentOutboxEvent.create(eventType, aggregateId, json));
