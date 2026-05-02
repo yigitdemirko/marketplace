@@ -20,7 +20,7 @@
 
 set -euo pipefail
 
-GATEWAY="${GATEWAY_URL:-https://api.bilbos-shop.com}"
+GATEWAY="${GATEWAY_URL:-http://localhost:8080}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SEED_DIR="$ROOT/docs/seed"
 PASSWORD="Demo1234"
