@@ -4,7 +4,7 @@ import { CartDrawer } from '@/components/shared/CartDrawer'
 import { Toast } from '@/components/shared/Toast'
 
 const FULLSCREEN_ROUTES = ['/login', '/register']
-const NO_CONTAINER_ROUTES = ['/', '/checkout', '/search']
+const NO_CONTAINER_ROUTES = ['/', '/checkout', '/search', '/account']
 
 export function Layout() {
   const { location } = useRouterState()

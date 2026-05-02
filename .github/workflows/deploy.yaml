@@ -419,3 +419,6 @@ jobs:
             pnpm install
             VITE_API_BASE_URL=https://api.bilbos-shop.com pnpm build
             cp -r dist/* /var/www/html/
+            cp ${{ secrets.DEPLOY_PATH }}/infrastructure/nginx/bilbos-shop.com.conf /etc/nginx/sites-available/bilbos-shop.com.conf
+            ln -sf /etc/nginx/sites-available/bilbos-shop.com.conf /etc/nginx/sites-enabled/bilbos-shop.com.conf
+            nginx -t && systemctl reload nginx
