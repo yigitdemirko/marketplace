@@ -22,14 +22,15 @@ export function LoginPage() {
     setError('')
     setLoading(true)
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+    if (!emailRegex.test(email)) {
+      setError('Geçerli bir e-posta adresi girin')
+      setLoading(false)
+      return
+    }
+
     try {
-      const user = await authApi.login({ email, password })
-
-      if (user.accountType !== 'BUYER') {
-        setError('Bu e-posta bir satıcı hesabına kayıtlı. Lütfen satıcı giriş sayfasını kullanın.')
-        return
-      }
-
+      const user = await authApi.loginBuyer({ email, password })
       setAuth(user)
 
       const params = new URLSearchParams(window.location.search)
@@ -55,6 +56,13 @@ export function LoginPage() {
       {/* Right: Login Form */}
       <div className="flex flex-1 flex-col justify-center overflow-y-auto bg-card px-8 py-12 lg:px-16 xl:px-24">
         <div className="w-full max-w-[445px] mx-auto space-y-8">
+          <a href="/" className="flex items-center gap-2">
+            <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center">
+              <span className="text-white font-bold text-sm">B</span>
+            </div>
+            <span className="font-bold text-[#14181f] text-[16px]">Bilbo's</span>
+          </a>
+
           <div className="space-y-1.5">
             <h1 className="text-3xl font-bold text-foreground">Hoş geldiniz 👋</h1>
             <p className="text-base text-muted-foreground">Giriş yapmak için bilgilerinizi girin</p>
@@ -101,12 +109,6 @@ export function LoginPage() {
                   />
                   <span className="text-base text-foreground">Beni hatırla</span>
                 </label>
-                <a
-                  href="/forgot-password"
-                  className="text-sm text-foreground hover:text-primary transition-colors"
-                >
-                  Şifremi unuttum?
-                </a>
               </div>
             </div>
 

@@ -79,6 +79,36 @@ public class AuthController {
         return ResponseEntity.ok(authService.toResponse(result));
     }
 
+    @PostMapping("/buyer/login")
+    @Operation(summary = "Buyer login", description = "Authenticates a buyer. Returns 401 if the account is not a buyer.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials or wrong account type")
+    })
+    public ResponseEntity<AuthResponse> loginBuyer(
+            @Valid @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest,
+            HttpServletResponse response) {
+        AuthResult result = authService.loginBuyer(request, getIp(httpRequest), getUserAgent(httpRequest));
+        setAuthCookies(response, result);
+        return ResponseEntity.ok(authService.toResponse(result));
+    }
+
+    @PostMapping("/seller/login")
+    @Operation(summary = "Seller login", description = "Authenticates a seller. Returns 401 if the account is not a seller.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials or wrong account type")
+    })
+    public ResponseEntity<AuthResponse> loginSeller(
+            @Valid @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest,
+            HttpServletResponse response) {
+        AuthResult result = authService.loginSeller(request, getIp(httpRequest), getUserAgent(httpRequest));
+        setAuthCookies(response, result);
+        return ResponseEntity.ok(authService.toResponse(result));
+    }
+
     @PostMapping("/refresh")
     @Operation(
             summary = "Rotate refresh token",

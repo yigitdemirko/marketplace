@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { authApi } from '@/api/auth'
 import { useAuthStore } from '@/store/authStore'
+import { TermsModal } from '@/components/auth/TermsModal'
 
 const heroImage = 'https://www.figma.com/api/mcp/asset/4049e18f-25b0-4761-8425-d100dd14592c'
 
@@ -16,6 +17,8 @@ export function SellerRegisterPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [showTermsModal, setShowTermsModal] = useState(false)
+  const [termsPopupShown, setTermsPopupShown] = useState(false)
 
   const [form, setForm] = useState({
     email: '',
@@ -29,6 +32,13 @@ export function SellerRegisterPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+    if (!emailRegex.test(form.email)) {
+      setError('Geçerli bir e-posta adresi girin')
+      setLoading(false)
+      return
+    }
+
     try {
       const user = await authApi.registerSeller(form)
       setAuth(user)
@@ -54,12 +64,12 @@ export function SellerRegisterPage() {
       <div className="flex flex-1 flex-col justify-center overflow-y-auto bg-card px-8 py-12 lg:px-16 xl:px-24">
         <div className="w-full max-w-[445px] mx-auto space-y-8">
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2 mb-4">
+            <a href={import.meta.env.VITE_BUYER_URL ?? '/'} className="flex items-center gap-2 mb-4">
               <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">B</span>
               </div>
               <span className="font-bold text-[#14181f] text-[16px]">Satıcı Paneli</span>
-            </div>
+            </a>
             <h1 className="text-3xl font-bold text-foreground">Satıcı hesabı oluştur</h1>
             <p className="text-base text-muted-foreground">Bilbo's üzerinde satışa başlayın</p>
           </div>
@@ -142,7 +152,13 @@ export function SellerRegisterPage() {
                 <input
                   type="checkbox"
                   checked={agreedToTerms}
-                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  onChange={(e) => {
+                    if (!termsPopupShown && e.target.checked) {
+                      setShowTermsModal(true)
+                    } else {
+                      setAgreedToTerms(e.target.checked)
+                    }
+                  }}
                   required
                   className="size-5 rounded accent-primary cursor-pointer"
                 />
@@ -150,6 +166,21 @@ export function SellerRegisterPage() {
                   <span className="font-bold">Kullanım koşullarını</span> kabul ediyorum
                 </span>
               </label>
+
+              {showTermsModal && (
+                <TermsModal
+                  onAccept={() => {
+                    setAgreedToTerms(true)
+                    setShowTermsModal(false)
+                    setTermsPopupShown(true)
+                  }}
+                  onReject={() => {
+                    setAgreedToTerms(false)
+                    setShowTermsModal(false)
+                    setTermsPopupShown(true)
+                  }}
+                />
+              )}
             </div>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
