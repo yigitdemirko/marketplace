@@ -25,6 +25,12 @@ export const authApi = {
   login: (data: LoginRequest) =>
     apiClient.post<User>('/api/v1/auth/login', data),
 
+  loginBuyer: (data: LoginRequest) =>
+    apiClient.post<User>('/api/v1/auth/buyer/login', data),
+
+  loginSeller: (data: LoginRequest) =>
+    apiClient.post<User>('/api/v1/auth/seller/login', data),
+
   registerBuyer: (data: BuyerRegisterRequest) =>
     apiClient.post<User>('/api/v1/auth/buyer/register', data),
 
