@@ -31,6 +31,8 @@ public class StockReservation {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    private LocalDateTime expiresAt;
+
     @Getter
     @Setter
     @Builder

@@ -6,12 +6,15 @@ import com.marketplace.inventory.domain.repository.StockReservationRepository;
 import com.marketplace.inventory.infrastructure.messaging.InventoryEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +30,9 @@ public class StockService {
     private final StockReservationRepository reservationRepository;
     private final ProductStockRepository productStockRepository;
     private final InventoryEventPublisher eventPublisher;
+
+    @Value("${app.reservation.ttl-minutes:15}")
+    private long reservationTtlMinutes;
 
     public ProductStock setStock(String productId, String sellerId, int newStock) {
         if (newStock < 0) {
@@ -74,8 +80,9 @@ public class StockService {
                 .orderId(orderId)
                 .items(items)
                 .status(StockReservation.Status.RESERVED)
+                .expiresAt(LocalDateTime.now().plus(Duration.ofMinutes(reservationTtlMinutes)))
                 .build());
-        log.info("Stock reserved: orderId={}, items={}", orderId, items.size());
+        log.info("Stock reserved: orderId={}, items={}, ttlMinutes={}", orderId, items.size(), reservationTtlMinutes);
         return Optional.empty();
     }
 

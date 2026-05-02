@@ -30,6 +30,14 @@ public class StockEventConsumer {
         orderService.cancelOrderBySaga(orderId, reason);
     }
 
+    @KafkaListener(topics = "stock.reservation.expired", groupId = "order-service")
+    public void handleStockReservationExpired(Map<String, Object> event) {
+        String orderId = (String) event.get("orderId");
+        String reason = (String) event.get("reason");
+        log.info("Stock reservation expired event received: orderId={}", orderId);
+        orderService.cancelOrderBySaga(orderId, reason);
+    }
+
     @KafkaListener(topics = "payment.completed", groupId = "order-service")
     public void handlePaymentCompleted(Map<String, Object> event) {
         String orderId = (String) event.get("orderId");
