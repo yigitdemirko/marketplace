@@ -21,18 +21,12 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
         spring.json.value.default.type: java.util.HashMap
-  mail:
-    host: localhost
-    port: 3025
-    username: ""
-    password: ""
-    properties:
-      mail:
-        smtp:
-          auth: false
-          starttls:
-            enable: false
 
 eureka:
   client:
     enabled: false
+
+notifications:
+  sse:
+    timeout-ms: 5000
+    heartbeat-ms: 60000

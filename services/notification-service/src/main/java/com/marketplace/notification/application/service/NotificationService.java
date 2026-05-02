@@ -1,60 +1,61 @@
 package com.marketplace.notification.application.service;
 
+import com.marketplace.notification.api.v1.dto.NotificationResponse;
+import com.marketplace.notification.domain.model.Notification;
+import com.marketplace.notification.domain.repository.NotificationRepository;
+import com.marketplace.notification.infrastructure.sse.NotificationStreamRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
 
-    private final JavaMailSender mailSender;
+    private final NotificationRepository repository;
+    private final NotificationStreamRegistry streamRegistry;
 
-    public void sendOrderCreatedNotification(String recipientEmail, String orderId) {
-        sendEmail(
-                recipientEmail,
-                "Bilbo's — Order Received: " + orderId,
-                "Thank you for your order! Your order " + orderId + " has been received and is being processed.\n\nBilbo's — bilbos-shop.com"
-        );
+    @Transactional
+    public Notification create(String userId, Notification.Type type, String title, String body, String link) {
+        Notification saved = repository.save(Notification.create(userId, type, title, body, link));
+        streamRegistry.push(userId, "notification", NotificationResponse.from(saved));
+        log.info("Notification created: userId={} type={} id={}", userId, type, saved.getId());
+        return saved;
     }
 
-    public void sendPaymentCompletedNotification(String recipientEmail, String orderId) {
-        sendEmail(
-                recipientEmail,
-                "Bilbo's — Payment Confirmed: " + orderId,
-                "Great news! Payment for your order " + orderId + " has been confirmed. We will notify you once your items are on their way.\n\nBilbo's — bilbos-shop.com"
-        );
+    @Transactional(readOnly = true)
+    public Page<Notification> list(String userId, boolean unreadOnly, Pageable pageable) {
+        return unreadOnly
+                ? repository.findByUserIdAndReadFalseOrderByCreatedAtDesc(userId, pageable)
+                : repository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
     }
 
-    public void sendPaymentFailedNotification(String recipientEmail, String orderId, String reason) {
-        sendEmail(
-                recipientEmail,
-                "Bilbo's — Payment Failed: " + orderId,
-                "Unfortunately, the payment for your order " + orderId + " could not be processed. Reason: " + reason + "\n\nPlease try again at bilbos-shop.com"
-        );
+    @Transactional(readOnly = true)
+    public long unreadCount(String userId) {
+        return repository.countByUserIdAndReadFalse(userId);
     }
 
-    public void sendOrderCancelledNotification(String recipientEmail, String orderId) {
-        sendEmail(
-                recipientEmail,
-                "Bilbo's — Order Cancelled: " + orderId,
-                "Your order " + orderId + " has been cancelled. If you have any questions, please visit bilbos-shop.com\n\nBilbo's — bilbos-shop.com"
-        );
+    @Transactional
+    public void markRead(String userId, UUID notificationId) {
+        repository.findById(notificationId).ifPresent(n -> {
+            if (!n.getUserId().equals(userId)) {
+                throw new SecurityException("Not the owner of this notification");
+            }
+            if (!n.isRead()) {
+                n.setRead(true);
+                repository.save(n);
+            }
+        });
     }
 
-    private void sendEmail(String to, String subject, String text) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(to);
-            message.setSubject(subject);
-            message.setText(text);
-            mailSender.send(message);
-            log.info("Email sent: to={}, subject={}", to, subject);
-        } catch (Exception e) {
-            log.error("Failed to send email: to={}, subject={}", to, subject, e);
-        }
+    @Transactional
+    public int markAllRead(String userId) {
+        return repository.markAllReadForUser(userId);
     }
 }

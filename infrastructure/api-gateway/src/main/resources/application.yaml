@@ -47,6 +47,10 @@ spring:
               uri: lb://inventory-service
               predicates:
                 - Path=/api/v1/inventory/**
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - Path=/api/v1/notifications/**
             - id: user-service-docs
               uri: lb://user-service
               predicates:
@@ -89,6 +93,12 @@ spring:
                 - Path=/api-docs/inventory-service
               filters:
                 - RewritePath=/api-docs/inventory-service, /v3/api-docs
+            - id: notification-service-docs
+              uri: lb://notification-service
+              predicates:
+                - Path=/api-docs/notification-service
+              filters:
+                - RewritePath=/api-docs/notification-service, /v3/api-docs
           globalcors:
             cors-configurations:
               '[/**]':
@@ -124,6 +134,8 @@ springdoc:
         url: /api-docs/feed-ingestion-service
       - name: inventory-service
         url: /api-docs/inventory-service
+      - name: notification-service
+        url: /api-docs/notification-service
     server-url: ${API_SERVER_URL:http://localhost:8080}
 
 jwt:
