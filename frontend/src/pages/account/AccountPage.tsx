@@ -182,8 +182,8 @@ export function AccountPage() {
   }
 
   const { data: orders, isLoading } = useQuery({
-    queryKey: ['orders', user.userId],
-    queryFn: () => ordersApi.getAll(user.userId),
+    queryKey: ['orders', user?.userId],
+    queryFn: () => ordersApi.getAll(user!.userId),
     enabled: !!user,
   })
 
@@ -202,7 +202,7 @@ export function AccountPage() {
         <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
           <h2 className="text-[26px] font-bold text-[#14181f] mb-1">Hesabım</h2>
           <p className="text-[14px] text-[#6f7c8e]">
-            {user.email}
+            {user?.email}
           </p>
         </div>
       </div>

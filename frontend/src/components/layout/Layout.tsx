@@ -28,7 +28,7 @@ export function Layout() {
         <Navbar />
         <CartDrawer />
         <Toast />
-        <div key={location.key} className="animate-page-in">
+        <div key={location.href} className="animate-page-in">
           <Outlet />
         </div>
       </div>
@@ -42,7 +42,7 @@ export function Layout() {
       <CartDrawer />
       <Toast />
       <main className="container mx-auto px-4 py-8">
-        <div key={location.key} className="animate-page-in">
+        <div key={location.href} className="animate-page-in">
           <Outlet />
         </div>
       </main>
