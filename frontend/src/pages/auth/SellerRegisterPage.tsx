@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { sellerPath } from '@/lib/sellerBase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -35,7 +34,7 @@ export function SellerRegisterPage() {
       localStorage.setItem('token', user.token)
       setAuth(user)
       const params = new URLSearchParams(window.location.search)
-      navigate({ to: (params.get('redirect') ?? sellerPath('')) as '/seller' })
+      navigate({ to: (params.get('redirect') ?? '/') as '/' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Kayıt başarısız')
     } finally {
@@ -166,7 +165,7 @@ export function SellerRegisterPage() {
 
             <p className="text-sm text-center text-muted-foreground">
               Satıcı hesabınız var mı?{' '}
-              <a href="/seller/login" className="text-primary hover:underline font-medium">
+              <a href="/login" className="text-primary hover:underline font-medium">
                 Giriş yap
               </a>
             </p>

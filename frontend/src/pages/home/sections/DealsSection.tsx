@@ -1,5 +1,3 @@
-import { Link } from '@tanstack/react-router'
-
 export function SellerCTASection() {
   return (
     <section className="py-5 bg-[#f6f7f9]">
@@ -41,12 +39,12 @@ export function SellerCTASection() {
                 </li>
               </ul>
 
-              <Link
-                to="/seller/register"
+              <a
+                href={`${import.meta.env.VITE_SELLER_URL ?? ''}/register`}
                 className="bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[6px] px-6 py-3 text-[15px] font-medium text-center transition-colors mt-2"
               >
                 Hemen satışa başla
-              </Link>
+              </a>
             </div>
           </div>
         </div>

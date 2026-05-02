@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
-import { sellerPath } from '@/lib/sellerBase'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, X, Plus, Upload, Loader2 } from 'lucide-react'
 import { productsApi } from '@/api/products'
@@ -100,7 +99,7 @@ export function SellerProductFormPage() {
     mutationFn: () => productsApi.create(buildPayload(), user!.userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['seller-products'] })
-      navigate({ to: sellerPath('/products') as '/seller/products' })
+      navigate({ to: '/products' } as never)
     },
     onError: (err) => setError(err instanceof Error ? err.message : 'Ürün oluşturulamadı'),
   })
@@ -109,7 +108,7 @@ export function SellerProductFormPage() {
     mutationFn: () => productsApi.update(productId!, buildPayload(), user!.userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['seller-products'] })
-      navigate({ to: sellerPath('/products') as '/seller/products' })
+      navigate({ to: '/products' } as never)
     },
     onError: (err) => setError(err instanceof Error ? err.message : 'Ürün güncellenemedi'),
   })
@@ -125,7 +124,7 @@ export function SellerProductFormPage() {
   return (
     <div className="max-w-[720px]">
       <button
-        onClick={() => navigate({ to: sellerPath('/products') as '/seller/products' })}
+        onClick={() => navigate({ to: '/products' } as never)}
         className="flex items-center gap-2 text-[14px] text-[#6f7c8e] hover:text-[#14181f] mb-5 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />

@@ -130,7 +130,7 @@ export function LoginPage() {
 
             <p className="text-sm text-center text-muted-foreground">
               Satıcı mısınız?{' '}
-              <a href="/seller/login" className="text-primary hover:underline font-medium">
+              <a href={`${import.meta.env.VITE_SELLER_URL ?? ''}/login`} className="text-primary hover:underline font-medium">
                 Satıcı girişi
               </a>
             </p>
