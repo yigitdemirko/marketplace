@@ -2,28 +2,28 @@ import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 
 const testimonials = [
   {
-    name: 'Leslie Alexander',
-    role: 'Buyer',
+    name: 'Leyla Aydın',
+    role: 'Alıcı',
     initials: 'LA',
     rating: 5,
     review:
-      'Found exactly what I was looking for at a great price. The seller shipped fast and the product matched the description perfectly. Will definitely buy again.',
+      'Aradığımı tam olarak harika bir fiyata buldum. Satıcı hızlı kargoladı ve ürün açıklamayla bire bir uyuştu. Kesinlikle tekrar alışveriş yapacağım.',
   },
   {
-    name: 'Jacob Jones',
-    role: 'Seller',
-    initials: 'JJ',
+    name: 'Cem Yıldız',
+    role: 'Satıcı',
+    initials: 'CY',
     rating: 5,
     review:
-      'As a seller this platform has been amazing. Setting up my store was easy and I started getting orders within days. The buyer base is huge and growing.',
+      'Bir satıcı olarak bu platform harika. Mağazamı kurmak çok kolay oldu ve birkaç gün içinde sipariş almaya başladım. Alıcı kitlesi büyük ve sürekli büyüyor.',
   },
   {
-    name: 'Jenny Wilson',
-    role: 'Buyer',
-    initials: 'JW',
+    name: 'Zeynep Kaya',
+    role: 'Alıcı',
+    initials: 'ZK',
     rating: 4,
     review:
-      'Great variety of products across so many categories. I use it for everything from electronics to home goods. Prices are competitive and checkout is smooth.',
+      'Çok geniş kategoriler ve ürün çeşitliliği var. Elektronikten ev eşyalarına kadar her şey için kullanıyorum. Fiyatlar rekabetçi ve ödeme akışı sorunsuz.',
   },
 ]
 
@@ -33,8 +33,8 @@ export function TestimonialsSection() {
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h2 className="text-2xl font-bold text-foreground">What our Community say's</h2>
-            <p className="text-muted-foreground text-sm mt-1">Trusted by buyers and sellers alike</p>
+            <h2 className="text-2xl font-bold text-foreground">Kullanıcılarımız ne diyor</h2>
+            <p className="text-muted-foreground text-sm mt-1">Alıcı ve satıcılar Bilbo's'a güveniyor</p>
           </div>
           <div className="flex gap-2">
             <button className="w-9 h-9 border border-foreground/20 rounded flex items-center justify-center hover:border-foreground transition-colors">

@@ -9,7 +9,6 @@ import { useAuthStore } from '@/store/authStore'
 import { ordersApi } from '@/api/orders'
 import { paymentsApi } from '@/api/payments'
 import { cn } from '@/lib/utils'
-import { useLocaleStore } from '@/store/localeStore'
 import { formatPrice } from '@/lib/formatPrice'
 
 type CheckoutStep = 'shipping' | 'payment'
@@ -21,9 +20,9 @@ const DELIVERY_OPTIONS: {
   description: string
   cost: number
 }[] = [
-  { id: 'pickup', label: 'Self pick-up', description: 'From nearest location', cost: 0 },
-  { id: 'standard', label: 'Standart delivery', description: '7-10 days after order', cost: 9 },
-  { id: 'express', label: 'Express Delivery', description: '1-2 days after order', cost: 25 },
+  { id: 'pickup', label: 'Mağazadan teslim', description: 'En yakın şubeden', cost: 0 },
+  { id: 'standard', label: 'Standart kargo', description: 'Sipariş sonrası 7-10 gün', cost: 9 },
+  { id: 'express', label: 'Hızlı kargo', description: 'Sipariş sonrası 1-2 gün', cost: 25 },
 ]
 
 const TAX_RATE = 0.038
@@ -43,7 +42,7 @@ function FormField({
     <div className={cn('flex flex-col', className)}>
       <Label className="mb-1.5 text-sm font-medium text-[#14181f]">
         {label}
-        {optional && <span className="ml-1 text-[#929eaa] font-normal">(optional)</span>}
+        {optional && <span className="ml-1 text-[#929eaa] font-normal">(isteğe bağlı)</span>}
       </Label>
       {children}
     </div>
@@ -62,14 +61,13 @@ function OrderSummary({
   deliveryCost: number
 }) {
   const { items } = useCartStore()
-  const { locale } = useLocaleStore()
   const discount: number = 0
   const tax = subtotal * TAX_RATE
   const total = subtotal + deliveryCost + tax - discount
 
   return (
     <div className="p-5 md:p-10 bg-[#f6f7f9] h-full">
-      <p className="font-medium mb-6 text-[#14181f]">Order summary</p>
+      <p className="font-medium mb-6 text-[#14181f]">Sipariş özeti</p>
 
       <div className="flex flex-col gap-4">
         {items.map((item) => (
@@ -83,11 +81,11 @@ function OrderSummary({
             </div>
             <figcaption className="flex flex-1 flex-col gap-0.5 min-w-0">
               <p className="font-medium text-[#14181f] text-sm leading-tight line-clamp-2">{item.name}</p>
-              <p className="text-sm text-[#6f7c8e]">Qty: {item.quantity}</p>
+              <p className="text-sm text-[#6f7c8e]">Adet: {item.quantity}</p>
             </figcaption>
             <div className="text-right">
               <span className="text-sm text-[#6f7c8e] whitespace-nowrap">
-                {formatPrice(item.price * item.quantity, item.locale ?? 'EN')}
+                {formatPrice(item.price * item.quantity)}
               </span>
             </div>
           </figure>
@@ -101,41 +99,41 @@ function OrderSummary({
           type="text"
           value={coupon}
           onChange={(e) => onCouponChange(e.target.value)}
-          placeholder="Coupon code"
+          placeholder="Kupon kodu"
           className="flex-1 rounded-lg border border-[#dce0e5] bg-white px-3 text-sm text-[#14181f] placeholder:text-[#929eaa] outline-none h-10"
         />
         <button
           type="button"
           className="h-10 rounded-lg border border-[#dce0e5] bg-white px-4 text-sm font-medium text-[#14181f] hover:bg-white/80 transition-colors"
         >
-          Apply
+          Uygula
         </button>
       </div>
 
       <ul className="flex flex-col gap-2">
         <li className="flex items-center justify-between text-sm text-[#14181f]">
-          <span>Subtotal:</span>
-          <span>{formatPrice(subtotal, locale)}</span>
+          <span>Ara toplam:</span>
+          <span>{formatPrice(subtotal)}</span>
         </li>
         <li className="flex items-center justify-between text-sm text-[#14181f]">
-          <span>Discount:</span>
-          <span>{discount === 0 ? formatPrice(0, locale) : `- ${formatPrice(discount, locale)}`}</span>
+          <span>İndirim:</span>
+          <span>{discount === 0 ? formatPrice(0) : `- ${formatPrice(discount)}`}</span>
         </li>
         <li className="flex items-center justify-between text-sm text-[#14181f]">
-          <span>Delivery cost:</span>
-          <span>{formatPrice(deliveryCost, locale)}</span>
+          <span>Kargo:</span>
+          <span>{formatPrice(deliveryCost)}</span>
         </li>
         <li className="flex items-center justify-between text-sm text-[#14181f]">
-          <span>Tax:</span>
-          <span>{formatPrice(tax, locale)}</span>
+          <span>KDV:</span>
+          <span>{formatPrice(tax)}</span>
         </li>
       </ul>
 
       <hr className="my-4 border-[#dce0e5]" />
 
       <dl className="flex items-center justify-between">
-        <dt className="text-[#14181f]">Total:</dt>
-        <dd className="font-semibold text-xl text-[#14181f]">{formatPrice(total, locale)}</dd>
+        <dt className="text-[#14181f]">Toplam:</dt>
+        <dd className="font-semibold text-xl text-[#14181f]">{formatPrice(total)}</dd>
       </dl>
     </div>
   )
@@ -144,7 +142,6 @@ function OrderSummary({
 export function CheckoutPage() {
   const { items, totalAmount, clearCart } = useCartStore()
   const { user, isAuthenticated } = useAuthStore()
-  const { locale } = useLocaleStore()
   const navigate = useNavigate()
 
   const [step, setStep] = useState<CheckoutStep>('shipping')
@@ -191,11 +188,11 @@ export function CheckoutPage() {
     setError('')
 
     if (!user) {
-      setError('You must be logged in to place an order.')
+      setError('Sipariş vermek için giriş yapmalısınız.')
       return
     }
     if (items.length === 0) {
-      setError('Your cart is empty.')
+      setError('Sepetiniz boş.')
       return
     }
 
@@ -228,7 +225,7 @@ export function CheckoutPage() {
       clearCart()
       setSuccess(true)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Checkout failed')
+      setError(err instanceof Error ? err.message : 'Ödeme başarısız')
     } finally {
       setLoading(false)
     }
@@ -238,9 +235,9 @@ export function CheckoutPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <div className="text-5xl">🎉</div>
-        <h2 className="text-2xl font-bold">Order Placed!</h2>
-        <p className="text-muted-foreground">Your order has been successfully placed.</p>
-        <Button onClick={() => navigate({ to: '/orders' })}>View Orders</Button>
+        <h2 className="text-2xl font-bold">Siparişiniz alındı!</h2>
+        <p className="text-muted-foreground">Siparişiniz başarıyla oluşturuldu.</p>
+        <Button onClick={() => navigate({ to: '/orders' })}>Siparişlerimi gör</Button>
       </div>
     )
   }
@@ -262,32 +259,32 @@ export function CheckoutPage() {
                 >
                   {/* Contact information */}
                   <article className="mb-5">
-                    <h4 className="mb-5 text-xl font-semibold text-[#14181f]">Contact information</h4>
+                    <h4 className="mb-5 text-xl font-semibold text-[#14181f]">İletişim bilgileri</h4>
                     <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-4 mb-6">
-                      <FormField label="Name">
+                      <FormField label="Ad">
                         <Input
                           value={contact.name}
                           onChange={(e) => setContact({ ...contact, name: e.target.value })}
-                          placeholder="Type here"
+                          placeholder="Buraya yazın"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                           required
                         />
                       </FormField>
-                      <FormField label="Surname">
+                      <FormField label="Soyad">
                         <Input
                           value={contact.surname}
                           onChange={(e) => setContact({ ...contact, surname: e.target.value })}
-                          placeholder="Type here"
+                          placeholder="Buraya yazın"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                           required
                         />
                       </FormField>
-                      <FormField label="Email" className="md:col-span-2">
+                      <FormField label="E-posta" className="md:col-span-2">
                         <Input
                           type="email"
                           value={contact.email}
                           onChange={(e) => setContact({ ...contact, email: e.target.value })}
-                          placeholder="Type here"
+                          placeholder="Buraya yazın"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                           required
                         />
@@ -298,20 +295,20 @@ export function CheckoutPage() {
 
                   {/* Shipping address */}
                   <article className="mb-5">
-                    <h4 className="mb-5 text-xl font-semibold text-[#14181f]">Shipping address</h4>
+                    <h4 className="mb-5 text-xl font-semibold text-[#14181f]">Teslimat adresi</h4>
 
                     <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-4 mb-4">
-                      <FormField label="City">
+                      <FormField label="Şehir">
                         <Input
                           value={shippingForm.city}
                           onChange={(e) => setShippingForm({ ...shippingForm, city: e.target.value })}
-                          placeholder="Enter city name"
+                          placeholder="Şehir adı girin"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                           required
                         />
                       </FormField>
 
-                      <FormField label="Postal code">
+                      <FormField label="Posta kodu">
                         <Input
                           value={shippingForm.postalCode}
                           onChange={(e) => setShippingForm({ ...shippingForm, postalCode: e.target.value })}
@@ -321,27 +318,27 @@ export function CheckoutPage() {
                         />
                       </FormField>
 
-                      <FormField label="Address line 1" className="md:col-span-2">
+                      <FormField label="Adres satırı 1" className="md:col-span-2">
                         <Input
                           value={shippingForm.addressLine1}
                           onChange={(e) => setShippingForm({ ...shippingForm, addressLine1: e.target.value })}
-                          placeholder="Street name, building"
+                          placeholder="Sokak adı, bina"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                           required
                         />
                       </FormField>
 
-                      <FormField label="Address line 2" className="md:col-span-2">
+                      <FormField label="Adres satırı 2" className="md:col-span-2">
                         <Input
                           value={shippingForm.addressLine2}
                           onChange={(e) => setShippingForm({ ...shippingForm, addressLine2: e.target.value })}
-                          placeholder="Apartment, suite, floor (optional)"
+                          placeholder="Daire, kat (isteğe bağlı)"
                           className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                         />
                       </FormField>
                     </fieldset>
 
-                    <p className="mb-3 text-sm text-[#14181f]">Choose delivery option</p>
+                    <p className="mb-3 text-sm text-[#14181f]">Teslimat seçeneği</p>
 
                     <fieldset className="flex flex-col sm:flex-row gap-2">
                       {DELIVERY_OPTIONS.map((option) => {
@@ -381,34 +378,34 @@ export function CheckoutPage() {
                       className="gap-2 bg-[#edf0f2] text-[#14181f] hover:bg-[#dce0e5]"
                     >
                       <ChevronLeft className="size-4" />
-                      Back to Cart
+                      Sepete dön
                     </Button>
                     <Button type="submit" className="gap-2 bg-primary text-white hover:bg-primary/90">
-                      Continue to Payment
+                      Ödemeye geç
                       <ChevronRight className="size-4" />
                     </Button>
                   </div>
                 </form>
               ) : (
                 <form onSubmit={handlePlaceOrder} className="flex flex-col gap-6">
-                  <h4 className="text-xl font-semibold text-[#14181f]">Payment details</h4>
+                  <h4 className="text-xl font-semibold text-[#14181f]">Ödeme bilgileri</h4>
 
                   <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
-                    <p className="font-semibold mb-1">Test card</p>
+                    <p className="font-semibold mb-1">Test kartı</p>
                     <p className="font-mono">5528790000000008 &nbsp; 12 / 2030 &nbsp; CVC: 123</p>
                   </div>
 
-                  <FormField label="Card holder name">
+                  <FormField label="Kart üzerindeki isim">
                     <Input
                       value={cardForm.cardHolderName}
                       onChange={(e) => setCardForm({ ...cardForm, cardHolderName: e.target.value })}
-                      placeholder="John Doe"
+                      placeholder="Ad Soyad"
                       className="bg-white border-[#dce0e5] placeholder:text-[#929eaa] h-10"
                       required
                     />
                   </FormField>
 
-                  <FormField label="Card number">
+                  <FormField label="Kart numarası">
                     <Input
                       value={cardForm.cardNumber}
                       onChange={(e) => setCardForm({ ...cardForm, cardNumber: e.target.value })}
@@ -419,7 +416,7 @@ export function CheckoutPage() {
                   </FormField>
 
                   <div className="flex gap-3">
-                    <FormField label="Month" className="flex-1">
+                    <FormField label="Ay" className="flex-1">
                       <Input
                         value={cardForm.expireMonth}
                         onChange={(e) => setCardForm({ ...cardForm, expireMonth: e.target.value })}
@@ -428,7 +425,7 @@ export function CheckoutPage() {
                         required
                       />
                     </FormField>
-                    <FormField label="Year" className="flex-1">
+                    <FormField label="Yıl" className="flex-1">
                       <Input
                         value={cardForm.expireYear}
                         onChange={(e) => setCardForm({ ...cardForm, expireYear: e.target.value })}
@@ -460,10 +457,10 @@ export function CheckoutPage() {
                       className="gap-2 bg-[#edf0f2] text-[#14181f] hover:bg-[#dce0e5]"
                     >
                       <ChevronLeft className="size-4" />
-                      Back to shipping
+                      Teslimata dön
                     </Button>
                     <Button type="submit" disabled={loading} className="gap-2 bg-primary text-white hover:bg-primary/90">
-                      {loading ? 'Processing…' : `Pay ${formatPrice(total, locale)}`}
+                      {loading ? 'İşleniyor…' : `${formatPrice(total)} öde`}
                       {!loading && <ChevronRight className="size-4" />}
                     </Button>
                   </div>

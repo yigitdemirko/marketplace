@@ -8,7 +8,6 @@ import { ArrowLeft, Package } from 'lucide-react'
 import { ordersApi } from '@/api/orders'
 import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
-import { useLocaleStore } from '@/store/localeStore'
 import { formatPrice } from '@/lib/formatPrice'
 import type { Order } from '@/types'
 
@@ -22,13 +21,22 @@ const statusColors: Record<Order['status'], string> = {
   CANCELLED: 'destructive',
 }
 
+const STATUS_LABELS: Record<Order['status'], string> = {
+  PENDING: 'Beklemede',
+  STOCK_RESERVING: 'Stok ayrılıyor',
+  PAYMENT_PENDING: 'Ödeme bekleniyor',
+  CONFIRMED: 'Onaylandı',
+  SHIPPED: 'Kargoya verildi',
+  DELIVERED: 'Teslim edildi',
+  CANCELLED: 'İptal edildi',
+}
+
 const CANCELLABLE: Order['status'][] = ['PENDING', 'STOCK_RESERVING']
 
 export function OrderDetailPage() {
   const { orderId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { user } = useAuthStore()
-  const { locale } = useLocaleStore()
   const queryClient = useQueryClient()
 
   const { data: order, isLoading, isError } = useQuery({
@@ -37,7 +45,6 @@ export function OrderDetailPage() {
     enabled: !!orderId && !!user,
   })
 
-  // Fetch product details for each order item to get names + images
   const productQueries = useQueries({
     queries: (order?.items ?? []).map((item) => ({
       queryKey: ['product', item.productId],
@@ -58,7 +65,7 @@ export function OrderDetailPage() {
   }
 
   if (isError || !order) {
-    return <p className="text-destructive">Order not found.</p>
+    return <p className="text-destructive">Sipariş bulunamadı.</p>
   }
 
   const isCancellable = CANCELLABLE.includes(order.status)
@@ -67,25 +74,25 @@ export function OrderDetailPage() {
     <div className="max-w-2xl space-y-6">
       <Button variant="ghost" onClick={() => navigate({ to: '/orders' })} className="pl-0">
         <ArrowLeft className="h-4 w-4 mr-2" />
-        Back to Orders
+        Siparişlere dön
       </Button>
 
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Order #{order.id.slice(0, 8)}</h1>
+        <h1 className="text-2xl font-bold">Sipariş #{order.id.slice(0, 8)}</h1>
         <Badge variant={statusColors[order.status] as 'default' | 'secondary' | 'destructive'}>
-          {order.status}
+          {STATUS_LABELS[order.status]}
         </Badge>
       </div>
 
       {order.status === 'SHIPPED' && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-700">
-          Your order is on the way!
+          Siparişiniz yola çıktı!
         </div>
       )}
 
       <Card>
         <CardHeader>
-          <CardTitle>Items</CardTitle>
+          <CardTitle>Ürünler</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {order.items.map((item, index) => {
@@ -95,7 +102,6 @@ export function OrderDetailPage() {
 
             return (
               <div key={item.id} className="flex items-center gap-4">
-                {/* Product image */}
                 <div className="w-[60px] h-[60px] shrink-0 rounded-[8px] bg-[#edf0f2] overflow-hidden flex items-center justify-center">
                   {image ? (
                     <img
@@ -108,16 +114,15 @@ export function OrderDetailPage() {
                   )}
                 </div>
 
-                {/* Details */}
                 <div className="flex-1 min-w-0">
                   <p className="text-[15px] font-medium text-[#14181f] truncate">{name}</p>
                   <p className="text-[13px] text-[#6f7c8e]">
-                    {item.quantity} × {formatPrice(item.unitPrice, locale)}
+                    {item.quantity} × {formatPrice(item.unitPrice)}
                   </p>
                 </div>
 
                 <p className="text-[15px] font-semibold text-[#14181f] shrink-0">
-                  {formatPrice(item.quantity * item.unitPrice, locale)}
+                  {formatPrice(item.quantity * item.unitPrice)}
                 </p>
               </div>
             )
@@ -125,15 +130,15 @@ export function OrderDetailPage() {
 
           <Separator />
           <div className="flex justify-between font-bold text-[16px]">
-            <span>Total</span>
-            <span>{formatPrice(order.totalAmount, locale)}</span>
+            <span>Toplam</span>
+            <span>{formatPrice(order.totalAmount)}</span>
           </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Shipping</CardTitle>
+          <CardTitle>Teslimat</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">{order.shippingAddress}</p>
@@ -146,7 +151,7 @@ export function OrderDetailPage() {
           disabled={cancelMutation.isPending}
           onClick={() => cancelMutation.mutate()}
         >
-          {cancelMutation.isPending ? 'Cancelling...' : 'Cancel Order'}
+          {cancelMutation.isPending ? 'İptal ediliyor...' : 'Siparişi iptal et'}
         </Button>
       )}
     </div>

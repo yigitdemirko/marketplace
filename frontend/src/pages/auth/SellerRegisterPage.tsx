@@ -37,7 +37,7 @@ export function SellerRegisterPage() {
       const params = new URLSearchParams(window.location.search)
       navigate({ to: (params.get('redirect') ?? sellerPath('')) as '/seller' })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed')
+      setError(err instanceof Error ? err.message : 'Kayıt başarısız')
     } finally {
       setLoading(false)
     }
@@ -60,23 +60,23 @@ export function SellerRegisterPage() {
               <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">B</span>
               </div>
-              <span className="font-bold text-[#14181f] text-[16px]">Seller Panel</span>
+              <span className="font-bold text-[#14181f] text-[16px]">Satıcı Paneli</span>
             </div>
-            <h1 className="text-3xl font-bold text-foreground">Create Seller Account</h1>
-            <p className="text-base text-muted-foreground">Start selling on Bilbo's</p>
+            <h1 className="text-3xl font-bold text-foreground">Satıcı hesabı oluştur</h1>
+            <p className="text-base text-muted-foreground">Bilbo's üzerinde satışa başlayın</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-7">
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="storeName" className="text-xs text-foreground">
-                  Store Name
+                  Mağaza adı
                 </Label>
                 <Input
                   id="storeName"
                   value={form.storeName}
                   onChange={(e) => setForm({ ...form, storeName: e.target.value })}
-                  placeholder="My Store"
+                  placeholder="Mağazam"
                   required
                   className={inputClass}
                 />
@@ -84,14 +84,14 @@ export function SellerRegisterPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs text-foreground">
-                  Email Address
+                  E-posta adresi
                 </Label>
                 <Input
                   id="email"
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  placeholder="store@example.com"
+                  placeholder="magaza@ornek.com"
                   required
                   className={inputClass}
                 />
@@ -99,7 +99,7 @@ export function SellerRegisterPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="password" className="text-xs text-foreground">
-                  Password
+                  Şifre
                 </Label>
                 <Input
                   id="password"
@@ -113,7 +113,7 @@ export function SellerRegisterPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="taxNumber" className="text-xs text-foreground">
-                  Tax Number
+                  Vergi numarası
                 </Label>
                 <Input
                   id="taxNumber"
@@ -127,7 +127,7 @@ export function SellerRegisterPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="phone" className="text-xs text-foreground">
-                  Phone
+                  Telefon
                 </Label>
                 <Input
                   id="phone"
@@ -149,7 +149,7 @@ export function SellerRegisterPage() {
                   className="size-5 rounded accent-primary cursor-pointer"
                 />
                 <span className="text-base text-foreground">
-                  I agree to the <span className="font-bold">Terms & Conditions</span>
+                  <span className="font-bold">Kullanım koşullarını</span> kabul ediyorum
                 </span>
               </label>
             </div>
@@ -161,13 +161,13 @@ export function SellerRegisterPage() {
               disabled={loading}
               className="w-full h-14 rounded-[10px] bg-foreground text-background hover:bg-foreground/85 text-base font-normal"
             >
-              {loading ? 'Creating account...' : 'Create Seller Account'}
+              {loading ? 'Hesap oluşturuluyor...' : 'Satıcı hesabı oluştur'}
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
-              Already have a seller account?{' '}
+              Satıcı hesabınız var mı?{' '}
               <a href="/seller/login" className="text-primary hover:underline font-medium">
-                Login
+                Giriş yap
               </a>
             </p>
           </form>

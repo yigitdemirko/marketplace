@@ -35,7 +35,7 @@ export function RegisterPage() {
       const params = new URLSearchParams(window.location.search)
       navigate({ to: params.get('redirect') ?? '/' })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed')
+      setError(err instanceof Error ? err.message : 'Kayıt başarısız')
     } finally {
       setLoading(false)
     }
@@ -54,8 +54,8 @@ export function RegisterPage() {
       <div className="flex flex-1 flex-col justify-center overflow-y-auto bg-card px-8 py-12 lg:px-16 xl:px-24">
         <div className="w-full max-w-[445px] mx-auto space-y-8">
           <div className="space-y-1.5">
-            <h1 className="text-3xl font-bold text-foreground">Create New Account</h1>
-            <p className="text-base text-muted-foreground">Please enter details</p>
+            <h1 className="text-3xl font-bold text-foreground">Hesap oluştur</h1>
+            <p className="text-base text-muted-foreground">Lütfen bilgilerinizi girin</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-7">
@@ -63,7 +63,7 @@ export function RegisterPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="firstName" className="text-xs text-foreground">
-                    First Name
+                    Ad
                   </Label>
                   <Input
                     id="firstName"
@@ -76,7 +76,7 @@ export function RegisterPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="lastName" className="text-xs text-foreground">
-                    Last Name
+                    Soyad
                   </Label>
                   <Input
                     id="lastName"
@@ -91,7 +91,7 @@ export function RegisterPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs text-foreground">
-                  Email Address
+                  E-posta adresi
                 </Label>
                 <Input
                   id="email"
@@ -106,7 +106,7 @@ export function RegisterPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="password" className="text-xs text-foreground">
-                  Password
+                  Şifre
                 </Label>
                 <Input
                   id="password"
@@ -127,7 +127,7 @@ export function RegisterPage() {
                   className="size-5 rounded accent-primary cursor-pointer"
                 />
                 <span className="text-base text-foreground">
-                  I agree to the <span className="font-bold">Terms & Conditions</span>
+                  <span className="font-bold">Kullanım koşullarını</span> kabul ediyorum
                 </span>
               </label>
             </div>
@@ -139,20 +139,20 @@ export function RegisterPage() {
               disabled={loading}
               className="w-full h-14 rounded-[10px] bg-foreground text-background hover:bg-foreground/85 text-base font-normal"
             >
-              {loading ? 'Creating account...' : 'Sign Up'}
+              {loading ? 'Hesap oluşturuluyor...' : 'Kayıt ol'}
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
-              Already have an account?{' '}
+              Zaten hesabınız var mı?{' '}
               <a href="/login" className="text-primary hover:underline font-medium">
-                Login
+                Giriş yap
               </a>
             </p>
 
             <p className="text-sm text-center text-muted-foreground">
-              Want to sell on our platform?{' '}
+              Platformumuzda satış yapmak ister misiniz?{' '}
               <a href="/seller/register" className="text-primary hover:underline font-medium">
-                Register as Seller
+                Satıcı olarak kayıt ol
               </a>
             </p>
           </form>

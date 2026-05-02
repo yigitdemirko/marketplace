@@ -65,7 +65,7 @@ function CategorySection({
                 search={{ ...EMPTY_SEARCH, category: exploreCategoryId }}
                 className="inline-flex items-center gap-1 border border-[#14181f] rounded-[6px] px-4 py-2 text-[14px] font-medium text-[#14181f] hover:bg-[#14181f] hover:text-white transition-colors w-fit bg-white/80"
               >
-                Explore all
+                Tümünü gör
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M9 6C9 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -113,7 +113,7 @@ function CategorySection({
                           {product.name}
                         </p>
                         <p className="text-[12px] text-[#6f7c8e]">
-                          From<br />{formatPrice(product.price, product.locale ?? 'EN')}
+                          Başlangıç<br />{formatPrice(product.price)}
                         </p>
                       </div>
                     </div>
@@ -124,7 +124,7 @@ function CategorySection({
 
             {!isLoading && displayProducts.length === 0 && (
               <div className="flex items-center justify-center h-[200px] text-[#6f7c8e] text-[14px]">
-                No products available
+                Ürün bulunamadı
               </div>
             )}
           </div>
@@ -138,7 +138,7 @@ export function HomeOutdoorSection() {
   return (
     <CategorySection
       bannerImage="/banners/category-interior.jpg"
-      bannerTitle="Home and outdoor items"
+      bannerTitle="Ev ve bahçe ürünleri"
       categoryIds={['HOME_OUTDOOR', 'KITCHEN', 'FURNITURE', 'HOME_APPLIANCES', 'GARDEN']}
       exploreCategoryId="HOME_OUTDOOR"
     />
@@ -149,7 +149,7 @@ export function ElectronicsSection() {
   return (
     <CategorySection
       bannerImage="/banners/category-tech.jpg"
-      bannerTitle="Consumer electronics and gadgets"
+      bannerTitle="Tüketici elektroniği ve gadget"
       categoryIds={['ELECTRONICS', 'PHONES_TABLETS', 'COMPUTERS', 'AUDIO', 'CAMERAS', 'GAMING', 'WEARABLES']}
       exploreCategoryId="ELECTRONICS"
     />

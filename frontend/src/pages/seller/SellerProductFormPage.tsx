@@ -6,7 +6,6 @@ import { ArrowLeft, X, Plus, Upload, Loader2 } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
 import { CATEGORIES } from '@/constants/categories'
-import type { ProductLocale } from '@/types'
 
 export function SellerProductFormPage() {
   const { productId } = useParams({ strict: false })
@@ -25,10 +24,9 @@ export function SellerProductFormPage() {
     tags: '',
     active: true,
   })
-  const [locale, setLocale] = useState<ProductLocale>('EN')
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [newImageUrl, setNewImageUrl] = useState('')
-  const [unit, setUnit] = useState('Pcs')
+  const [unit, setUnit] = useState('Adet')
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState('')
@@ -51,9 +49,8 @@ export function SellerProductFormPage() {
         tags: product.attributes?.tags ?? '',
         active: product.active,
       })
-      setLocale((product.locale as ProductLocale | undefined) ?? 'EN')
       setImageUrls(product.images ?? [])
-      setUnit((product.attributes?.unit as string | undefined) ?? 'Pcs')
+      setUnit((product.attributes?.unit as string | undefined) ?? 'Adet')
     }
   }, [product])
 
@@ -73,7 +70,7 @@ export function SellerProductFormPage() {
       const url = await productsApi.uploadImage(file)
       setImageUrls((prev) => [...prev, url])
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed')
+      setError(err instanceof Error ? err.message : 'Yükleme başarısız')
     } finally {
       setUploading(false)
       if (fileInputRef.current) fileInputRef.current.value = ''
@@ -90,7 +87,6 @@ export function SellerProductFormPage() {
     price: parseFloat(form.price),
     stock: parseInt(form.stock),
     category: form.categoryId,
-    locale,
     brand: form.brand || undefined,
     images: imageUrls,
     active: form.active,
@@ -106,7 +102,7 @@ export function SellerProductFormPage() {
       queryClient.invalidateQueries({ queryKey: ['seller-products'] })
       navigate({ to: sellerPath('/products') as '/seller/products' })
     },
-    onError: (err) => setError(err instanceof Error ? err.message : 'Failed to create product'),
+    onError: (err) => setError(err instanceof Error ? err.message : 'Ürün oluşturulamadı'),
   })
 
   const updateMutation = useMutation({
@@ -115,7 +111,7 @@ export function SellerProductFormPage() {
       queryClient.invalidateQueries({ queryKey: ['seller-products'] })
       navigate({ to: sellerPath('/products') as '/seller/products' })
     },
-    onError: (err) => setError(err instanceof Error ? err.message : 'Failed to update product'),
+    onError: (err) => setError(err instanceof Error ? err.message : 'Ürün güncellenemedi'),
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -133,20 +129,20 @@ export function SellerProductFormPage() {
         className="flex items-center gap-2 text-[14px] text-[#6f7c8e] hover:text-[#14181f] mb-5 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to products
+        Ürünlere dön
       </button>
 
       <h2 className="text-[20px] font-semibold text-[#14181f] mb-6">
-        {isEdit ? 'Edit product' : 'Create new'}
+        {isEdit ? 'Ürünü düzenle' : 'Yeni ürün oluştur'}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Title */}
         <div>
-          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Title</label>
+          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Başlık</label>
           <input
             type="text"
-            placeholder="Name of product"
+            placeholder="Ürün adı"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
@@ -156,10 +152,10 @@ export function SellerProductFormPage() {
 
         {/* Description */}
         <div>
-          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Description</label>
+          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Açıklama</label>
           <textarea
             rows={4}
-            placeholder="More information"
+            placeholder="Daha fazla bilgi"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             required
@@ -169,7 +165,7 @@ export function SellerProductFormPage() {
 
         {/* Product images */}
         <div>
-          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Product images</label>
+          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Ürün görselleri</label>
           <div className="flex gap-2 mb-3">
             <input
               type="url"
@@ -185,7 +181,7 @@ export function SellerProductFormPage() {
               className="h-9 px-3 text-[14px] font-medium border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] transition-colors flex items-center gap-1.5 text-[#14181f]"
             >
               <Plus className="h-4 w-4" />
-              Add URL
+              URL ekle
             </button>
             <input
               ref={fileInputRef}
@@ -201,7 +197,7 @@ export function SellerProductFormPage() {
               className="h-9 px-3 text-[14px] font-medium border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] transition-colors flex items-center gap-1.5 text-[#14181f] disabled:opacity-60"
             >
               {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-              {uploading ? 'Uploading…' : 'Upload'}
+              {uploading ? 'Yükleniyor…' : 'Yükle'}
             </button>
           </div>
           {imageUrls.length > 0 && (
@@ -225,24 +221,24 @@ export function SellerProductFormPage() {
         {/* Category + Brand */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Category</label>
+            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Kategori</label>
             <select
               value={form.categoryId}
               onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
               required
               className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] text-[#14181f]"
             >
-              <option value="" disabled>Select a category</option>
+              <option value="" disabled>Kategori seçin</option>
               {CATEGORIES.map((c) => (
                 <option key={c.id} value={c.id}>{c.label}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Brand</label>
+            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Marka</label>
             <input
               type="text"
-              placeholder="e.g. Acme"
+              placeholder="örn. Acme"
               value={form.brand}
               onChange={(e) => setForm({ ...form, brand: e.target.value })}
               className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
@@ -252,10 +248,10 @@ export function SellerProductFormPage() {
 
         {/* Tags */}
         <div>
-          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Tags (comma separated)</label>
+          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Etiketler (virgülle ayırın)</label>
           <input
             type="text"
-            placeholder="Tag name, Tag two, ..."
+            placeholder="Etiket adı, ikinci etiket, ..."
             value={form.tags}
             onChange={(e) => setForm({ ...form, tags: e.target.value })}
             className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
@@ -264,11 +260,11 @@ export function SellerProductFormPage() {
 
         {/* Stock */}
         <div className="sm:w-1/2">
-          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">In stock</label>
+          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Stok</label>
           <div className="flex gap-2">
             <input
               type="number"
-              placeholder="Number"
+              placeholder="Adet"
               min="0"
               value={form.stock}
               onChange={(e) => setForm({ ...form, stock: e.target.value })}
@@ -280,49 +276,28 @@ export function SellerProductFormPage() {
               onChange={(e) => setUnit(e.target.value)}
               className="h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff]"
             >
-              <option>Pcs</option>
+              <option>Adet</option>
               <option>Kg</option>
-              <option>Litres</option>
+              <option>Litre</option>
             </select>
           </div>
         </div>
 
-        {/* Locale + Price */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:w-full">
-          <div>
-            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">Catalog locale</label>
-            <div className="flex h-10 border border-[#dce0e5] rounded-[6px] overflow-hidden">
-              {(['EN', 'TR'] as ProductLocale[]).map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  onClick={() => setLocale(l)}
-                  className={`flex-1 text-[14px] font-medium transition-colors ${
-                    locale === l
-                      ? 'bg-[#3348ff] text-white'
-                      : 'bg-white text-[#6f7c8e] hover:bg-[#f6f7f9]'
-                  }`}
-                >
-                  {l === 'EN' ? '🇬🇧 EN ($)' : '🇹🇷 TR (₺)'}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">
-              Price <span className="text-[#6f7c8e] font-normal">({locale === 'TR' ? '₺ TRY' : '$ USD'})</span>
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              value={form.price}
-              onChange={(e) => setForm({ ...form, price: e.target.value })}
-              required
-              className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
-            />
-          </div>
+        {/* Price */}
+        <div className="sm:w-1/2">
+          <label className="block text-[14px] font-medium text-[#14181f] mb-1.5">
+            Fiyat <span className="text-[#6f7c8e] font-normal">(₺ TRY)</span>
+          </label>
+          <input
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            value={form.price}
+            onChange={(e) => setForm({ ...form, price: e.target.value })}
+            required
+            className="w-full h-10 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] placeholder-[#9aa5b4]"
+          />
         </div>
 
         {/* Active toggle */}
@@ -334,7 +309,7 @@ export function SellerProductFormPage() {
               onChange={(e) => setForm({ ...form, active: e.target.checked })}
               className="w-4 h-4 rounded border-[#dce0e5] accent-[#3348ff]"
             />
-            <span className="text-[14px] text-[#14181f]">Active product</span>
+            <span className="text-[14px] text-[#14181f]">Aktif ürün</span>
           </label>
         </div>
 
@@ -349,7 +324,7 @@ export function SellerProductFormPage() {
           disabled={isLoading}
           className="h-10 px-6 text-[14px] font-semibold bg-[#3348ff] hover:bg-[#2236e0] disabled:opacity-60 text-white rounded-[6px] transition-colors"
         >
-          {isLoading ? 'Saving...' : 'Submit product'}
+          {isLoading ? 'Kaydediliyor...' : 'Ürünü kaydet'}
         </button>
       </form>
     </div>

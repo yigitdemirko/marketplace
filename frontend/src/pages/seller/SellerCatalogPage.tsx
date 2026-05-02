@@ -10,7 +10,12 @@ import { getCategoryLabel } from '@/constants/categories'
 import { formatPrice } from '@/lib/formatPrice'
 import { CatalogStatsCards } from './components/CatalogStatsCards'
 import { ImportXmlModal } from './components/ImportXmlModal'
-import type { ProductLocale } from '@/types'
+
+const IMPORT_STATUS_LABELS: Record<string, string> = {
+  COMPLETED: 'Tamamlandı',
+  FAILED: 'Başarısız',
+  PROCESSING: 'İşleniyor',
+}
 
 export function SellerCatalogPage() {
   const { user } = useAuthStore()
@@ -18,7 +23,6 @@ export function SellerCatalogPage() {
   const queryClient = useQueryClient()
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [localeFilter, setLocaleFilter] = useState<ProductLocale | 'all'>('all')
   const [importOpen, setImportOpen] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [page, setPage] = useState(0)
@@ -59,11 +63,9 @@ export function SellerCatalogPage() {
         (p.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
       const matchesStatus =
         statusFilter === 'all' || (statusFilter === 'active' ? p.active : !p.active)
-      const matchesLocale =
-        localeFilter === 'all' || p.locale === localeFilter
-      return matchesSearch && matchesStatus && matchesLocale
+      return matchesSearch && matchesStatus
     })
-  }, [productsQuery.data, searchQuery, statusFilter, localeFilter])
+  }, [productsQuery.data, searchQuery, statusFilter])
 
   const totalPages = productsQuery.data?.totalPages ?? 1
   const totalElements = productsQuery.data?.totalElements ?? 0
@@ -85,27 +87,10 @@ export function SellerCatalogPage() {
     <div>
       <CatalogStatsCards stats={statsQuery.data} isLoading={statsQuery.isLoading} />
 
-      {/* Locale tabs */}
-      <div className="flex items-center gap-1 mb-4">
-        {(['all', 'EN', 'TR'] as const).map((l) => (
-          <button
-            key={l}
-            onClick={() => { setLocaleFilter(l); setPage(0) }}
-            className={`h-8 px-4 text-[13px] font-medium rounded-[6px] transition-colors ${
-              localeFilter === l
-                ? 'bg-[#3348ff] text-white'
-                : 'bg-white border border-[#dce0e5] text-[#6f7c8e] hover:bg-[#f6f7f9]'
-            }`}
-          >
-            {l === 'all' ? 'All' : l === 'EN' ? '🇬🇧 EN' : '🇹🇷 TR'}
-          </button>
-        ))}
-      </div>
-
       <div className="flex flex-wrap items-center gap-3 mb-5">
         <input
           type="search"
-          placeholder="Search by name or brand"
+          placeholder="Ad veya markaya göre ara"
           value={searchQuery}
           onChange={(e) => { setSearchQuery(e.target.value); setPage(0) }}
           className="h-9 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff] min-w-[220px]"
@@ -115,9 +100,9 @@ export function SellerCatalogPage() {
           onChange={(e) => { setStatusFilter(e.target.value); setPage(0) }}
           className="h-9 px-3 text-[14px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff]"
         >
-          <option value="all">Status: any</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
+          <option value="all">Durum: tümü</option>
+          <option value="active">Aktif</option>
+          <option value="inactive">Pasif</option>
         </select>
         <div className="ml-auto flex items-center gap-2">
           <button
@@ -125,14 +110,14 @@ export function SellerCatalogPage() {
             className="h-9 px-3 text-[14px] font-medium border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] text-[#14181f] flex items-center gap-2"
           >
             <Upload className="h-4 w-4" />
-            Import XML
+            XML içe aktar
           </button>
           <button
             onClick={() => navigate({ to: sellerPath('/products/new') as '/seller/products/new' })}
             className="h-9 px-4 text-[14px] font-medium bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[6px] flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
-            Add product
+            Ürün ekle
           </button>
         </div>
       </div>
@@ -141,15 +126,15 @@ export function SellerCatalogPage() {
         <table className="w-full text-[13px]">
           <thead>
             <tr className="bg-[#f6f7f9] border-b border-[#dce0e5]">
-              <th className="px-4 py-3 w-16 text-left font-semibold text-[#6f7c8e]">Image</th>
+              <th className="px-4 py-3 w-16 text-left font-semibold text-[#6f7c8e]">Görsel</th>
               <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">ID</th>
-              <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Name</th>
-              <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Brand</th>
-              <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Category</th>
-              <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Price</th>
-              <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Stock</th>
-              <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Status</th>
-              <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Action</th>
+              <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Ad</th>
+              <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Marka</th>
+              <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Kategori</th>
+              <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Fiyat</th>
+              <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Stok</th>
+              <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Durum</th>
+              <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">İşlem</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#f6f7f9]">
@@ -166,24 +151,24 @@ export function SellerCatalogPage() {
                 <td colSpan={9} className="px-4 py-12 text-center text-[#6f7c8e]">
                   {productsQuery.data?.content.length === 0 ? (
                     <>
-                      No products yet.{' '}
+                      Henüz ürün yok.{' '}
                       <button
                         onClick={() => navigate({ to: sellerPath('/products/new') as '/seller/products/new' })}
                         className="text-[#3348ff] hover:underline"
                       >
-                        Add your first product
+                        İlk ürününüzü ekleyin
                       </button>{' '}
-                      or{' '}
+                      veya{' '}
                       <button
                         onClick={() => setImportOpen(true)}
                         className="text-[#3348ff] hover:underline"
                       >
-                        import an XML feed
+                        XML feed içe aktarın
                       </button>
                       .
                     </>
                   ) : (
-                    'No products match your filters.'
+                    'Filtrelerinize uygun ürün bulunamadı.'
                   )}
                 </td>
               </tr>
@@ -218,16 +203,16 @@ export function SellerCatalogPage() {
                 </td>
                 <td className="px-4 py-3 text-[#14181f]">{product.brand ?? '—'}</td>
                 <td className="px-4 py-3 text-[#6f7c8e]">{getCategoryLabel(product.categoryId)}</td>
-                <td className="px-4 py-3 text-right font-medium text-[#14181f]">{formatPrice(product.price, product.locale ?? 'EN')}</td>
+                <td className="px-4 py-3 text-right font-medium text-[#14181f]">{formatPrice(product.price)}</td>
                 <td className="px-4 py-3 text-right text-[#6f7c8e]">{product.stock}</td>
                 <td className="px-4 py-3">
                   {product.active ? (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[12px] font-semibold bg-[#e6f7ee] text-[#00a81c]">
-                      ✓ Active
+                      ✓ Aktif
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[12px] font-semibold bg-[#ffeaea] text-[#fa3434]">
-                      Inactive
+                      Pasif
                     </span>
                   )}
                 </td>
@@ -243,11 +228,11 @@ export function SellerCatalogPage() {
                       className="h-7 px-2.5 text-[12px] font-medium border border-[#dce0e5] rounded-[4px] bg-white hover:bg-[#f6f7f9] text-[#14181f] flex items-center gap-1"
                     >
                       <Pencil className="h-3 w-3" />
-                      Edit
+                      Düzenle
                     </button>
                     <button
                       onClick={() => {
-                        if (confirm('Delete this product?')) deleteMutation.mutate(product.id)
+                        if (confirm('Bu ürünü silmek istediğinize emin misiniz?')) deleteMutation.mutate(product.id)
                       }}
                       className="h-7 w-7 flex items-center justify-center border border-[#dce0e5] rounded-[4px] bg-white hover:bg-[#ffeaea] hover:border-[#fa3434] text-[#fa3434]"
                     >
@@ -264,7 +249,7 @@ export function SellerCatalogPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-4">
           <p className="text-[13px] text-[#6f7c8e]">
-            {totalElements} product{totalElements !== 1 ? 's' : ''} total
+            Toplam {totalElements} ürün
           </p>
           <div className="flex items-center gap-1">
             <button
@@ -300,24 +285,24 @@ export function SellerCatalogPage() {
 
       {importsQuery.data && importsQuery.data.content.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-[15px] font-semibold text-[#14181f] mb-3">Recent imports</h2>
+          <h2 className="text-[15px] font-semibold text-[#14181f] mb-3">Son içe aktarımlar</h2>
           <div className="overflow-x-auto border border-[#dce0e5] rounded-[8px]">
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="bg-[#f6f7f9] border-b border-[#dce0e5]">
-                  <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">File</th>
-                  <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Date</th>
-                  <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Total</th>
-                  <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Success</th>
-                  <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Failed</th>
-                  <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Status</th>
+                  <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Dosya</th>
+                  <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Tarih</th>
+                  <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Toplam</th>
+                  <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Başarılı</th>
+                  <th className="px-4 py-3 text-right font-semibold text-[#6f7c8e]">Başarısız</th>
+                  <th className="px-4 py-3 text-left font-semibold text-[#6f7c8e]">Durum</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f6f7f9]">
                 {importsQuery.data.content.map((job) => (
                   <tr key={job.id} className="hover:bg-[#f6f7f9]">
                     <td className="px-4 py-3 text-[#14181f] truncate max-w-[260px]">{job.fileName}</td>
-                    <td className="px-4 py-3 text-[#6f7c8e]">{new Date(job.createdAt).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-[#6f7c8e]">{new Date(job.createdAt).toLocaleString('tr-TR')}</td>
                     <td className="px-4 py-3 text-right text-[#14181f]">{job.totalItems}</td>
                     <td className="px-4 py-3 text-right text-[#00a81c]">{job.successCount}</td>
                     <td className="px-4 py-3 text-right text-[#fa3434]">{job.failureCount}</td>
@@ -331,7 +316,7 @@ export function SellerCatalogPage() {
                               : 'bg-[#fff4e0] text-[#f59e0b]'
                         }`}
                       >
-                        {job.status}
+                        {IMPORT_STATUS_LABELS[job.status] ?? job.status}
                       </span>
                     </td>
                   </tr>

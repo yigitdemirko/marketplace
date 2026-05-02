@@ -10,16 +10,16 @@ import { useAuthStore } from '@/store/authStore'
 import { sellerPath } from '@/lib/sellerBase'
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', icon: LayoutDashboard, to: sellerPath('') },
-  { label: 'All orders', icon: Truck, to: sellerPath('/orders') },
-  { label: 'Catalog', icon: Package2, to: sellerPath('/products') },
+  { label: 'Panel', icon: LayoutDashboard, to: sellerPath('') },
+  { label: 'Tüm siparişler', icon: Truck, to: sellerPath('/orders') },
+  { label: 'Katalog', icon: Package2, to: sellerPath('/products') },
 ]
 
 const PAGE_TITLES: Record<string, string> = {
-  [sellerPath('')]: 'Dashboard',
-  [sellerPath('/orders')]: 'All orders',
-  [sellerPath('/products')]: 'Catalog',
-  [sellerPath('/products/new')]: 'Add product',
+  [sellerPath('')]: 'Panel',
+  [sellerPath('/orders')]: 'Tüm siparişler',
+  [sellerPath('/products')]: 'Katalog',
+  [sellerPath('/products/new')]: 'Ürün ekle',
 }
 
 export function SellerLayout() {
@@ -45,7 +45,7 @@ export function SellerLayout() {
           .sort((a, b) => b.length - a.length)
           .find((k) => pathname === k || pathname.startsWith(k + '/'))!
       ]
-    : 'Seller Panel'
+    : 'Satıcı Paneli'
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -56,7 +56,7 @@ export function SellerLayout() {
           <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center shrink-0">
             <span className="text-white font-bold text-sm">B</span>
           </div>
-          <span className="font-semibold text-[#14181f] text-[16px]">Seller Panel</span>
+          <span className="font-semibold text-[#14181f] text-[16px]">Satıcı Paneli</span>
         </div>
 
         {/* Nav */}
@@ -96,7 +96,7 @@ export function SellerLayout() {
               className="flex items-center gap-2 h-9 px-3 border border-[#dce0e5] rounded-[6px] text-[13px] font-medium text-[#14181f] hover:bg-[#f6f7f9] transition-colors"
             >
               <UserCircle className="h-4 w-4 text-[#6f7c8e]" />
-              {user?.email?.split('@')[0] ?? 'My account'}
+              {user?.email?.split('@')[0] ?? 'Hesabım'}
             </button>
           </div>
         </header>

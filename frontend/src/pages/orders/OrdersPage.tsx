@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ordersApi } from '@/api/orders'
 import { useAuthStore } from '@/store/authStore'
-import { useLocaleStore } from '@/store/localeStore'
 import { formatPrice } from '@/lib/formatPrice'
 import type { Order } from '@/types'
 
@@ -19,11 +18,20 @@ const statusColors: Record<Order['status'], string> = {
   CANCELLED: 'destructive',
 }
 
+const STATUS_LABELS: Record<Order['status'], string> = {
+  PENDING: 'Beklemede',
+  STOCK_RESERVING: 'Stok ayrılıyor',
+  PAYMENT_PENDING: 'Ödeme bekleniyor',
+  CONFIRMED: 'Onaylandı',
+  SHIPPED: 'Kargoya verildi',
+  DELIVERED: 'Teslim edildi',
+  CANCELLED: 'İptal edildi',
+}
+
 const CANCELLABLE: Order['status'][] = ['PENDING', 'STOCK_RESERVING']
 
 export function OrdersPage() {
   const { user, isAuthenticated } = useAuthStore()
-  const { locale } = useLocaleStore()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
@@ -54,22 +62,22 @@ export function OrdersPage() {
   }
 
   if (isError) {
-    return <p className="text-destructive">Failed to load orders.</p>
+    return <p className="text-destructive">Siparişler yüklenemedi.</p>
   }
 
   if (!orders || orders.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <h2 className="text-xl font-semibold">No orders yet</h2>
-        <p className="text-muted-foreground">Start shopping to place your first order</p>
-        <Button onClick={() => navigate({ to: '/' })}>Browse Products</Button>
+        <h2 className="text-xl font-semibold">Henüz siparişiniz yok</h2>
+        <p className="text-muted-foreground">İlk siparişinizi vermek için alışverişe başlayın</p>
+        <Button onClick={() => navigate({ to: '/' })}>Ürünlere göz at</Button>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">My Orders</h1>
+      <h1 className="text-2xl font-bold">Siparişlerim</h1>
       <div className="space-y-4">
         {orders.map((order) => (
           <Card
@@ -83,17 +91,17 @@ export function OrdersPage() {
                   #{order.id.slice(0, 8)}
                 </CardTitle>
                 <Badge variant={statusColors[order.status] as 'default' | 'secondary' | 'destructive'}>
-                  {order.status}
+                  {STATUS_LABELS[order.status]}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">
-                  {order.items.length} item{order.items.length > 1 ? 's' : ''}
+                  {order.items.length} ürün
                 </p>
                 <div className="flex items-center gap-3">
-                  <p className="font-bold">{formatPrice(order.totalAmount, locale)}</p>
+                  <p className="font-bold">{formatPrice(order.totalAmount)}</p>
                   {CANCELLABLE.includes(order.status) && (
                     <Button
                       variant="destructive"
@@ -104,7 +112,7 @@ export function OrdersPage() {
                         cancelMutation.mutate(order.id)
                       }}
                     >
-                      Cancel
+                      İptal et
                     </Button>
                   )}
                 </div>

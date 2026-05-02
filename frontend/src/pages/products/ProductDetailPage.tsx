@@ -19,7 +19,7 @@ import { useAddedToCartFeedback } from '@/lib/cartFeedback'
 import { getCategoryLabel } from '@/constants/categories'
 import { formatPrice } from '@/lib/formatPrice'
 
-const TABS = ['Description', 'Reviews', 'Company', 'Usage guide']
+const TABS = ['Açıklama', 'Yorumlar', 'Mağaza', 'Kullanım kılavuzu'] as const
 
 const RATING_BARS = [
   { star: 5, pct: 92 },
@@ -35,7 +35,7 @@ export function ProductDetailPage() {
   const addItem = useCartStore((state) => state.addItem)
   const notifyAdded = useAddedToCartFeedback()
   const [selectedImage, setSelectedImage] = useState(0)
-  const [activeTab, setActiveTab] = useState('Description')
+  const [activeTab, setActiveTab] = useState<typeof TABS[number]>('Açıklama')
   const [wishlisted, setWishlisted] = useState(false)
   const [quantity, setQuantity] = useState(1)
 
@@ -62,7 +62,6 @@ export function ProductDetailPage() {
       price: product.price,
       quantity,
       image: product.images?.[0],
-      locale: product.locale,
     })
     notifyAdded()
   }
@@ -94,15 +93,15 @@ export function ProductDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <Package className="h-16 w-16 text-muted-foreground/30 mb-4" />
-        <p className="text-xl font-semibold">Product not found</p>
+        <p className="text-xl font-semibold">Ürün bulunamadı</p>
         <p className="text-sm text-muted-foreground mt-1">
-          This product may have been removed or doesn't exist.
+          Bu ürün kaldırılmış veya mevcut değil.
         </p>
         <button
           className="mt-6 px-4 py-2 rounded-lg border border-border text-sm hover:bg-muted transition-colors"
           onClick={() => window.history.back()}
         >
-          Go Back
+          Geri dön
         </button>
       </div>
     )
@@ -129,11 +128,11 @@ export function ProductDetailPage() {
               onClick={() => navigate({ to: '/' })}
               className="hover:text-[#14181f] transition-colors"
             >
-              Home
+              Anasayfa
             </button>
             <span>/</span>
             <span className="hover:text-[#14181f] transition-colors cursor-pointer">
-              {product.categoryId ? getCategoryLabel(product.categoryId) : 'Products'}
+              {product.categoryId ? getCategoryLabel(product.categoryId) : 'Ürünler'}
             </span>
             <span>/</span>
             <span className="text-[#14181f] truncate max-w-xs">{product.name}</span>
@@ -234,7 +233,7 @@ export function ProductDetailPage() {
                 <span className="size-[6px] rounded-full bg-[#dce0e5]" />
                 <div className="flex items-center gap-1.5">
                   <ShoppingBasket className="h-4 w-4 text-[#6f7c8e]" />
-                  <span className="text-[15px] text-[#6f7c8e] tracking-tight">154 orders</span>
+                  <span className="text-[15px] text-[#6f7c8e] tracking-tight">154 sipariş</span>
                 </div>
               </div>
             </div>
@@ -256,13 +255,13 @@ export function ProductDetailPage() {
             {/* Quantity */}
             <div className="flex flex-col gap-1.5 w-[135px]">
               <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
-                Quantity
+                Adet
               </span>
               <div className="bg-white border border-[#3348ff] rounded-lg h-10 flex items-center gap-1 p-1">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   className="bg-[#e0edff] hover:bg-[#c8deff] transition-colors rounded-md size-8 flex items-center justify-center"
-                  aria-label="Decrease quantity"
+                  aria-label="Adeti azalt"
                 >
                   <Minus className="h-4 w-4 text-[#3348ff]" />
                 </button>
@@ -274,7 +273,7 @@ export function ProductDetailPage() {
                     setQuantity((q) => (product.stock > 0 ? Math.min(product.stock, q + 1) : q + 1))
                   }
                   className="bg-[#e0edff] hover:bg-[#c8deff] transition-colors rounded-md size-8 flex items-center justify-center"
-                  aria-label="Increase quantity"
+                  aria-label="Adeti artır"
                 >
                   <Plus className="h-4 w-4 text-[#3348ff]" />
                 </button>
@@ -283,9 +282,9 @@ export function ProductDetailPage() {
 
             {/* Price */}
             <div className="flex flex-col gap-1">
-              <span className="text-[15px] text-[#525e6f] tracking-tight">Price</span>
+              <span className="text-[15px] text-[#525e6f] tracking-tight">Fiyat</span>
               <span className="font-semibold text-[20px] text-[#14181f] leading-[1.4]">
-                {formatPrice(product.price, product.locale ?? 'EN')}
+                {formatPrice(product.price)}
               </span>
             </div>
 
@@ -298,13 +297,13 @@ export function ProductDetailPage() {
               >
                 <ShoppingCart className="h-5 w-5 text-white" />
                 <span className="text-[15px] font-medium text-white tracking-tight whitespace-nowrap">
-                  {isInStock ? 'Add to cart' : 'Out of stock'}
+                  {isInStock ? 'Sepete ekle' : 'Stokta yok'}
                 </span>
               </button>
               <button
                 onClick={() => setWishlisted((v) => !v)}
                 className="size-10 shrink-0 bg-white border border-[#dce0e5] hover:bg-[#f6f7f9] transition-colors rounded-lg flex items-center justify-center shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
-                aria-label="Add to wishlist"
+                aria-label="Favorilere ekle"
               >
                 <Heart
                   className={`h-[18px] w-[18px] ${
@@ -343,13 +342,13 @@ export function ProductDetailPage() {
 
             {/* Tab content */}
             <div className="pt-6">
-              {activeTab === 'Description' && (
+              {activeTab === 'Açıklama' && (
                 <div>
                   <div className="text-[16px] text-[#14181f] leading-[24px] space-y-3 mb-8">
                     {product.description ? (
                       <p>{product.description}</p>
                     ) : (
-                      <p className="text-[#6f7c8e]">No description provided.</p>
+                      <p className="text-[#6f7c8e]">Açıklama eklenmemiş.</p>
                     )}
                   </div>
 
@@ -378,14 +377,14 @@ export function ProductDetailPage() {
                 </div>
               )}
 
-              {activeTab === 'Reviews' && (
-                <div className="text-[15px] text-[#6f7c8e]">No reviews yet.</div>
+              {activeTab === 'Yorumlar' && (
+                <div className="text-[15px] text-[#6f7c8e]">Henüz yorum yok.</div>
               )}
 
-              {activeTab === 'Company' && (
+              {activeTab === 'Mağaza' && (
                 <div className="space-y-3">
                   <p className="text-[15px] text-[#14181f]">
-                    <span className="text-[#6f7c8e]">Store: </span>
+                    <span className="text-[#6f7c8e]">Mağaza: </span>
                     <span className="font-semibold">{sellerDisplayName}</span>
                   </p>
                   <button
@@ -394,13 +393,13 @@ export function ProductDetailPage() {
                     }
                     className="text-[15px] text-[#3348ff] hover:underline"
                   >
-                    View all products from this seller →
+                    Bu satıcının tüm ürünlerini gör →
                   </button>
                 </div>
               )}
 
-              {activeTab === 'Usage guide' && (
-                <div className="text-[15px] text-[#6f7c8e]">Usage guide not available.</div>
+              {activeTab === 'Kullanım kılavuzu' && (
+                <div className="text-[15px] text-[#6f7c8e]">Kullanım kılavuzu mevcut değil.</div>
               )}
             </div>
           </div>
@@ -426,7 +425,7 @@ export function ProductDetailPage() {
                 className="bg-white border border-[#dce0e5] hover:bg-[#f6f7f9] transition-colors rounded-lg h-10 flex items-center justify-center w-full shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
               >
                 <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
-                  Seller's profile
+                  Satıcı profili
                 </span>
               </button>
             </div>
@@ -447,9 +446,9 @@ export function ProductDetailPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-[18px] font-semibold text-[#14181f]">4.7 out of 5</span>
+                  <span className="text-[18px] font-semibold text-[#14181f]">5 üzerinden 4.7</span>
                 </div>
-                <p className="text-[15px] text-[#6f7c8e] tracking-tight">458 global ratings</p>
+                <p className="text-[15px] text-[#6f7c8e] tracking-tight">458 değerlendirme</p>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -472,7 +471,7 @@ export function ProductDetailPage() {
               <button className="bg-white border border-[#dce0e5] hover:bg-[#f6f7f9] transition-colors rounded-lg h-10 flex items-center justify-center gap-2 w-full shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]">
                 <PenLine className="h-4 w-4 text-[#14181f]" />
                 <span className="text-[15px] font-medium text-[#14181f] tracking-tight">
-                  Write a review
+                  Yorum yaz
                 </span>
               </button>
             </div>

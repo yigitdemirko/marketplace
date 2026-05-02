@@ -15,12 +15,11 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
   const { user } = useAuthStore()
   const inputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null)
-  const [locale, setLocale] = useState<'EN' | 'TR' | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [result, setResult] = useState<ImportJob | null>(null)
 
   const importMutation = useMutation({
-    mutationFn: (selectedFile: File) => feedsApi.import(selectedFile, user!.userId, locale!),
+    mutationFn: (selectedFile: File) => feedsApi.import(selectedFile, user!.userId),
     onSuccess: (job) => {
       setResult(job)
       onSuccess()
@@ -32,7 +31,6 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
   const handleClose = () => {
     if (importMutation.isPending) return
     setFile(null)
-    setLocale(null)
     setResult(null)
     importMutation.reset()
     onClose()
@@ -63,7 +61,7 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 h-14 border-b border-[#dce0e5] shrink-0">
-          <h2 className="text-[16px] font-semibold text-[#14181f]">Import products (XML)</h2>
+          <h2 className="text-[16px] font-semibold text-[#14181f]">Ürünleri içe aktar (XML)</h2>
           <button
             onClick={handleClose}
             disabled={importMutation.isPending}
@@ -77,31 +75,8 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
           {!result && (
             <>
               <p className="text-[13px] text-[#6f7c8e] mb-4">
-                Upload a Google Merchant XML feed. Each <code className="bg-[#f6f7f9] px-1 rounded">&lt;item&gt;</code> in the feed becomes a product in your catalog.
+                Google Merchant XML beslemesi yükleyin. Beslemedeki her <code className="bg-[#f6f7f9] px-1 rounded">&lt;item&gt;</code> kataloğunuza ürün olarak eklenir.
               </p>
-
-              <div className="mb-4">
-                <p className="text-[13px] font-medium text-[#14181f] mb-2">Catalog locale <span className="text-[#fa3434]">*</span></p>
-                <div className="flex gap-2">
-                  {(['EN', 'TR'] as const).map((l) => (
-                    <button
-                      key={l}
-                      type="button"
-                      onClick={() => setLocale(l)}
-                      className={`flex-1 h-10 text-[14px] font-medium rounded-[6px] border transition-colors ${
-                        locale === l
-                          ? 'bg-[#3348ff] border-[#3348ff] text-white'
-                          : 'bg-white border-[#dce0e5] text-[#6f7c8e] hover:bg-[#f6f7f9]'
-                      }`}
-                    >
-                      {l === 'EN' ? '🇬🇧 EN — prices in $' : '🇹🇷 TR — prices in ₺'}
-                    </button>
-                  ))}
-                </div>
-                {!locale && (
-                  <p className="text-[12px] text-[#6f7c8e] mt-1.5">Select a locale before importing. All items in this feed will be tagged with this locale.</p>
-                )}
-              </div>
 
               <label
                 onDragOver={(e) => {
@@ -130,8 +105,8 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
                 ) : (
                   <>
                     <Upload className="h-8 w-8 text-[#6f7c8e]" />
-                    <p className="text-[14px] font-medium text-[#14181f]">Drop your XML file here</p>
-                    <p className="text-[12px] text-[#6f7c8e]">or click to browse</p>
+                    <p className="text-[14px] font-medium text-[#14181f]">XML dosyanızı buraya bırakın</p>
+                    <p className="text-[12px] text-[#6f7c8e]">veya seçmek için tıklayın</p>
                   </>
                 )}
               </label>
@@ -157,36 +132,36 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
                 )}
                 <h3 className="text-[15px] font-semibold text-[#14181f]">
                   {result.failureCount === 0
-                    ? 'Import successful'
+                    ? 'İçe aktarım başarılı'
                     : result.successCount === 0
-                      ? 'Import failed'
-                      : 'Import completed with errors'}
+                      ? 'İçe aktarım başarısız'
+                      : 'İçe aktarım hatalarla tamamlandı'}
                 </h3>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="p-3 rounded-[6px] bg-[#f6f7f9]">
-                  <p className="text-[11px] text-[#6f7c8e]">Total</p>
+                  <p className="text-[11px] text-[#6f7c8e]">Toplam</p>
                   <p className="text-[20px] font-semibold text-[#14181f]">{result.totalItems}</p>
                 </div>
                 <div className="p-3 rounded-[6px] bg-[#e6f7ee]">
-                  <p className="text-[11px] text-[#00a81c]">Created</p>
+                  <p className="text-[11px] text-[#00a81c]">Eklenen</p>
                   <p className="text-[20px] font-semibold text-[#00a81c]">{result.successCount}</p>
                 </div>
                 <div className="p-3 rounded-[6px] bg-[#ffeaea]">
-                  <p className="text-[11px] text-[#fa3434]">Failed</p>
+                  <p className="text-[11px] text-[#fa3434]">Başarısız</p>
                   <p className="text-[20px] font-semibold text-[#fa3434]">{result.failureCount}</p>
                 </div>
               </div>
 
               {result.errors && result.errors.length > 0 && (
                 <div>
-                  <p className="text-[13px] font-semibold text-[#14181f] mb-2">Errors</p>
+                  <p className="text-[13px] font-semibold text-[#14181f] mb-2">Hatalar</p>
                   <div className="max-h-[180px] overflow-y-auto border border-[#dce0e5] rounded-[6px] divide-y divide-[#f6f7f9]">
                     {result.errors.map((err, i) => (
                       <div key={i} className="p-2.5 text-[12px]">
                         <p className="font-medium text-[#14181f]">
-                          {err.productId ? `Item ${err.productId}` : `Row ${err.index}`}
+                          {err.productId ? `Ürün ${err.productId}` : `Satır ${err.index}`}
                         </p>
                         <p className="text-[#6f7c8e]">{err.message}</p>
                       </div>
@@ -204,16 +179,16 @@ export function ImportXmlModal({ open, onClose, onSuccess }: Props) {
             disabled={importMutation.isPending}
             className="h-9 px-4 text-[14px] font-medium border border-[#dce0e5] rounded-[6px] bg-white hover:bg-[#f6f7f9] text-[#14181f] disabled:opacity-50"
           >
-            {result ? 'Done' : 'Cancel'}
+            {result ? 'Tamam' : 'İptal'}
           </button>
           {!result && (
             <button
               onClick={handleSubmit}
-              disabled={!file || !locale || importMutation.isPending}
+              disabled={!file || importMutation.isPending}
               className="h-9 px-4 text-[14px] font-medium bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[6px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {importMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              {importMutation.isPending ? 'Importing…' : 'Import'}
+              {importMutation.isPending ? 'İçe aktarılıyor…' : 'İçe aktar'}
             </button>
           )}
         </div>

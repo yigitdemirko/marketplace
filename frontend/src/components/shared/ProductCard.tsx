@@ -32,7 +32,6 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
       price: product.price,
       quantity: 1,
       image: mainImage,
-      locale: product.locale,
     })
     notifyAdded()
   }
@@ -66,11 +65,11 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
         <div className="flex items-center gap-1.5">
           <Star className="h-[15px] w-[15px] fill-[#db6e00] text-[#db6e00]" />
           <span className="text-[13px] text-[#6f7c8e]">4.5</span>
-          <span className="text-[13px] text-[#6f7c8e]">(0 orders)</span>
+          <span className="text-[13px] text-[#6f7c8e]">(0 sipariş)</span>
         </div>
 
         <p className="text-[15px] font-semibold text-[#14181f] mt-auto">
-          {formatPrice(product.price, product.locale ?? 'EN')}
+          {formatPrice(product.price)}
         </p>
 
         <button
@@ -79,7 +78,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
           onClick={handleAddToCart}
         >
           <ShoppingCart className="h-5 w-5" />
-          {isOutOfStock ? 'Out of Stock' : 'Add to cart'}
+          {isOutOfStock ? 'Stokta yok' : 'Sepete ekle'}
         </button>
       </div>
     </div>

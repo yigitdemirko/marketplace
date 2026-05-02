@@ -1,61 +1,61 @@
 export const CATEGORIES = [
   // Electronics
-  { id: 'ELECTRONICS', label: 'Consumer Electronics & Gadgets' },
-  { id: 'COMPUTERS', label: 'Computers & Laptops' },
-  { id: 'PHONES_TABLETS', label: 'Phones & Tablets' },
-  { id: 'CAMERAS', label: 'Cameras & Photography' },
-  { id: 'AUDIO', label: 'Audio & Headphones' },
-  { id: 'GAMING', label: 'Gaming' },
-  { id: 'WEARABLES', label: 'Wearables & Smart Devices' },
+  { id: 'ELECTRONICS', label: 'Tüketici Elektroniği & Gadget' },
+  { id: 'COMPUTERS', label: 'Bilgisayar & Laptop' },
+  { id: 'PHONES_TABLETS', label: 'Telefon & Tablet' },
+  { id: 'CAMERAS', label: 'Kamera & Fotoğraf' },
+  { id: 'AUDIO', label: 'Ses & Kulaklık' },
+  { id: 'GAMING', label: 'Oyun' },
+  { id: 'WEARABLES', label: 'Giyilebilir & Akıllı Cihazlar' },
 
   // Home & Living
-  { id: 'HOME_OUTDOOR', label: 'Home & Outdoor' },
-  { id: 'FURNITURE', label: 'Furniture' },
-  { id: 'KITCHEN', label: 'Kitchen & Dining' },
-  { id: 'GARDEN', label: 'Garden & Tools' },
-  { id: 'HOME_APPLIANCES', label: 'Home Appliances' },
+  { id: 'HOME_OUTDOOR', label: 'Ev & Bahçe' },
+  { id: 'FURNITURE', label: 'Mobilya' },
+  { id: 'KITCHEN', label: 'Mutfak & Yemek' },
+  { id: 'GARDEN', label: 'Bahçe & Aletler' },
+  { id: 'HOME_APPLIANCES', label: 'Beyaz Eşya' },
 
   // Fashion
-  { id: 'MENS_CLOTHING', label: "Men's Clothing" },
-  { id: 'WOMENS_CLOTHING', label: "Women's Clothing" },
-  { id: 'KIDS_CLOTHING', label: "Kids' Clothing" },
-  { id: 'SHOES', label: 'Shoes & Footwear' },
-  { id: 'BAGS', label: 'Bags & Luggage' },
-  { id: 'JEWELRY', label: 'Jewelry & Accessories' },
-  { id: 'WATCHES', label: 'Watches' },
+  { id: 'MENS_CLOTHING', label: 'Erkek Giyim' },
+  { id: 'WOMENS_CLOTHING', label: 'Kadın Giyim' },
+  { id: 'KIDS_CLOTHING', label: 'Çocuk Giyim' },
+  { id: 'SHOES', label: 'Ayakkabı' },
+  { id: 'BAGS', label: 'Çanta & Bavul' },
+  { id: 'JEWELRY', label: 'Takı & Aksesuar' },
+  { id: 'WATCHES', label: 'Saat' },
 
   // Health, Beauty & Sports
-  { id: 'HEALTH_BEAUTY', label: 'Health & Beauty' },
-  { id: 'VITAMINS', label: 'Vitamins & Supplements' },
-  { id: 'PERSONAL_CARE', label: 'Personal Care' },
-  { id: 'SPORTS_FITNESS', label: 'Sports & Fitness' },
+  { id: 'HEALTH_BEAUTY', label: 'Sağlık & Güzellik' },
+  { id: 'VITAMINS', label: 'Vitamin & Takviye' },
+  { id: 'PERSONAL_CARE', label: 'Kişisel Bakım' },
+  { id: 'SPORTS_FITNESS', label: 'Spor & Fitness' },
 
   // Food & Grocery
-  { id: 'FOOD_GROCERY', label: 'Food & Grocery' },
-  { id: 'BEVERAGES', label: 'Beverages' },
+  { id: 'FOOD_GROCERY', label: 'Gıda & Market' },
+  { id: 'BEVERAGES', label: 'İçecek' },
 
   // Books & Media
-  { id: 'BOOKS', label: 'Books' },
-  { id: 'MUSIC', label: 'Music' },
-  { id: 'MOVIES_TV', label: 'Movies & TV' },
-  { id: 'SOFTWARE', label: 'Software & Apps' },
+  { id: 'BOOKS', label: 'Kitap' },
+  { id: 'MUSIC', label: 'Müzik' },
+  { id: 'MOVIES_TV', label: 'Film & Dizi' },
+  { id: 'SOFTWARE', label: 'Yazılım & Uygulama' },
 
   // Automotive
-  { id: 'AUTOMOTIVE', label: 'Automotive' },
+  { id: 'AUTOMOTIVE', label: 'Otomotiv' },
 
   // Baby & Kids
-  { id: 'BABY', label: 'Baby Products' },
-  { id: 'TOYS_GAMES', label: 'Toys & Games' },
+  { id: 'BABY', label: 'Bebek Ürünleri' },
+  { id: 'TOYS_GAMES', label: 'Oyuncak & Oyun' },
 
   // Office & Business
-  { id: 'OFFICE_SUPPLIES', label: 'Office Supplies' },
-  { id: 'INDUSTRIAL', label: 'Industrial & Scientific' },
+  { id: 'OFFICE_SUPPLIES', label: 'Ofis Malzemeleri' },
+  { id: 'INDUSTRIAL', label: 'Endüstriyel & Bilimsel' },
 
   // Pets
-  { id: 'PET_SUPPLIES', label: 'Pet Supplies' },
+  { id: 'PET_SUPPLIES', label: 'Evcil Hayvan' },
 
   // Other
-  { id: 'OTHER', label: 'Other' },
+  { id: 'OTHER', label: 'Diğer' },
 ] as const
 
 export type CategoryId = (typeof CATEGORIES)[number]['id']

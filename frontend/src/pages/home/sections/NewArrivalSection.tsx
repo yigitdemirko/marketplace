@@ -5,30 +5,30 @@ const items = [
   {
     id: 'ps5',
     name: 'PlayStation 5',
-    desc: 'Black and White version of the PS5 coming out on sale.',
+    desc: 'Siyah ve beyaz PS5 sürümü indirimde.',
     size: 'large',
     bg: 'bg-foreground',
     emoji: '🎮',
   },
   {
     id: 'women',
-    name: "Women's Collections",
-    desc: 'Featured woman collections that give you another vibe.',
+    name: 'Kadın Koleksiyonu',
+    desc: 'Size farklı bir hava katacak öne çıkan kadın koleksiyonları.',
     size: 'top-right',
     bg: 'bg-muted',
     emoji: '👗',
   },
   {
     id: 'speakers',
-    name: 'Speakers',
-    desc: 'Amazon wireless speakers',
+    name: 'Hoparlörler',
+    desc: 'Kablosuz hoparlörler',
     size: 'bottom-left',
     bg: 'bg-muted',
     emoji: '🔊',
   },
   {
     id: 'perfume',
-    name: 'Perfume',
+    name: 'Parfüm',
     desc: 'GUCCI INTENSE OUD EDP',
     size: 'bottom-right',
     bg: 'bg-muted',
@@ -44,9 +44,9 @@ export function NewArrivalSection() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-3">
             <span className="w-5 h-10 rounded bg-primary block shrink-0" />
-            <span className="text-primary font-semibold text-sm">Featured</span>
+            <span className="text-primary font-semibold text-sm">Öne çıkan</span>
           </div>
-          <h2 className="text-3xl font-semibold text-foreground">New Arrival</h2>
+          <h2 className="text-3xl font-semibold text-foreground">Yeni gelenler</h2>
         </div>
 
         {/* Grid */}
@@ -64,7 +64,7 @@ export function NewArrivalSection() {
               <h3 className="text-xl font-semibold text-background mb-1">{items[0].name}</h3>
               <p className="text-sm text-background/60 mb-3">{items[0].desc}</p>
               <span className="text-sm text-background border-b border-background/60 pb-0.5 hover:border-background transition-colors">
-                Shop Now
+                Hemen al
               </span>
             </div>
           </Link>
@@ -84,7 +84,7 @@ export function NewArrivalSection() {
                 <h3 className="text-lg font-semibold text-foreground mb-1">{items[1].name}</h3>
                 <p className="text-sm text-muted-foreground mb-3">{items[1].desc}</p>
                 <span className="text-sm text-foreground border-b border-foreground/60 pb-0.5">
-                  Shop Now
+                  Hemen al
                 </span>
               </div>
             </Link>
@@ -103,7 +103,7 @@ export function NewArrivalSection() {
                     <h3 className="text-base font-semibold text-foreground mb-0.5">{item.name}</h3>
                     <p className="text-xs text-muted-foreground mb-2">{item.desc}</p>
                     <span className="text-xs text-foreground border-b border-foreground/60 pb-0.5">
-                      Shop Now
+                      Hemen al
                     </span>
                   </div>
                 </Link>

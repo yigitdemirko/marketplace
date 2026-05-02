@@ -5,23 +5,23 @@ import { Store, TrendingUp, Users, ShieldCheck } from 'lucide-react'
 const perks = [
   {
     icon: Store,
-    title: 'Open Your Store Free',
-    description: 'Create your seller account and list products in minutes — no fees to get started.',
+    title: 'Mağazanızı ücretsiz açın',
+    description: 'Satıcı hesabınızı oluşturun ve ürünlerinizi dakikalar içinde listeleyin — başlamak ücretsiz.',
   },
   {
     icon: TrendingUp,
-    title: 'Reach Millions of Buyers',
-    description: 'Your products are instantly visible to our growing base of active shoppers.',
+    title: 'Milyonlarca alıcıya ulaşın',
+    description: 'Ürünleriniz, büyüyen aktif alıcı kitlemize anında görünür olur.',
   },
   {
     icon: Users,
-    title: 'Grow Your Business',
-    description: 'Access seller analytics, promotions tools, and a dedicated support team.',
+    title: 'İşinizi büyütün',
+    description: 'Satıcı analitiği, promosyon araçları ve özel destek ekibine erişin.',
   },
   {
     icon: ShieldCheck,
-    title: 'Secure Payments',
-    description: 'Get paid reliably with our trusted payment infrastructure on every sale.',
+    title: 'Güvenli ödeme',
+    description: 'Her satışta güvenilir ödeme altyapımızla sorunsuz ödeme alın.',
   },
 ]
 
@@ -30,9 +30,9 @@ export function InstagramSection() {
     <section className="py-16 bg-card">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Start Selling Today</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Hemen satışa başlayın</h2>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Join thousands of sellers already growing their business on our platform.
+            Platformumuzda işini büyüten binlerce satıcıya katılın.
           </p>
         </div>
 
@@ -51,7 +51,7 @@ export function InstagramSection() {
         <div className="text-center">
           <Link to="/register">
             <Button className="h-12 px-10 rounded-[10px] bg-foreground text-background hover:bg-foreground/85 text-base font-normal">
-              Open Your Store
+              Mağazanı aç
             </Button>
           </Link>
         </div>

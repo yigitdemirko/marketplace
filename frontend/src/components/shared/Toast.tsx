@@ -28,7 +28,7 @@ export function Toast() {
         }}
         className="text-sm font-medium text-[#a8b6ff] hover:text-white transition-colors"
       >
-        View cart
+        Sepete git
       </button>
     </div>
   )

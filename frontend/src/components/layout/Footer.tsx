@@ -3,25 +3,25 @@ import { Smartphone } from 'lucide-react'
 
 const columns = [
   {
-    header: 'Company',
-    links: ['About Us', 'Investor', 'Careers', 'Blog and news'],
+    header: 'Şirket',
+    links: ['Hakkımızda', 'Yatırımcı', 'Kariyer', 'Blog ve haberler'],
     isCompany: true,
   },
   {
-    header: 'Buyers',
-    links: ['Find store', 'Registration', 'Find partners', 'Gift solutions'],
+    header: 'Alıcılar',
+    links: ['Mağaza bul', 'Kayıt ol', 'Ortak bul', 'Hediye çözümleri'],
   },
   {
-    header: 'Help',
-    links: ['Contact us', 'Technical support', 'Live chat', 'Refund', 'Trade order'],
+    header: 'Yardım',
+    links: ['Bize ulaşın', 'Teknik destek', 'Canlı destek', 'İade', 'Sipariş takibi'],
   },
   {
-    header: 'Service',
-    links: ['Trade Resources', 'Logistics service', 'Refund', 'Sale purchase'],
+    header: 'Hizmetler',
+    links: ['Ticari kaynaklar', 'Lojistik', 'İade', 'Satış'],
   },
   {
-    header: 'Language',
-    links: ['Español', 'Português', '한국어', '日本語'],
+    header: 'Dil',
+    links: ['Türkçe'],
   },
 ]
 
@@ -40,7 +40,7 @@ export function Footer() {
                     <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center shrink-0">
                       <span className="text-white font-bold text-sm">B</span>
                     </div>
-                    <span className="font-bold text-white text-[16px]">Brandname</span>
+                    <span className="font-bold text-white text-[16px]">Bilbo's</span>
                   </Link>
                 </div>
               ) : (
@@ -72,14 +72,14 @@ export function Footer() {
             <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-[8px] px-3 py-2 transition-colors">
               <Smartphone className="h-5 w-5 text-white" />
               <div className="text-left">
-                <p className="text-[10px] text-white/60 leading-none">Download on the</p>
+                <p className="text-[10px] text-white/60 leading-none">İndirmek için</p>
                 <p className="text-[13px] text-white font-medium leading-tight">App Store</p>
               </div>
             </button>
             <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-[8px] px-3 py-2 transition-colors">
               <Smartphone className="h-5 w-5 text-white" />
               <div className="text-left">
-                <p className="text-[10px] text-white/60 leading-none">Get it on</p>
+                <p className="text-[10px] text-white/60 leading-none">İndirmek için</p>
                 <p className="text-[13px] text-white font-medium leading-tight">Google Play</p>
               </div>
             </button>
@@ -87,7 +87,7 @@ export function Footer() {
 
           {/* Copyright */}
           <p className="text-[14px] text-white/60">
-            © {new Date().getFullYear()} Company Inc. All Rights Reserved
+            © {new Date().getFullYear()} Bilbo's Marketplace. Tüm hakları saklıdır.
           </p>
 
           <div />
