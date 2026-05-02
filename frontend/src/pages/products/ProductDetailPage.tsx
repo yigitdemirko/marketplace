@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import {
@@ -8,6 +8,7 @@ import {
   Store,
   Heart,
   ShoppingCart,
+  Check,
   Plus,
   Minus,
   PenLine,
@@ -38,6 +39,7 @@ export function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState<typeof TABS[number]>('Açıklama')
   const [wishlisted, setWishlisted] = useState(false)
   const [quantity, setQuantity] = useState(1)
+  const [added, setAdded] = useState(false)
 
   const { data: product, isLoading, isError } = useQuery({
     queryKey: ['product', productId],
@@ -53,7 +55,7 @@ export function ProductDetailPage() {
 
   const sellerDisplayName = sellerProfile?.storeName ?? product?.sellerId
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback(() => {
     if (!product) return
     addItem({
       productId: product.id,
@@ -64,7 +66,9 @@ export function ProductDetailPage() {
       image: product.images?.[0],
     })
     notifyAdded()
-  }
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1500)
+  }, [product, quantity, addItem, notifyAdded])
 
   if (isLoading) {
     return (
@@ -293,11 +297,15 @@ export function ProductDetailPage() {
               <button
                 onClick={handleAddToCart}
                 disabled={!isInStock}
-                className="flex-1 h-10 bg-[#3348ff] hover:bg-[#2236e0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg flex items-center justify-center gap-2 px-3 shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)]"
+                className={`flex-1 h-10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg flex items-center justify-center gap-2 px-3 shadow-[inset_0px_12px_12px_rgba(255,255,255,0.12),inset_0px_-2px_2px_rgba(48,48,48,0.1)] ${
+                  added
+                    ? 'bg-[#1a9e5c] hover:bg-[#158a50]'
+                    : 'bg-[#3348ff] hover:bg-[#2236e0]'
+                }`}
               >
-                <ShoppingCart className="h-5 w-5 text-white" />
+                {added ? <Check className="h-5 w-5 text-white" /> : <ShoppingCart className="h-5 w-5 text-white" />}
                 <span className="text-[15px] font-medium text-white tracking-tight whitespace-nowrap">
-                  {isInStock ? 'Sepete ekle' : 'Stokta yok'}
+                  {!isInStock ? 'Stokta yok' : added ? 'Eklendi' : 'Sepete ekle'}
                 </span>
               </button>
               <button

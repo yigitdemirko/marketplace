@@ -3,11 +3,13 @@ import { useNavigate } from '@tanstack/react-router'
 import { X, Trash2, Minus, Plus } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { useCartDrawer } from '@/store/cartDrawerStore'
+import { useToastStore } from '@/store/toastStore'
 import { formatPrice } from '@/lib/formatPrice'
 
 export function CartDrawer() {
   const { isOpen, close } = useCartDrawer()
   const { items, removeItem, updateQuantity, totalAmount, totalItems } = useCartStore()
+  const showToast = useToastStore((s) => s.show)
   const navigate = useNavigate()
 
   // lock body scroll when open
@@ -114,7 +116,7 @@ export function CartDrawer() {
                         </p>
                       </div>
                       <button
-                        onClick={() => removeItem(item.productId)}
+                        onClick={() => { removeItem(item.productId); showToast('Ürün sepetten çıkarıldı') }}
                         aria-label={`${item.name} ürününü kaldır`}
                         className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-[#dce0e5] bg-white text-[#525e6f] hover:bg-[#f6f7f9] transition-colors"
                       >

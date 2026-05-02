@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
+import { useToastStore } from '@/store/toastStore'
 import { productsApi } from '@/api/products'
 import type { Product } from '@/types'
 import { formatPrice } from '@/lib/formatPrice'
@@ -72,6 +73,7 @@ function SuggestedProductCard({
 export function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, addItem, totalAmount, totalItems } = useCartStore()
   const { isAuthenticated } = useAuthStore()
+  const showToast = useToastStore((s) => s.show)
   const navigate = useNavigate()
   const [wishlistedItems, setWishlistedItems] = useState<Set<string>>(new Set())
 
@@ -174,7 +176,7 @@ export function CartPage() {
                     </button>
 
                     <button
-                      onClick={() => removeItem(item.productId)}
+                      onClick={() => { removeItem(item.productId); showToast('Ürün sepetten çıkarıldı') }}
                       className="p-1.5 rounded hover:bg-[#f6f7f9] transition-colors"
                       aria-label="Ürünü kaldır"
                     >
@@ -191,7 +193,7 @@ export function CartPage() {
 
             <div className="h-px bg-[#dce0e5]" />
             <div className="px-4 py-3">
-              <button onClick={clearCart} className="text-[14px] text-[#3348ff] hover:underline">
+              <button onClick={() => { clearCart(); showToast('Sepet boşaltıldı') }} className="text-[14px] text-[#3348ff] hover:underline">
                 Sepeti boşalt
               </button>
             </div>
