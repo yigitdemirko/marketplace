@@ -11,6 +11,7 @@ import com.marketplace.payment.infrastructure.iyzico.IyzicoGateway;
 import com.marketplace.payment.infrastructure.messaging.PaymentEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,9 @@ public class PaymentService {
     private final PaymentEventPublisher eventPublisher;
     private final OrderServiceGateway orderServiceGateway;
 
+    @Value("${app.payment.max-amount:100000}")
+    private BigDecimal maxAmount;
+
     @Transactional
     public PaymentResponse processPayment(String userId, ProcessPaymentRequest request) {
         paymentRepository.findByIdempotencyKey(request.idempotencyKey())
@@ -42,6 +46,11 @@ public class PaymentService {
             throw new RuntimeException("Order is not payable in status: " + order.status());
         }
         BigDecimal amount = order.totalAmount();
+        if (amount.compareTo(maxAmount) > 0) {
+            log.warn("Payment amount {} exceeds limit {}, rejecting: orderId={}",
+                    amount, maxAmount, request.orderId());
+            throw new PaymentAmountExceedsLimitException(amount, maxAmount);
+        }
 
         Payment payment = Payment.create(
                 request.orderId(),

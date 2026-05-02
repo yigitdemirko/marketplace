@@ -111,25 +111,31 @@ public class ProductService {
             Product product = productsById.get(item.productId());
             if (product == null) {
                 results.add(new ValidatedProductResponse(
-                        item.productId(), false, null, null, null, "Product not found or inactive"));
+                        item.productId(), false, null, null, null, "Product not found or inactive",
+                        null, null, null));
                 continue;
             }
+            String firstImage = product.getImages() != null && !product.getImages().isEmpty()
+                    ? product.getImages().get(0) : null;
             Integer available = stockByProductId.get(item.productId());
             if (available == null) {
                 results.add(new ValidatedProductResponse(
                         item.productId(), false, product.getSellerId(), product.getPrice(),
-                        null, "Stock unknown for product"));
+                        null, "Stock unknown for product",
+                        product.getName(), firstImage, product.getBrand()));
                 continue;
             }
             if (available < item.quantity()) {
                 results.add(new ValidatedProductResponse(
                         item.productId(), false, product.getSellerId(), product.getPrice(),
-                        available, "Insufficient stock"));
+                        available, "Insufficient stock",
+                        product.getName(), firstImage, product.getBrand()));
                 continue;
             }
             results.add(new ValidatedProductResponse(
                     item.productId(), true, product.getSellerId(), product.getPrice(),
-                    available, null));
+                    available, null,
+                    product.getName(), firstImage, product.getBrand()));
         }
         return results;
     }

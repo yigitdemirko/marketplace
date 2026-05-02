@@ -1,8 +1,8 @@
-package com.marketplace.catalog.api.v1.dto.response;
+package com.marketplace.basket.infrastructure.client;
 
 import java.math.BigDecimal;
 
-public record ValidatedProductResponse(
+public record CatalogProductDto(
         String productId,
         boolean valid,
         String sellerId,

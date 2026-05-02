@@ -1,5 +1,6 @@
 package com.marketplace.order.config;
 
+import com.marketplace.order.application.service.OrderAmountExceedsLimitException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,15 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(OrderAmountExceedsLimitException.class)
+    public ResponseEntity<Map<String, Object>> handleAmountLimit(OrderAmountExceedsLimitException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", ex.getMessage());
+        body.put("totalAmount", ex.getTotalAmount());
+        body.put("maxAmount", ex.getMaxAmount());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {

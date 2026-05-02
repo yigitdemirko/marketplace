@@ -1,5 +1,6 @@
 package com.marketplace.payment.config;
 
+import com.marketplace.payment.application.service.PaymentAmountExceedsLimitException;
 import com.marketplace.payment.infrastructure.client.OrderServiceUnavailableException;
 import com.marketplace.payment.infrastructure.iyzico.IyzicoUnavailableException;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,15 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(PaymentAmountExceedsLimitException.class)
+    public ResponseEntity<Map<String, Object>> handleAmountLimit(PaymentAmountExceedsLimitException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", ex.getMessage());
+        body.put("amount", ex.getAmount());
+        body.put("maxAmount", ex.getMaxAmount());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
+    }
 
     @ExceptionHandler({OrderServiceUnavailableException.class, IyzicoUnavailableException.class})
     public ResponseEntity<Map<String, String>> handleServiceUnavailable(RuntimeException ex) {

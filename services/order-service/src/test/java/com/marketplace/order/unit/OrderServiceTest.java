@@ -10,12 +10,14 @@ import com.marketplace.order.domain.repository.OrderRepository;
 import com.marketplace.order.infrastructure.client.ProductValidationGateway;
 import com.marketplace.order.infrastructure.client.ValidatedProduct;
 import com.marketplace.order.infrastructure.messaging.OrderEventPublisher;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -42,6 +44,11 @@ class OrderServiceTest {
 
     @InjectMocks
     private OrderService orderService;
+
+    @BeforeEach
+    void setMaxAmount() {
+        ReflectionTestUtils.setField(orderService, "maxAmount", new BigDecimal("100000"));
+    }
 
     @Test
     void should_CreateOrder_Successfully() {
