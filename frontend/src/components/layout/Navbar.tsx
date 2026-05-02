@@ -119,12 +119,12 @@ export function Navbar() {
 
           {isBuyer ? (
             <div className="flex items-center gap-3">
-              <div className="flex flex-col items-center gap-0.5">
+              <Link to="/account" className="flex flex-col items-center gap-0.5">
                 <UserCircle className="h-5 w-5 text-[#6f7c8e]" />
                 <span className="text-[11px] text-[#6f7c8e] max-w-[64px] truncate">
                   {user?.email?.substring(0, 8)}
                 </span>
-              </div>
+              </Link>
               <button
                 onClick={logout}
                 className="flex flex-col items-center gap-0.5 cursor-pointer"
