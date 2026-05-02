@@ -1,0 +1,1 @@
+ALTER TABLE saved_cards ALTER COLUMN last4 TYPE VARCHAR(4);
