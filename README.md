@@ -4,6 +4,7 @@ A modern e-commerce platform built with microservices architecture.
 
 ![CI](https://github.com/yigitdemirko/marketplace/actions/workflows/ci.yaml/badge.svg)
 ![Deploy](https://github.com/yigitdemirko/marketplace/actions/workflows/deploy.yaml/badge.svg)
+![Coverage](.github/badges/jacoco.svg)
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-green?logo=springboot)
 ![React](https://img.shields.io/badge/React-18-blue?logo=react)
