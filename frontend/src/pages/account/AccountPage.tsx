@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useQuery, useQueries } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import {
@@ -169,14 +169,17 @@ export function AccountPage() {
   const showToast = useToastStore((s) => s.show)
   const [activeNav, setActiveNav] = useState<string>('orders')
   const [activeTab, setActiveTab] = useState<Tab>('current')
+  const isLoggingOut = useRef(false)
 
   useEffect(() => {
+    if (isLoggingOut.current) return
     if (!isAuthenticated || user?.accountType !== 'BUYER') {
       navigate({ to: '/login' })
     }
   }, [isAuthenticated, user?.accountType])
 
   const handleLogout = () => {
+    isLoggingOut.current = true
     authApi.logout().finally(() => {
       logout()
       showToast('Çıkış yapıldı')
@@ -204,6 +207,11 @@ export function AccountPage() {
       <div className="bg-white border-b border-[#dce0e5] py-8">
         <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
           <h2 className="text-[26px] font-bold text-[#14181f] mb-1">Hesabım</h2>
+          {(user?.firstName || user?.lastName) && (
+            <p className="text-[15px] font-medium text-[#14181f] mb-0.5">
+              {[user.firstName, user.lastName].filter(Boolean).join(' ')}
+            </p>
+          )}
           <p className="text-[14px] text-[#6f7c8e]">
             {user?.email}
           </p>

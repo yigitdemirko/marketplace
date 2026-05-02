@@ -110,7 +110,8 @@ public class AuthController {
         if ("SELLER".equals(accountType)) {
             storeName = authService.getSellerStoreName(userId);
         }
-        return ResponseEntity.ok(new AuthResponse(userId, email, accountType, storeName));
+        String[] name = "BUYER".equals(accountType) ? authService.getBuyerName(userId) : new String[]{null, null};
+        return ResponseEntity.ok(new AuthResponse(userId, email, accountType, storeName, name[0], name[1]));
     }
 
     // -------------------------------------------------------------------------

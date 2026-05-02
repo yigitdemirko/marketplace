@@ -61,7 +61,7 @@ public class AuthService {
         userRepository.save(user);
         BuyerProfile profile = BuyerProfile.create(user, request.firstName(), request.lastName());
         buyerProfileRepository.save(profile);
-        return issueTokens(user, null, ip, userAgent);
+        return issueTokens(user, null, request.firstName(), request.lastName(), ip, userAgent);
     }
 
     @Transactional
@@ -73,7 +73,7 @@ public class AuthService {
         userRepository.save(user);
         SellerProfile profile = SellerProfile.create(user, request.storeName(), request.taxNumber(), request.phone());
         sellerProfileRepository.save(profile);
-        return issueTokens(user, profile.getStoreName(), ip, userAgent);
+        return issueTokens(user, profile.getStoreName(), null, null, ip, userAgent);
     }
 
     public AuthResult login(LoginRequest request, String ip, String userAgent) {
@@ -83,12 +83,20 @@ public class AuthService {
             throw new RuntimeException("Invalid email or password");
         }
         String storeName = null;
+        String firstName = null;
+        String lastName = null;
         if (user.getAccountType() == AccountType.SELLER) {
             storeName = sellerProfileRepository.findByUserId(user.getId())
                     .map(SellerProfile::getStoreName)
                     .orElse(null);
+        } else if (user.getAccountType() == AccountType.BUYER) {
+            BuyerProfile profile = buyerProfileRepository.findByUserId(user.getId()).orElse(null);
+            if (profile != null) {
+                firstName = profile.getFirstName();
+                lastName = profile.getLastName();
+            }
         }
-        return issueTokens(user, storeName, ip, userAgent);
+        return issueTokens(user, storeName, firstName, lastName, ip, userAgent);
     }
 
     @Transactional
@@ -126,12 +134,20 @@ public class AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         String storeName = null;
+        String firstName = null;
+        String lastName = null;
         if (user.getAccountType() == AccountType.SELLER) {
             storeName = sellerProfileRepository.findByUserId(userId)
                     .map(SellerProfile::getStoreName)
                     .orElse(null);
+        } else if (user.getAccountType() == AccountType.BUYER) {
+            BuyerProfile profile = buyerProfileRepository.findByUserId(userId).orElse(null);
+            if (profile != null) {
+                firstName = profile.getFirstName();
+                lastName = profile.getLastName();
+            }
         }
-        return issueTokens(user, storeName, ip, userAgent);
+        return issueTokens(user, storeName, firstName, lastName, ip, userAgent);
     }
 
     @Transactional
@@ -152,7 +168,7 @@ public class AuthService {
     }
 
     public AuthResponse toResponse(AuthResult result) {
-        return new AuthResponse(result.userId(), result.email(), result.accountType(), result.storeName());
+        return new AuthResponse(result.userId(), result.email(), result.accountType(), result.storeName(), result.firstName(), result.lastName());
     }
 
     public String getSellerStoreName(String userId) {
@@ -161,9 +177,15 @@ public class AuthService {
                 .orElse(null);
     }
 
+    public String[] getBuyerName(String userId) {
+        return buyerProfileRepository.findByUserId(userId)
+                .map(p -> new String[]{p.getFirstName(), p.getLastName()})
+                .orElse(new String[]{null, null});
+    }
+
     // -------------------------------------------------------------------------
 
-    private AuthResult issueTokens(User user, String storeName, String ip, String userAgent) {
+    private AuthResult issueTokens(User user, String storeName, String firstName, String lastName, String ip, String userAgent) {
         String accessToken = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getAccountType());
         String rawRefreshToken = generateRawToken();
         String tokenHash = hash(rawRefreshToken);
@@ -178,7 +200,7 @@ public class AuthService {
         refreshTokenRepository.save(entity);
 
         return new AuthResult(accessToken, rawRefreshToken, user.getId(),
-                user.getEmail(), user.getAccountType().name(), storeName);
+                user.getEmail(), user.getAccountType().name(), storeName, firstName, lastName);
     }
 
     private void revokeAllSessions(String userId) {
