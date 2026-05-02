@@ -15,6 +15,7 @@ import com.marketplace.order.infrastructure.client.ValidatedProduct;
 import com.marketplace.order.infrastructure.messaging.OrderEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderEventPublisher eventPublisher;
     private final ProductValidationGateway productValidationGateway;
+
+    @Value("${app.payment.max-amount:100000}")
+    private BigDecimal maxAmount;
 
     @Transactional
     public OrderResponse createOrder(String userId, CreateOrderRequest request) {
@@ -56,6 +60,11 @@ public class OrderService {
         }
 
         order.calculateTotal();
+        if (order.getTotalAmount().compareTo(maxAmount) > 0) {
+            log.warn("Order total {} exceeds limit {}, rejecting: userId={}",
+                    order.getTotalAmount(), maxAmount, userId);
+            throw new OrderAmountExceedsLimitException(order.getTotalAmount(), maxAmount);
+        }
         order.setStatus(OrderStatus.STOCK_RESERVING);
         Order saved = orderRepository.save(order);
 

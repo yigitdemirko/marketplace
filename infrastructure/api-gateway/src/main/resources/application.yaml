@@ -51,6 +51,10 @@ spring:
               uri: lb://notification-service
               predicates:
                 - Path=/api/v1/notifications/**
+            - id: basket-service
+              uri: lb://basket-service
+              predicates:
+                - Path=/api/v1/basket/**
             - id: user-service-docs
               uri: lb://user-service
               predicates:
@@ -99,6 +103,12 @@ spring:
                 - Path=/api-docs/notification-service
               filters:
                 - RewritePath=/api-docs/notification-service, /v3/api-docs
+            - id: basket-service-docs
+              uri: lb://basket-service
+              predicates:
+                - Path=/api-docs/basket-service
+              filters:
+                - RewritePath=/api-docs/basket-service, /v3/api-docs
           globalcors:
             cors-configurations:
               '[/**]':
@@ -136,6 +146,8 @@ springdoc:
         url: /api-docs/inventory-service
       - name: notification-service
         url: /api-docs/notification-service
+      - name: basket-service
+        url: /api-docs/basket-service
     server-url: ${API_SERVER_URL:http://localhost:8080}
 
 jwt:

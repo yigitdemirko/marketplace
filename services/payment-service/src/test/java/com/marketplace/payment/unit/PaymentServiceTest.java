@@ -10,6 +10,7 @@ import com.marketplace.payment.infrastructure.client.OrderServiceGateway;
 import com.marketplace.payment.infrastructure.client.OrderSummary;
 import com.marketplace.payment.infrastructure.iyzico.IyzicoGateway;
 import com.marketplace.payment.infrastructure.messaging.PaymentEventPublisher;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -46,6 +48,11 @@ class PaymentServiceTest {
 
     @InjectMocks
     private PaymentService paymentService;
+
+    @BeforeEach
+    void setMaxAmount() {
+        ReflectionTestUtils.setField(paymentService, "maxAmount", new BigDecimal("100000"));
+    }
 
     private ProcessPaymentRequest sampleRequest(String idempotencyKey) {
         return new ProcessPaymentRequest(

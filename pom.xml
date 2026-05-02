@@ -31,6 +31,7 @@
         <module>services/notification-service</module>
         <module>services/feed-ingestion-service</module>
         <module>services/inventory-service</module>
+        <module>services/basket-service</module>
     </modules>
 
     <properties>

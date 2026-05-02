@@ -93,3 +93,5 @@ logging:
 app:
   outbox:
     poll-interval-ms: 1000
+  payment:
+    max-amount: ${PAYMENT_MAX_AMOUNT:100000}
