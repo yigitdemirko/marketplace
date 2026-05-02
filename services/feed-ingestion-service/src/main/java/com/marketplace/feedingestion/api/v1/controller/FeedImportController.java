@@ -29,9 +29,8 @@ public class FeedImportController {
     @PostMapping("/import")
     public ResponseEntity<ImportJobResponse> importFeed(
             @RequestHeader("X-Seller-Id") String sellerId,
-            @RequestParam("file") MultipartFile file,
-            @RequestParam(defaultValue = "EN") String locale) {
-        ImportJobResponse response = feedImportService.importFeed(sellerId, file, locale);
+            @RequestParam("file") MultipartFile file) {
+        ImportJobResponse response = feedImportService.importFeed(sellerId, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
