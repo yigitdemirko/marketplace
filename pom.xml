@@ -32,6 +32,7 @@
         <module>services/feed-ingestion-service</module>
         <module>services/inventory-service</module>
         <module>services/basket-service</module>
+        <module>coverage-aggregate</module>
     </modules>
 
     <properties>

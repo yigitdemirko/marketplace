@@ -3,10 +3,19 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
+    paths:
+      - 'services/**'
+      - 'shared/**'
+      - 'pom.xml'
+
+permissions:
+  contents: write
 
 jobs:
   unit-tests:
-    if: contains(github.event.pull_request.labels.*.name, 'backend')
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'backend')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,7 +42,7 @@ jobs:
         run: mvn test -pl services/user-service,services/catalog-service,services/search-service,services/order-service,services/payment-service,services/inventory-service,services/notification-service,services/basket-service -Dgroups=unit
 
   integration-tests:
-    if: contains(github.event.pull_request.labels.*.name, 'backend')
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'backend')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -59,8 +68,10 @@ jobs:
       - name: Run integration tests
         run: mvn test -pl services/user-service,services/catalog-service,services/inventory-service,services/notification-service,services/basket-service -Dgroups=integration
 
-  coverage-check:
-    if: contains(github.event.pull_request.labels.*.name, 'backend')
+  coverage:
+    if: |
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'backend'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -83,5 +94,25 @@ jobs:
           mvn install -N -DskipTests -B
           mvn install -pl shared/common-lib -DskipTests -B
 
-      - name: Run all tests + jacoco check
-        run: mvn verify -pl services/user-service,services/catalog-service,services/search-service,services/order-service,services/payment-service,services/inventory-service,services/notification-service,services/feed-ingestion-service,services/basket-service -B
+      - name: Run all tests + jacoco check + aggregate report
+        run: mvn verify -pl services/user-service,services/catalog-service,services/search-service,services/order-service,services/payment-service,services/inventory-service,services/notification-service,services/feed-ingestion-service,services/basket-service,coverage-aggregate -am -B
+
+      - name: Generate coverage badge
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          jacoco-csv-file: coverage-aggregate/target/site/jacoco-aggregate/jacoco.csv
+          badges-directory: .github/badges
+          generate-coverage-badge: true
+          coverage-badge-filename: jacoco.svg
+
+      - name: Commit badge if changed
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          if [[ -n "$(git status --porcelain .github/badges/)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .github/badges/
+            git commit -m "chore: update jacoco coverage badge [skip ci]"
+            git push
+          fi
