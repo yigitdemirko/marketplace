@@ -491,17 +491,6 @@ export function ProductsPage({
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="mt-8 flex flex-col items-center gap-6">
-                    {/* Show more button */}
-                    {!data.last && (
-                      <button
-                        onClick={() => setPage((p) => p + 1)}
-                        className="w-full h-12 border border-[#dce0e5] rounded-lg bg-white text-[18px] font-medium text-[#14181f] flex items-center justify-center gap-2 hover:bg-[#f6f7f9] transition-colors"
-                      >
-                        Daha fazla ürün göster
-                        <ChevronDown className="h-5 w-5" />
-                      </button>
-                    )}
-
                     {/* Numbered pages */}
                     <div className="flex items-center gap-1">
                       <button
