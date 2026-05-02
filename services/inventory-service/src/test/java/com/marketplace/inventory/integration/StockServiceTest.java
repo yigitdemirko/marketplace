@@ -1,11 +1,11 @@
-package com.marketplace.product.integration;
+package com.marketplace.inventory.integration;
 
-import com.marketplace.product.application.service.StockService;
-import com.marketplace.product.domain.model.Product;
-import com.marketplace.product.domain.model.StockReservation;
-import com.marketplace.product.domain.repository.ProductRepository;
-import com.marketplace.product.domain.repository.StockReservationRepository;
-import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
+import com.marketplace.inventory.application.service.StockService;
+import com.marketplace.inventory.domain.model.ProductStock;
+import com.marketplace.inventory.domain.model.StockReservation;
+import com.marketplace.inventory.domain.repository.ProductStockRepository;
+import com.marketplace.inventory.domain.repository.StockReservationRepository;
+import com.marketplace.inventory.infrastructure.messaging.InventoryEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,9 +17,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import software.amazon.awssdk.services.s3.S3Client;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -31,10 +29,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("integration")
-@SpringBootTest
+@SpringBootTest(properties = "inventory.bootstrap.enabled=false")
 @Testcontainers
 @ActiveProfiles("test")
-class StockServiceConcurrencyTest {
+class StockServiceTest {
 
     @Container
     @ServiceConnection
@@ -44,26 +42,23 @@ class StockServiceConcurrencyTest {
     private StockService stockService;
 
     @Autowired
-    private ProductRepository productRepository;
+    private ProductStockRepository productStockRepository;
 
     @Autowired
     private StockReservationRepository reservationRepository;
 
     @MockitoBean
-    private ProductEventPublisher productEventPublisher;
-
-    @MockitoBean
-    private S3Client s3Client;
+    private InventoryEventPublisher eventPublisher;
 
     @BeforeEach
     void cleanState() {
-        productRepository.deleteAll();
+        productStockRepository.deleteAll();
         reservationRepository.deleteAll();
     }
 
     @Test
     void should_ReserveExactlyOneOrder_WhenManyCompeteForLastUnit() throws InterruptedException {
-        Product product = persisted("last-unit", 1);
+        ProductStock stock = persisted("last-unit", 1);
         int contenders = 20;
 
         ExecutorService pool = Executors.newFixedThreadPool(contenders);
@@ -76,7 +71,7 @@ class StockServiceConcurrencyTest {
             pool.submit(() -> {
                 try {
                     start.await();
-                    Optional<String> failure = stockService.reserve(orderId, List.of(item(product.getId(), 1)));
+                    Optional<String> failure = stockService.reserve(orderId, List.of(item(stock.getProductId(), 1)));
                     if (failure.isEmpty()) successes.incrementAndGet();
                     else failures.incrementAndGet();
                 } catch (Exception e) {
@@ -91,7 +86,7 @@ class StockServiceConcurrencyTest {
 
         assertThat(successes.get()).as("exactly one order wins the last unit").isEqualTo(1);
         assertThat(failures.get()).isEqualTo(contenders - 1);
-        assertThat(productRepository.findById(product.getId()).orElseThrow().getStock()).isZero();
+        assertThat(productStockRepository.findById(stock.getProductId()).orElseThrow().getStock()).isZero();
 
         List<StockReservation> reservations = reservationRepository.findAll();
         assertThat(reservations).hasSize(1);
@@ -100,61 +95,64 @@ class StockServiceConcurrencyTest {
 
     @Test
     void should_NotDoubleDecrementStock_WhenSameOrderReservedTwice() {
-        Product product = persisted("dup-order", 5);
-        List<StockReservation.ReservedItem> items = List.of(item(product.getId(), 2));
+        ProductStock stock = persisted("dup-order", 5);
+        List<StockReservation.ReservedItem> items = List.of(item(stock.getProductId(), 2));
 
         Optional<String> first = stockService.reserve("order-1", items);
         Optional<String> second = stockService.reserve("order-1", items);
 
         assertThat(first).isEmpty();
         assertThat(second).isEmpty();
-        assertThat(productRepository.findById(product.getId()).orElseThrow().getStock()).isEqualTo(3);
+        assertThat(productStockRepository.findById(stock.getProductId()).orElseThrow().getStock()).isEqualTo(3);
         assertThat(reservationRepository.count()).isEqualTo(1);
     }
 
     @Test
     void should_RestoreStock_AndMarkReleased_WhenReservationReleased() {
-        Product product = persisted("release-1", 5);
-        stockService.reserve("order-1", List.of(item(product.getId(), 2)));
+        ProductStock stock = persisted("release-1", 5);
+        stockService.reserve("order-1", List.of(item(stock.getProductId(), 2)));
 
         stockService.release("order-1");
 
-        assertThat(productRepository.findById(product.getId()).orElseThrow().getStock()).isEqualTo(5);
+        assertThat(productStockRepository.findById(stock.getProductId()).orElseThrow().getStock()).isEqualTo(5);
         StockReservation reservation = reservationRepository.findById("order-1").orElseThrow();
         assertThat(reservation.getStatus()).isEqualTo(StockReservation.Status.RELEASED);
     }
 
     @Test
     void should_NotIncrementStockTwice_WhenReleaseCalledTwice() {
-        Product product = persisted("dup-release", 5);
-        stockService.reserve("order-1", List.of(item(product.getId(), 2)));
+        ProductStock stock = persisted("dup-release", 5);
+        stockService.reserve("order-1", List.of(item(stock.getProductId(), 2)));
 
         stockService.release("order-1");
         stockService.release("order-1");
 
-        assertThat(productRepository.findById(product.getId()).orElseThrow().getStock()).isEqualTo(5);
+        assertThat(productStockRepository.findById(stock.getProductId()).orElseThrow().getStock()).isEqualTo(5);
     }
 
     @Test
     void should_RollbackPartialReservations_WhenOneItemHasInsufficientStock() {
-        Product itemA = persisted("item-a", 10);
-        Product itemB = persisted("item-b", 1);
+        ProductStock itemA = persisted("item-a", 10);
+        ProductStock itemB = persisted("item-b", 1);
 
         Optional<String> failure = stockService.reserve("order-multi", List.of(
-                item(itemA.getId(), 5),
-                item(itemB.getId(), 5)
+                item(itemA.getProductId(), 5),
+                item(itemB.getProductId(), 5)
         ));
 
-        assertThat(failure).contains("Insufficient stock for productId=" + itemB.getId());
-        assertThat(productRepository.findById(itemA.getId()).orElseThrow().getStock())
+        assertThat(failure).contains("Insufficient stock for productId=" + itemB.getProductId());
+        assertThat(productStockRepository.findById(itemA.getProductId()).orElseThrow().getStock())
                 .as("itemA decrement must be rolled back").isEqualTo(10);
-        assertThat(productRepository.findById(itemB.getId()).orElseThrow().getStock()).isEqualTo(1);
+        assertThat(productStockRepository.findById(itemB.getProductId()).orElseThrow().getStock()).isEqualTo(1);
         assertThat(reservationRepository.count()).as("no reservation persisted on failure").isZero();
     }
 
-    private Product persisted(String name, int stock) {
-        Product p = Product.create("seller-1", name, "desc", new BigDecimal("10.00"), stock, "cat-1");
-        return productRepository.save(p);
+    private ProductStock persisted(String productId, int stock) {
+        return productStockRepository.save(ProductStock.builder()
+                .productId(productId)
+                .sellerId("seller-1")
+                .stock(stock)
+                .build());
     }
 
     private StockReservation.ReservedItem item(String productId, int qty) {

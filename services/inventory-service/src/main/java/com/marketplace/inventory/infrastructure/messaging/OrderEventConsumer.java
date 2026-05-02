@@ -1,7 +1,7 @@
-package com.marketplace.product.infrastructure.messaging;
+package com.marketplace.inventory.infrastructure.messaging;
 
-import com.marketplace.product.application.service.StockService;
-import com.marketplace.product.domain.model.StockReservation;
+import com.marketplace.inventory.application.service.StockService;
+import com.marketplace.inventory.domain.model.StockReservation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -21,7 +21,7 @@ public class OrderEventConsumer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final StockService stockService;
 
-    @KafkaListener(topics = "order.created", groupId = "product-service")
+    @KafkaListener(topics = "order.created", groupId = "inventory-service")
     @SuppressWarnings("unchecked")
     public void handleOrderCreated(Map<String, Object> event) {
         String orderId = (String) event.get("orderId");
@@ -48,7 +48,7 @@ public class OrderEventConsumer {
         }
     }
 
-    @KafkaListener(topics = "order.cancelled", groupId = "product-service")
+    @KafkaListener(topics = "order.cancelled", groupId = "inventory-service")
     public void handleOrderCancelled(Map<String, Object> event) {
         String orderId = (String) event.get("orderId");
         log.info("Order cancelled event received: orderId={}", orderId);

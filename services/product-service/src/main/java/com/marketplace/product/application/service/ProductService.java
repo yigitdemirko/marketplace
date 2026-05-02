@@ -36,6 +36,7 @@ public class ProductService {
     public ProductResponse createProduct(String sellerId, CreateProductRequest request) {
         Product product = buildProduct(sellerId, request);
         Product saved = productRepository.save(product);
+        eventPublisher.publishProductCreated(saved);
         eventPublisher.publishProductUpdated(saved);
         return toResponse(saved);
     }
@@ -49,6 +50,7 @@ public class ProductService {
             try {
                 Product product = buildProduct(sellerId, request);
                 Product saved = productRepository.save(product);
+                eventPublisher.publishProductCreated(saved);
                 eventPublisher.publishProductUpdated(saved);
                 createdIds.add(saved.getId());
             } catch (Exception ex) {
@@ -163,6 +165,7 @@ public class ProductService {
         product.setActive(false);
         Product saved = productRepository.save(product);
         eventPublisher.publishProductUpdated(saved);
+        eventPublisher.publishProductDeleted(saved.getId());
     }
 
     private Product buildProduct(String sellerId, CreateProductRequest request) {

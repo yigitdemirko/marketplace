@@ -43,6 +43,10 @@ spring:
               uri: lb://feed-ingestion-service
               predicates:
                 - Path=/api/v1/feeds/**
+            - id: inventory-service
+              uri: lb://inventory-service
+              predicates:
+                - Path=/api/v1/inventory/**
             - id: user-service-docs
               uri: lb://user-service
               predicates:
@@ -79,6 +83,12 @@ spring:
                 - Path=/api-docs/feed-ingestion-service
               filters:
                 - RewritePath=/api-docs/feed-ingestion-service, /v3/api-docs
+            - id: inventory-service-docs
+              uri: lb://inventory-service
+              predicates:
+                - Path=/api-docs/inventory-service
+              filters:
+                - RewritePath=/api-docs/inventory-service, /v3/api-docs
           globalcors:
             cors-configurations:
               '[/**]':
@@ -112,6 +122,8 @@ springdoc:
         url: /api-docs/search-service
       - name: feed-ingestion-service
         url: /api-docs/feed-ingestion-service
+      - name: inventory-service
+        url: /api-docs/inventory-service
     server-url: ${API_SERVER_URL:http://localhost:8080}
 
 jwt:
