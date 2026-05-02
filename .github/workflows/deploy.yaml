@@ -230,8 +230,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Install common-lib
-        run: mvn install -pl shared/common-lib -DskipTests -B
+      - name: Install parent POM and common-lib
+        run: |
+          mvn install -N -DskipTests -B
+          mvn install -pl shared/common-lib -DskipTests -B
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/catalog-service \
@@ -296,8 +298,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Install common-lib
-        run: mvn install -pl shared/common-lib -DskipTests -B
+      - name: Install parent POM and common-lib
+        run: |
+          mvn install -N -DskipTests -B
+          mvn install -pl shared/common-lib -DskipTests -B
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/order-service \
@@ -330,8 +334,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Install common-lib
-        run: mvn install -pl shared/common-lib -DskipTests -B
+      - name: Install parent POM and common-lib
+        run: |
+          mvn install -N -DskipTests -B
+          mvn install -pl shared/common-lib -DskipTests -B
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/payment-service \
@@ -428,8 +434,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Install common-lib
-        run: mvn install -pl shared/common-lib -DskipTests -B
+      - name: Install parent POM and common-lib
+        run: |
+          mvn install -N -DskipTests -B
+          mvn install -pl shared/common-lib -DskipTests -B
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/inventory-service \
@@ -462,8 +470,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Install common-lib
-        run: mvn install -pl shared/common-lib -DskipTests -B
+      - name: Install parent POM and common-lib
+        run: |
+          mvn install -N -DskipTests -B
+          mvn install -pl shared/common-lib -DskipTests -B
       - name: Build and push image
         run: |
           mvn compile jib:build -pl services/basket-service \
