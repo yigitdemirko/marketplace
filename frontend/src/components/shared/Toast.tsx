@@ -1,11 +1,8 @@
-import { useNavigate } from '@tanstack/react-router'
-import { Check } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import { useToastStore } from '@/store/toastStore'
 
 export function Toast() {
-  const { message, hide } = useToastStore()
-  const navigate = useNavigate()
-
+  const { message, action, type, hide } = useToastStore()
   const visible = message !== null
 
   return (
@@ -16,20 +13,27 @@ export function Toast() {
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
       }`}
     >
-      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#3348ff]">
-        <Check className="size-3.5" strokeWidth={3} />
+      <span
+        className={`flex size-6 shrink-0 items-center justify-center rounded-full ${
+          type === 'error' ? 'bg-[#fa3434]' : 'bg-[#3348ff]'
+        }`}
+      >
+        {type === 'error' ? (
+          <X className="size-3.5" strokeWidth={3} />
+        ) : (
+          <Check className="size-3.5" strokeWidth={3} />
+        )}
       </span>
       <span className="flex-1 text-sm">{message ?? ''}</span>
-      <button
-        type="button"
-        onClick={() => {
-          hide()
-          navigate({ to: '/cart' })
-        }}
-        className="text-sm font-medium text-[#a8b6ff] hover:text-white transition-colors"
-      >
-        Sepete git
-      </button>
+      {action && (
+        <button
+          type="button"
+          onClick={() => { hide(); action.fn() }}
+          className="text-sm font-medium text-[#a8b6ff] hover:text-white transition-colors shrink-0"
+        >
+          {action.label}
+        </button>
+      )}
     </div>
   )
 }

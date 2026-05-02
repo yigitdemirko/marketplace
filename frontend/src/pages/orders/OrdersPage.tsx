@@ -1,10 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ordersApi } from '@/api/orders'
 import { useAuthStore } from '@/store/authStore'
+import { useToastStore } from '@/store/toastStore'
 import { formatPrice } from '@/lib/formatPrice'
 import type { Order } from '@/types'
 
@@ -34,11 +36,11 @@ export function OrdersPage() {
   const { user, isAuthenticated } = useAuthStore()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const showToast = useToastStore((s) => s.show)
 
-  if (!isAuthenticated) {
-    navigate({ to: '/login' })
-    return null
-  }
+  useEffect(() => {
+    if (!isAuthenticated) navigate({ to: '/login' })
+  }, [isAuthenticated])
 
   const { data: orders, isLoading, isError } = useQuery({
     queryKey: ['orders', user?.userId],
@@ -48,7 +50,11 @@ export function OrdersPage() {
 
   const cancelMutation = useMutation({
     mutationFn: (orderId: string) => ordersApi.cancel(orderId, user!.userId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['orders', user?.userId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders', user?.userId] })
+      showToast('Sipariş iptal edildi')
+    },
+    onError: () => showToast('İptal başarısız, tekrar dene', { type: 'error' }),
   })
 
   if (isLoading) {

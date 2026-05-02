@@ -1,4 +1,5 @@
-import { ShoppingCart, Package, Star } from 'lucide-react'
+import { useState } from 'react'
+import { ShoppingCart, Package, Star, Check } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useCartStore } from '@/store/cartStore'
 import { useAddedToCartFeedback } from '@/lib/cartFeedback'
@@ -14,6 +15,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem)
   const notifyAdded = useAddedToCartFeedback()
   const navigate = useNavigate()
+  const [added, setAdded] = useState(false)
 
   const mainImage = product.images?.[0]
   const isOutOfStock = product.stock === 0
@@ -34,6 +36,8 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
       image: mainImage,
     })
     notifyAdded()
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1500)
   }
 
   return (
@@ -73,12 +77,16 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
         </p>
 
         <button
-          className="w-full py-2 px-3 bg-[#e0edff] rounded-[8px] flex items-center justify-center gap-2 text-[15px] font-medium text-[#3348ff] hover:bg-[#c7dfff] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`w-full py-2 px-3 rounded-[8px] flex items-center justify-center gap-2 text-[15px] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            added
+              ? 'bg-[#e6f9f0] text-[#1a9e5c]'
+              : 'bg-[#e0edff] text-[#3348ff] hover:bg-[#c7dfff]'
+          }`}
           disabled={isOutOfStock}
           onClick={handleAddToCart}
         >
-          <ShoppingCart className="h-5 w-5" />
-          {isOutOfStock ? 'Stokta yok' : 'Sepete ekle'}
+          {added ? <Check className="h-5 w-5" /> : <ShoppingCart className="h-5 w-5" />}
+          {isOutOfStock ? 'Stokta yok' : added ? 'Eklendi' : 'Sepete ekle'}
         </button>
       </div>
     </div>

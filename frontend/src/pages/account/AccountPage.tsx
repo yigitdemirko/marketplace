@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery, useQueries } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import {
@@ -14,6 +14,7 @@ import {
 import { ordersApi } from '@/api/orders'
 import { productsApi } from '@/api/products'
 import { useAuthStore } from '@/store/authStore'
+import { useToastStore } from '@/store/toastStore'
 import { formatPrice } from '@/lib/formatPrice'
 import type { Order, OrderItem } from '@/types'
 
@@ -164,12 +165,20 @@ const NAV_ITEMS = [
 export function AccountPage() {
   const { user, isAuthenticated, logout } = useAuthStore()
   const navigate = useNavigate()
+  const showToast = useToastStore((s) => s.show)
   const [activeNav, setActiveNav] = useState<string>('orders')
   const [activeTab, setActiveTab] = useState<Tab>('current')
 
-  if (!isAuthenticated || user?.accountType !== 'BUYER') {
-    navigate({ to: '/login' })
-    return null
+  useEffect(() => {
+    if (!isAuthenticated || user?.accountType !== 'BUYER') {
+      navigate({ to: '/login' })
+    }
+  }, [isAuthenticated, user?.accountType])
+
+  const handleLogout = () => {
+    logout()
+    showToast('Çıkış yapıldı')
+    navigate({ to: '/' })
   }
 
   const { data: orders, isLoading } = useQuery({
@@ -251,7 +260,7 @@ export function AccountPage() {
               </button>
 
               <button
-                onClick={() => { logout(); navigate({ to: '/' }) }}
+                onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-4 py-3 text-[14px] text-[#3a4553] hover:bg-[#f7f8f9] transition-colors"
               >
                 <span className="w-8 h-8 flex items-center justify-center rounded-[6px] border border-[#dce0e5] shrink-0 shadow-sm bg-white text-[#6f7c8e]">
