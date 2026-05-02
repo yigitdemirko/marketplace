@@ -12,6 +12,7 @@
 | user-service | [user-service.md](./user-service.md) |
 | catalog-service | [catalog-service.md](./catalog-service.md) |
 | inventory-service | [inventory-service.md](./inventory-service.md) |
+| basket-service | [basket-service.md](./basket-service.md) |
 | search-service | [search-service.md](./search-service.md) |
 | order-service | [order-service.md](./order-service.md) |
 | payment-service | [payment-service.md](./payment-service.md) |
