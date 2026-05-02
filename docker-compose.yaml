@@ -168,6 +168,7 @@ services:
     environment:
       EUREKA_HOST: discovery-server
       FRONTEND_URL: ${FRONTEND_URL}
+      SELLER_URL: ${SELLER_URL}
       API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
       discovery-server:
