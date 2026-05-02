@@ -41,7 +41,12 @@ public class SearchService {
         bool.filter(TermQuery.of(t -> t.field("active").value(true))._toQuery());
 
         if (query != null && !query.isBlank()) {
-            bool.must(MultiMatchQuery.of(m -> m.query(query).fields("name", "description"))._toQuery());
+            bool.must(MultiMatchQuery.of(m -> m
+                    .query(query)
+                    .fields("name^3", "description^1")
+                    .fuzziness("AUTO")
+                    .prefixLength(1)
+                    .maxExpansions(50))._toQuery());
         }
 
         if (categoryId != null && !categoryId.isBlank()) {
@@ -77,7 +82,23 @@ public class SearchService {
         if (query == null || query.isBlank()) {
             return productSearchRepository.findByActiveTrue(pageable).map(this::toResponse);
         }
-        return productSearchRepository.findByNameContainingAndActiveTrue(query, pageable).map(this::toResponse);
+        BoolQuery.Builder bool = new BoolQuery.Builder();
+        bool.filter(TermQuery.of(t -> t.field("active").value(true))._toQuery());
+        bool.must(MultiMatchQuery.of(m -> m
+                .query(query)
+                .fields("name^3", "description^1")
+                .fuzziness("AUTO")
+                .prefixLength(1)
+                .maxExpansions(50))._toQuery());
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withQuery(bool.build()._toQuery())
+                .withPageable(pageable)
+                .build();
+        SearchHits<ProductDocument> hits = elasticsearchOperations.search(nativeQuery, ProductDocument.class);
+        List<SearchResponse> content = hits.getSearchHits().stream()
+                .map(hit -> toResponse(hit.getContent()))
+                .collect(Collectors.toList());
+        return new PageImpl<>(content, pageable, hits.getTotalHits());
     }
 
     public Page<SearchResponse> searchByCategory(String categoryId, Pageable pageable) {
