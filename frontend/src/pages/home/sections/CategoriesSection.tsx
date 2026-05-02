@@ -149,7 +149,7 @@ export function ElectronicsSection() {
   return (
     <CategorySection
       bannerImage="/banners/category-tech.jpg"
-      bannerTitle="Tüketici elektroniği ve gadget"
+      bannerTitle="Elektronik & Aksesuar"
       categoryIds={['ELECTRONICS', 'PHONES_TABLETS', 'COMPUTERS', 'AUDIO', 'CAMERAS', 'GAMING', 'WEARABLES']}
       exploreCategoryId="ELECTRONICS"
     />

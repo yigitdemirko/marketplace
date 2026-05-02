@@ -24,7 +24,7 @@ export function FlashSalesSection() {
             {/* Left sidebar — header only */}
             <div className="md:w-[220px] lg:w-[240px] shrink-0 p-6 border-b md:border-b-0 md:border-r border-[#dce0e5] flex flex-col justify-center">
               <h2 className="text-[20px] font-semibold text-[#14181f] mb-2">Fırsatlar ve indirimler</h2>
-              <p className="text-[14px] text-[#6f7c8e]">Elektronik &amp; Gadget</p>
+              <p className="text-[14px] text-[#6f7c8e]">Elektronik &amp; Aksesuar</p>
             </div>
 
             {/* Right — 5-column product grid */}
