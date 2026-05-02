@@ -185,7 +185,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       REDIS_HOST: redis
-      COOKIE_DOMAIN: ${COOKIE_DOMAIN:}
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
       COOKIE_SECURE: "true"
       EUREKA_HOST: discovery-server
       API_SERVER_URL: ${API_SERVER_URL}
