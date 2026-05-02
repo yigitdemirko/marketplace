@@ -1,5 +1,6 @@
 package com.marketplace.product.config;
 
+import com.marketplace.product.infrastructure.client.InventoryUnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,14 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(InventoryUnavailableException.class)
+    public ResponseEntity<Map<String, String>> handleInventoryUnavailable(InventoryUnavailableException ex) {
+        log.warn("Inventory unavailable: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Map.of("message", ex.getMessage()));
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {

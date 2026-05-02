@@ -1,5 +1,6 @@
 package com.marketplace.product;
 
+import com.marketplace.product.infrastructure.client.InventoryClient;
 import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,9 @@ class ProductServiceApplicationTests {
 
     @MockitoBean
     ProductEventPublisher eventPublisher;
+
+    @MockitoBean
+    InventoryClient inventoryClient;
 
     @MockitoBean
     S3Client s3Client;
