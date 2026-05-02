@@ -334,7 +334,7 @@ Stok rezerve edildikten sonra ödeme başarısız olursa `payment.failed` olayı
 
 **Distributed tracing** — Tüm servisler `micrometer-tracing-bridge-otel` + `opentelemetry-exporter-otlp` ile span üretir. `traceId` ve `spanId` her log satırına otomatik eklenir (`logging.pattern.correlation`). Bir HTTP isteği gateway'den geldiğinde, downstream servislere kadar tek bir trace altında takip edilir; Grafana service map'i node graph olarak görselleştirir.
 
-**Pre-provisioned dashboard** — `marketplace-overview` 5 satırlık panel: Service Status (up/down), Traffic (req/s), Errors & Latency (5xx %, avg ms), JVM & System (heap %, CPU %), Circuit Breaker (state + outcome). Tüm sorgular `$__rate_interval` kullanır.
+**Pre-provisioned dashboard** — `marketplace-overview` 5 satırlık panel: Service Health (tüm servisler tek panelde UP/DOWN), Traffic (req/s + 5xx error rate), Latency (order/payment/catalog p50/p95/p99), JVM (heap, GC pause, live thread), System (CPU, HikariCP connection pool, process uptime). Tüm sorgular `$__rate_interval` kullanır.
 
 **Demo:** order-service durdurulduğunda CB paneli `OPEN` olur (kırmızı), istekler fail-fast döner, tracing'de fallback path görünür.
 
@@ -873,7 +873,7 @@ A three-pillar observability stack is wired up:
 
 **Distributed tracing** — All services emit spans via `micrometer-tracing-bridge-otel` + `opentelemetry-exporter-otlp`. `traceId` and `spanId` are auto-injected into every log line (`logging.pattern.correlation`). When an HTTP request enters the gateway, it is followed under a single trace through all downstream services; Grafana visualizes the service map as a node graph.
 
-**Pre-provisioned dashboard** — `marketplace-overview` has 5 rows: Service Status (up/down), Traffic (req/s), Errors & Latency (5xx %, avg ms), JVM & System (heap %, CPU %), Circuit Breaker (state + outcome). All queries use `$__rate_interval`.
+**Pre-provisioned dashboard** — `marketplace-overview` has 5 rows: Service Health (all services in one panel as UP/DOWN tiles), Traffic (req/s + 5xx error rate), Latency (order/payment/catalog p50/p95/p99), JVM (heap, GC pause, live threads), System (CPU, HikariCP pool, process uptime). All queries use `$__rate_interval`.
 
 **Demo:** stop order-service and the CB panel turns red (OPEN); requests fail-fast; the trace shows the fallback path.
 
