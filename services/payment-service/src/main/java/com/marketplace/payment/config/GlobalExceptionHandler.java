@@ -1,6 +1,7 @@
 package com.marketplace.payment.config;
 
-import com.marketplace.payment.application.service.PaymentAmountExceedsLimitException;
+import com.marketplace.common.api.ErrorResponse;
+import com.marketplace.common.exception.AmountLimitExceededException;
 import com.marketplace.payment.infrastructure.client.OrderServiceUnavailableException;
 import com.marketplace.payment.infrastructure.iyzico.IyzicoUnavailableException;
 import lombok.extern.slf4j.Slf4j;
@@ -18,46 +19,48 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(PaymentAmountExceedsLimitException.class)
-    public ResponseEntity<Map<String, Object>> handleAmountLimit(PaymentAmountExceedsLimitException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("message", ex.getMessage());
-        body.put("amount", ex.getAmount());
-        body.put("maxAmount", ex.getMaxAmount());
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
+    @ExceptionHandler(AmountLimitExceededException.class)
+    public ResponseEntity<ErrorResponse> handleAmountLimit(AmountLimitExceededException ex) {
+        Map<String, Object> details = new HashMap<>();
+        details.put("amount", ex.getAmount());
+        details.put("maxAmount", ex.getMaxAmount());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(ErrorResponse.of(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                        "PAYMENT_AMOUNT_LIMIT_EXCEEDED", ex.getMessage(), details));
     }
 
     @ExceptionHandler({OrderServiceUnavailableException.class, IyzicoUnavailableException.class})
-    public ResponseEntity<Map<String, String>> handleServiceUnavailable(RuntimeException ex) {
+    public ResponseEntity<ErrorResponse> handleServiceUnavailable(RuntimeException ex) {
         log.warn("Downstream service unavailable: {}", ex.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(Map.of("message", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(ErrorResponse.of(HttpStatus.SERVICE_UNAVAILABLE.value(),
+                        "DOWNSTREAM_UNAVAILABLE", ex.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
         log.error("Business exception: {}", ex.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("message", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        Map<String, Object> details = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
-            errors.put(fieldName, error.getDefaultMessage());
+            details.put(fieldName, error.getDefaultMessage());
         });
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(HttpStatus.BAD_REQUEST.value(),
+                        "VALIDATION_FAILED", "Validation failed", details));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
         log.error("Unexpected error", ex);
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "An unexpected error occurred"));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "An unexpected error occurred"));
     }
 }

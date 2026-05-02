@@ -1,6 +1,7 @@
 package com.marketplace.payment.application.service;
 
 import com.iyzipay.model.PaymentCard;
+import com.marketplace.common.exception.AmountLimitExceededException;
 import com.marketplace.payment.api.v1.dto.request.ProcessPaymentRequest;
 import com.marketplace.payment.api.v1.dto.response.PaymentResponse;
 import com.marketplace.payment.domain.model.Payment;
@@ -49,7 +50,7 @@ public class PaymentService {
         if (amount.compareTo(maxAmount) > 0) {
             log.warn("Payment amount {} exceeds limit {}, rejecting: orderId={}",
                     amount, maxAmount, request.orderId());
-            throw new PaymentAmountExceedsLimitException(amount, maxAmount);
+            throw new AmountLimitExceededException(amount, maxAmount);
         }
 
         Payment payment = Payment.create(
