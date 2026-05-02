@@ -24,8 +24,8 @@ public class ReindexService {
     private final SearchService searchService;
     private final RestTemplate restTemplate;
 
-    @Value("${app.product-service.url:http://localhost:8082}")
-    private String productServiceUrl;
+    @Value("${app.catalog-service.url:http://localhost:8082}")
+    private String catalogServiceUrl;
 
     public int reindexAll() {
         int page = 0;
@@ -35,7 +35,7 @@ public class ReindexService {
 
         while (hasMore) {
             String url = UriComponentsBuilder
-                    .fromHttpUrl(productServiceUrl + "/api/v1/products")
+                    .fromHttpUrl(catalogServiceUrl + "/api/v1/products")
                     .queryParam("page", page)
                     .queryParam("size", size)
                     .toUriString();

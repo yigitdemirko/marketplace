@@ -14,7 +14,7 @@ on:
           - discovery-server
           - api-gateway
           - user-service
-          - product-service
+          - catalog-service
           - search-service
           - order-service
           - payment-service
@@ -44,7 +44,7 @@ jobs:
       config-server: ${{ steps.changes.outputs.config-server }}
       discovery-server: ${{ steps.changes.outputs.discovery-server }}
       user-service: ${{ steps.changes.outputs.user-service }}
-      product-service: ${{ steps.changes.outputs.product-service }}
+      catalog-service: ${{ steps.changes.outputs.catalog-service }}
       search-service: ${{ steps.changes.outputs.search-service }}
       order-service: ${{ steps.changes.outputs.order-service }}
       payment-service: ${{ steps.changes.outputs.payment-service }}
@@ -65,8 +65,8 @@ jobs:
               - 'infrastructure/discovery-server/**'
             user-service:
               - 'services/user-service/**'
-            product-service:
-              - 'services/product-service/**'
+            catalog-service:
+              - 'services/catalog-service/**'
             search-service:
               - 'services/search-service/**'
             order-service:
@@ -212,11 +212,11 @@ jobs:
             docker compose pull user-service
             docker compose up -d --no-deps user-service
 
-  deploy-product-service:
+  deploy-catalog-service:
     needs: [detect-changes, sync]
     if: |
-      needs.detect-changes.outputs.product-service == 'true' ||
-      github.event.inputs.service == 'product-service' ||
+      needs.detect-changes.outputs.catalog-service == 'true' ||
+      github.event.inputs.service == 'catalog-service' ||
       github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
@@ -228,8 +228,8 @@ jobs:
           cache: 'maven'
       - name: Build and push image
         run: |
-          mvn compile jib:build -pl services/product-service \
-            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/product-service:latest \
+          mvn compile jib:build -pl services/catalog-service \
+            -Djib.to.image=ghcr.io/yigitdemirko/marketplace/catalog-service:latest \
             -Djib.to.auth.username=${{ github.actor }} \
             -Djib.to.auth.password=${{ secrets.GHCR_TOKEN }}
       - name: Deploy to server
@@ -241,8 +241,8 @@ jobs:
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker compose pull product-service
-            docker compose up -d --no-deps product-service
+            docker compose pull catalog-service
+            docker compose up -d --no-deps catalog-service
 
   deploy-search-service:
     needs: [detect-changes, sync]

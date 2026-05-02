@@ -13,10 +13,10 @@ scrape_configs:
     static_configs:
       - targets: ['user-service:8081']
 
-  - job_name: 'product-service'
+  - job_name: 'catalog-service'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: ['product-service:8082']
+      - targets: ['catalog-service:8082']
 
   - job_name: 'search-service'
     metrics_path: /actuator/prometheus

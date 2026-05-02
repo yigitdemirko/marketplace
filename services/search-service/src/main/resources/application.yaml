@@ -20,8 +20,8 @@ spring:
         spring.json.value.default.type: java.util.HashMap
 
 app:
-  product-service:
-    url: http://${PRODUCT_SERVICE_HOST:localhost}:8082
+  catalog-service:
+    url: http://${CATALOG_SERVICE_HOST:localhost}:8082
 
 eureka:
   client:

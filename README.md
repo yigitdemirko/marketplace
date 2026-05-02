@@ -24,45 +24,51 @@ graph TB
     GW[API Gateway<br/>:8080]
 
     US[user-service<br/>:8081]
-    PS[product-service<br/>:8082]
+    CS[catalog-service<br/>:8082]
     SS[search-service<br/>:8083]
     OS[order-service<br/>:8084]
     PM[payment-service<br/>:8085]
     NS[notification-service<br/>:8086]
     FI[feed-ingestion<br/>:8087]
+    IV[inventory-service<br/>:8088]
 
     PGU[("Postgres<br/>users")]
     PGO[("Postgres<br/>orders")]
     PGP[("Postgres<br/>payments")]
     PGF[("Postgres<br/>feeds")]
-    MG[("MongoDB<br/>products")]
+    MGC[("MongoDB<br/>products")]
+    MGI[("MongoDB<br/>inventory")]
     ES[("Elasticsearch")]
     RD[("Redis")]
     K{{"Apache Kafka"}}
 
     FE --> GW
     GW --> US
-    GW --> PS
+    GW --> CS
     GW --> SS
     GW --> OS
     GW --> PM
     GW --> FI
+    GW --> IV
 
     US --- PGU
     OS --- PGO
     PM --- PGP
     FI --- PGF
-    PS --- MG
-    PS --- RD
+    CS --- MGC
+    CS --- RD
+    IV --- MGI
     SS --- ES
 
-    OS -- Feign --> PS
+    OS -- Feign --> CS
     PM -- Feign --> OS
-    FI -- Feign --> PS
+    FI -- Feign --> CS
+    CS -- Feign+CB --> IV
     NS -- Feign --> US
 
     OS <-.-> K
-    PS <-.-> K
+    CS <-.-> K
+    IV <-.-> K
     PM <-.-> K
     SS <-.-> K
     NS <-.-> K
@@ -80,12 +86,13 @@ Cross-cutting infrastructure (not shown above to keep the diagram readable):
 |---------|------|-------------|-------|
 | api-gateway | 8080 | Routes requests, JWT cookie validation, identity header injection | Spring Cloud Gateway |
 | user-service | 8081 | Auth, buyer/seller registration, rotating refresh tokens | Spring Boot, PostgreSQL, Redis, JWT |
-| product-service | 8082 | Product CRUD, inventory | Spring Boot, MongoDB, Redis |
+| catalog-service | 8082 | Product CRUD, validate, seller stats; reads stock from inventory via Feign+CB | Spring Boot, MongoDB, Redis, OpenFeign, Resilience4j |
 | search-service | 8083 | Full-text product search | Spring Boot, Elasticsearch |
 | order-service | 8084 | Order management, Saga pattern | Spring Boot, PostgreSQL, Kafka |
 | payment-service | 8085 | Payment processing | Spring Boot, PostgreSQL, Iyzico |
 | notification-service | 8086 | Email notifications | Spring Boot, Kafka, JavaMail |
 | feed-ingestion-service | 8087 | Google Merchant XML catalog import | Spring Boot, PostgreSQL, OpenFeign |
+| inventory-service | 8088 | Atomic stock reservations, saga participant, stock truth | Spring Boot, MongoDB, Kafka |
 | config-server | 8888 | Centralized configuration | Spring Cloud Config |
 | discovery-server | 8761 | Service discovery | Eureka |
 
@@ -174,34 +181,39 @@ On every page load the React app calls `GET /api/v1/auth/me`. If the access toke
 
 ## Order Saga
 
-Order placement is a Saga choreography across `order-service`, `product-service`, and `payment-service`. Each step is driven by a Kafka event; failures trigger compensating actions instead of a distributed transaction.
+Order placement is a Saga choreography across `order-service`, `catalog-service`, `inventory-service`, and `payment-service`. Catalog owns product data; inventory owns stock truth and is the saga participant for reservation/release. Each step is driven by a Kafka event; failures trigger compensating actions instead of a distributed transaction.
 
 ```mermaid
 sequenceDiagram
     actor U as Buyer
     participant GW as API Gateway
     participant OS as order-service
-    participant PS as product-service
+    participant CS as catalog-service
+    participant IV as inventory-service
     participant K as Kafka
     participant PM as payment-service
     participant NS as notification-service
 
     U->>GW: POST /api/v1/orders
     GW->>OS: create order
-    OS->>PS: validate prices (Feign)
-    PS-->>OS: server-truth prices
+    OS->>CS: validate prices (Feign)
+    CS->>IV: getStockBatch (Feign+CB)
+    IV-->>CS: current stock per product
+    CS-->>OS: server-truth prices + stock
     OS->>OS: persist order + outbox row<br/>(single DB tx)
     OS-->>U: 201 Created (PROCESSING)
 
     Note over OS,K: outbox publisher (async, @Scheduled)
     OS->>K: order.created
-    K->>PS: consume
+    K->>IV: consume
     K->>NS: send order email
 
-    PS->>PS: atomic stock decrement<br/>(findAndModify, stock >= qty)
+    IV->>IV: atomic stock decrement<br/>(findAndModify, stock >= qty)
+    IV->>K: stock.changed (read-model fanout)
+    K->>CS: update cached Product.stock
 
     alt Stock available
-        PS->>K: stock.reserved
+        IV->>K: stock.reserved
         K->>OS: status → PAYMENT_PENDING
         U->>GW: POST /api/v1/payments
         GW->>PM: process payment
@@ -212,13 +224,13 @@ sequenceDiagram
         K->>OS: status → CONFIRMED
         K->>NS: send confirmation email
     else Stock insufficient (compensation)
-        PS->>K: stock.reservation.failed
+        IV->>K: stock.reservation.failed
         K->>OS: status → CANCELLED
         K->>NS: send cancellation email
     end
 ```
 
-If payment fails after stock has been reserved, `payment.failed` triggers a stock release in `product-service` (idempotent) before the order is marked `CANCELLED`. `product.updated` events are also fanned out to `search-service` so the Elasticsearch index reflects current stock and pricing.
+If payment fails after stock has been reserved, `payment.failed` triggers a stock release in `inventory-service` (idempotent) before the order is marked `CANCELLED`. Every stock change publishes `stock.changed` so `catalog-service` can keep `Product.stock` (cached read model) in sync; `product.updated` events are also fanned out to `search-service` so the Elasticsearch index reflects current stock and pricing.
 
 ### Reliability patterns in use
 
@@ -340,10 +352,10 @@ All services are accessible via the API Gateway at `http://localhost:8080`:
 
 ```bash
 # Run unit tests
-mvn test -pl services/user-service,services/product-service,services/search-service,services/order-service,services/payment-service -Dgroups=unit
+mvn test -pl services/user-service,services/catalog-service,services/inventory-service,services/search-service,services/order-service,services/payment-service -Dgroups=unit
 
 # Run integration tests
-mvn test -pl services/user-service,services/product-service -Dgroups=integration
+mvn test -pl services/user-service,services/catalog-service,services/inventory-service -Dgroups=integration
 ```
 
 ## CI/CD
@@ -364,7 +376,8 @@ marketplace/
 │   └── postgres/
 ├── services/
 │   ├── user-service/
-│   ├── product-service/
+│   ├── catalog-service/
+│   ├── inventory-service/
 │   ├── search-service/
 │   ├── order-service/
 │   ├── payment-service/

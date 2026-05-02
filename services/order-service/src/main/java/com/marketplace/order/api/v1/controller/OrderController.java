@@ -30,7 +30,7 @@ public class OrderController {
     @PostMapping
     @Operation(
             summary = "Create order",
-            description = "Validates products with product-service, reserves stock, and starts the Saga. " +
+            description = "Validates products with catalog-service, reserves stock, and starts the Saga. " +
                           "Prices are server-authoritative — client-supplied unitPrice is ignored."
     )
     @ApiResponses({

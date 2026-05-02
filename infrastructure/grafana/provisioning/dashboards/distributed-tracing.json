@@ -41,7 +41,8 @@
       "targets": [
         { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"order-service\"}[$__rate_interval]))", "legendFormat": "order-service" },
         { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"payment-service\"}[$__rate_interval]))", "legendFormat": "payment-service" },
-        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"product-service\"}[$__rate_interval]))", "legendFormat": "product-service" },
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"catalog-service\"}[$__rate_interval]))", "legendFormat": "catalog-service" },
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"inventory-service\"}[$__rate_interval]))", "legendFormat": "inventory-service" },
         { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"user-service\"}[$__rate_interval]))", "legendFormat": "user-service" }
       ]
     },
@@ -56,7 +57,8 @@
       "targets": [
         { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"order-service\",status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval])) / clamp_min(sum(rate(traces_spanmetrics_calls_total{service=\"order-service\"}[$__rate_interval])),0.001)", "legendFormat": "order-service" },
         { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"payment-service\",status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval])) / clamp_min(sum(rate(traces_spanmetrics_calls_total{service=\"payment-service\"}[$__rate_interval])),0.001)", "legendFormat": "payment-service" },
-        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"product-service\",status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval])) / clamp_min(sum(rate(traces_spanmetrics_calls_total{service=\"product-service\"}[$__rate_interval])),0.001)", "legendFormat": "product-service" }
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"catalog-service\",status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval])) / clamp_min(sum(rate(traces_spanmetrics_calls_total{service=\"catalog-service\"}[$__rate_interval])),0.001)", "legendFormat": "catalog-service" },
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"inventory-service\",status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval])) / clamp_min(sum(rate(traces_spanmetrics_calls_total{service=\"inventory-service\"}[$__rate_interval])),0.001)", "legendFormat": "inventory-service" }
       ]
     },
     {

@@ -53,7 +53,7 @@ public class SearchController {
     @PostMapping("/admin/reindex")
     @Operation(
             summary = "Re-index all products",
-            description = "Fetches all products from product-service and rebuilds the Elasticsearch index. " +
+            description = "Fetches all products from catalog-service and rebuilds the Elasticsearch index. " +
                           "Admin operation — run after bulk imports or index corruption."
     )
     @ApiResponse(responseCode = "200", description = "Re-index complete, returns count of indexed products")
