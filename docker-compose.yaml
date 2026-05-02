@@ -233,8 +233,8 @@ services:
       retries: 10
       start_period: 60s
 
-  product-service:
-    image: ghcr.io/yigitdemirko/marketplace/product-service:latest
+  catalog-service:
+    image: ghcr.io/yigitdemirko/marketplace/catalog-service:latest
     ports:
       - "8082:8082"
     environment:

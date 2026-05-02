@@ -23,8 +23,8 @@ spring:
               uri: lb://user-service
               predicates:
                 - Path=/api/v1/profile/**
-            - id: product-service
-              uri: lb://product-service
+            - id: catalog-service
+              uri: lb://catalog-service
               predicates:
                 - Path=/api/v1/products/**
             - id: search-service
@@ -53,12 +53,12 @@ spring:
                 - Path=/api-docs/user-service
               filters:
                 - RewritePath=/api-docs/user-service, /v3/api-docs
-            - id: product-service-docs
-              uri: lb://product-service
+            - id: catalog-service-docs
+              uri: lb://catalog-service
               predicates:
-                - Path=/api-docs/product-service
+                - Path=/api-docs/catalog-service
               filters:
-                - RewritePath=/api-docs/product-service, /v3/api-docs
+                - RewritePath=/api-docs/catalog-service, /v3/api-docs
             - id: order-service-docs
               uri: lb://order-service
               predicates:
@@ -112,8 +112,8 @@ springdoc:
     urls:
       - name: user-service
         url: /api-docs/user-service
-      - name: product-service
-        url: /api-docs/product-service
+      - name: catalog-service
+        url: /api-docs/catalog-service
       - name: order-service
         url: /api-docs/order-service
       - name: payment-service

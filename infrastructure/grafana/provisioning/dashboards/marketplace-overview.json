@@ -33,12 +33,12 @@
       "targets": [{ "expr": "up{job=\"user-service\"}", "legendFormat": "" }]
     },
     {
-      "id": 4, "type": "stat", "title": "product-service",
+      "id": 4, "type": "stat", "title": "catalog-service",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 3, "w": 3, "x": 6, "y": 1 },
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
       "fieldConfig": { "defaults": { "mappings": [{ "type": "value", "options": { "1": { "text": "UP", "color": "green" }, "0": { "text": "DOWN", "color": "red" } } }], "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }, "color": { "mode": "thresholds" } } },
-      "targets": [{ "expr": "up{job=\"product-service\"}", "legendFormat": "" }]
+      "targets": [{ "expr": "up{job=\"catalog-service\"}", "legendFormat": "" }]
     },
     {
       "id": 5, "type": "stat", "title": "order-service",
@@ -81,9 +81,17 @@
       "targets": [{ "expr": "up{job=\"feed-ingestion-service\"}", "legendFormat": "" }]
     },
     {
+      "id": 24, "type": "stat", "title": "inventory-service",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 3, "w": 3, "x": 0, "y": 4 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" },
+      "fieldConfig": { "defaults": { "mappings": [{ "type": "value", "options": { "1": { "text": "UP", "color": "green" }, "0": { "text": "DOWN", "color": "red" } } }], "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }, "color": { "mode": "thresholds" } } },
+      "targets": [{ "expr": "up{job=\"inventory-service\"}", "legendFormat": "" }]
+    },
+    {
       "id": 10, "type": "row",
       "title": "📊 Traffic",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 4 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 7 },
       "collapsed": false
     },
     {
@@ -97,7 +105,8 @@
         { "expr": "sum(rate(http_server_requests_seconds_count{job=\"api-gateway\"}[$__rate_interval])) by (job)", "legendFormat": "api-gateway" },
         { "expr": "sum(rate(http_server_requests_seconds_count{job=\"order-service\"}[$__rate_interval])) by (job)", "legendFormat": "order-service" },
         { "expr": "sum(rate(http_server_requests_seconds_count{job=\"payment-service\"}[$__rate_interval])) by (job)", "legendFormat": "payment-service" },
-        { "expr": "sum(rate(http_server_requests_seconds_count{job=\"product-service\"}[$__rate_interval])) by (job)", "legendFormat": "product-service" },
+        { "expr": "sum(rate(http_server_requests_seconds_count{job=\"catalog-service\"}[$__rate_interval])) by (job)", "legendFormat": "catalog-service" },
+        { "expr": "sum(rate(http_server_requests_seconds_count{job=\"inventory-service\"}[$__rate_interval])) by (job)", "legendFormat": "inventory-service" },
         { "expr": "sum(rate(http_server_requests_seconds_count{job=\"user-service\"}[$__rate_interval])) by (job)", "legendFormat": "user-service" }
       ]
     },
@@ -111,7 +120,8 @@
       "targets": [
         { "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\",job=\"order-service\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"order-service\"}[$__rate_interval])),0.001)", "legendFormat": "order-service" },
         { "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\",job=\"payment-service\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"payment-service\"}[$__rate_interval])),0.001)", "legendFormat": "payment-service" },
-        { "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\",job=\"product-service\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"product-service\"}[$__rate_interval])),0.001)", "legendFormat": "product-service" },
+        { "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\",job=\"catalog-service\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"catalog-service\"}[$__rate_interval])),0.001)", "legendFormat": "catalog-service" },
+        { "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\",job=\"inventory-service\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"inventory-service\"}[$__rate_interval])),0.001)", "legendFormat": "inventory-service" },
         { "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\",job=\"user-service\"}[$__rate_interval])) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"user-service\"}[$__rate_interval])),0.001)", "legendFormat": "user-service" }
       ]
     },
@@ -149,15 +159,15 @@
     },
     {
       "id": 16, "type": "timeseries",
-      "title": "product-service — p50 / p95 / p99",
+      "title": "catalog-service — p50 / p95 / p99",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 7, "w": 8, "x": 16, "y": 14 },
       "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
       "fieldConfig": { "defaults": { "unit": "s", "custom": { "lineWidth": 2 } } },
       "targets": [
-        { "expr": "histogram_quantile(0.50, sum(rate(http_server_requests_seconds_bucket{job=\"product-service\"}[$__rate_interval])) by (le))", "legendFormat": "p50" },
-        { "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"product-service\"}[$__rate_interval])) by (le))", "legendFormat": "p95" },
-        { "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{job=\"product-service\"}[$__rate_interval])) by (le))", "legendFormat": "p99" }
+        { "expr": "histogram_quantile(0.50, sum(rate(http_server_requests_seconds_bucket{job=\"catalog-service\"}[$__rate_interval])) by (le))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"catalog-service\"}[$__rate_interval])) by (le))", "legendFormat": "p95" },
+        { "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{job=\"catalog-service\"}[$__rate_interval])) by (le))", "legendFormat": "p99" }
       ]
     },
     {
@@ -176,7 +186,8 @@
       "targets": [
         { "expr": "sum(jvm_memory_used_bytes{area=\"heap\",job=\"order-service\"}) by (job)", "legendFormat": "order-service" },
         { "expr": "sum(jvm_memory_used_bytes{area=\"heap\",job=\"payment-service\"}) by (job)", "legendFormat": "payment-service" },
-        { "expr": "sum(jvm_memory_used_bytes{area=\"heap\",job=\"product-service\"}) by (job)", "legendFormat": "product-service" },
+        { "expr": "sum(jvm_memory_used_bytes{area=\"heap\",job=\"catalog-service\"}) by (job)", "legendFormat": "catalog-service" },
+        { "expr": "sum(jvm_memory_used_bytes{area=\"heap\",job=\"inventory-service\"}) by (job)", "legendFormat": "inventory-service" },
         { "expr": "sum(jvm_memory_used_bytes{area=\"heap\",job=\"user-service\"}) by (job)", "legendFormat": "user-service" }
       ]
     },
@@ -190,7 +201,8 @@
       "targets": [
         { "expr": "process_cpu_usage{job=\"order-service\"}", "legendFormat": "order-service" },
         { "expr": "process_cpu_usage{job=\"payment-service\"}", "legendFormat": "payment-service" },
-        { "expr": "process_cpu_usage{job=\"product-service\"}", "legendFormat": "product-service" },
+        { "expr": "process_cpu_usage{job=\"catalog-service\"}", "legendFormat": "catalog-service" },
+        { "expr": "process_cpu_usage{job=\"inventory-service\"}", "legendFormat": "inventory-service" },
         { "expr": "process_cpu_usage{job=\"user-service\"}", "legendFormat": "user-service" }
       ]
     },
@@ -219,6 +231,15 @@
       "targets": [{ "expr": "resilience4j_circuitbreaker_state{job=\"payment-service\"}", "legendFormat": "{{name}}" }]
     },
     {
+      "id": 25, "type": "stat",
+      "title": "CB State — catalog-service",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 35 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "horizontal", "textMode": "value_and_name", "colorMode": "background" },
+      "fieldConfig": { "defaults": { "mappings": [{ "type": "value", "options": { "0": { "text": "CLOSED ✓", "color": "green" }, "1": { "text": "OPEN ✗", "color": "red" }, "2": { "text": "HALF_OPEN", "color": "yellow" } } }], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }, "color": { "mode": "thresholds" } } },
+      "targets": [{ "expr": "resilience4j_circuitbreaker_state{job=\"catalog-service\"}", "legendFormat": "{{name}}" }]
+    },
+    {
       "id": 23, "type": "timeseries",
       "title": "CB Call Rate by Outcome",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
@@ -229,7 +250,8 @@
         { "expr": "sum(rate(resilience4j_circuitbreaker_calls_seconds_count{job=\"order-service\",kind=\"successful\"}[$__rate_interval]))", "legendFormat": "order / successful" },
         { "expr": "sum(rate(resilience4j_circuitbreaker_calls_seconds_count{job=\"order-service\",kind=\"failed\"}[$__rate_interval]))", "legendFormat": "order / failed" },
         { "expr": "sum(rate(resilience4j_circuitbreaker_calls_seconds_count{job=\"order-service\",kind=\"not_permitted\"}[$__rate_interval]))", "legendFormat": "order / not_permitted (breaker open)" },
-        { "expr": "sum(rate(resilience4j_circuitbreaker_calls_seconds_count{job=\"payment-service\",kind=\"not_permitted\"}[$__rate_interval]))", "legendFormat": "payment / not_permitted (breaker open)" }
+        { "expr": "sum(rate(resilience4j_circuitbreaker_calls_seconds_count{job=\"payment-service\",kind=\"not_permitted\"}[$__rate_interval]))", "legendFormat": "payment / not_permitted (breaker open)" },
+        { "expr": "sum(rate(resilience4j_circuitbreaker_calls_seconds_count{job=\"catalog-service\",kind=\"not_permitted\"}[$__rate_interval]))", "legendFormat": "catalog→inventory / not_permitted (breaker open)" }
       ]
     }
   ]

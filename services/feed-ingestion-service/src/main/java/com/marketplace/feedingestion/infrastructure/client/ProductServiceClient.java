@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
-@FeignClient(name = "product-service")
+@FeignClient(name = "catalog-service")
 public interface ProductServiceClient {
 
     @PostMapping("/api/v1/products/batch")

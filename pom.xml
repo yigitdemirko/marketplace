@@ -23,7 +23,7 @@
         <module>infrastructure/discovery-server</module>
         <module>infrastructure/api-gateway</module>
         <module>services/user-service</module>
-        <module>services/product-service</module>
+        <module>services/catalog-service</module>
         <module>services/search-service</module>
         <module>services/order-service</module>
         <module>services/payment-service</module>

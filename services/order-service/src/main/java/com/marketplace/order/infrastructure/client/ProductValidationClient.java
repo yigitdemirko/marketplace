@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "product-service", contextId = "productValidationClient")
+@FeignClient(name = "catalog-service", contextId = "productValidationClient")
 public interface ProductValidationClient {
 
     @PostMapping("/api/v1/products/validate")

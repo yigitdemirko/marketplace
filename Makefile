@@ -15,7 +15,7 @@ logs:
 	docker-compose logs -f
 
 test:
-	mvn test -pl services/user-service,services/product-service,services/search-service
+	mvn test -pl services/user-service,services/catalog-service,services/inventory-service,services/search-service
 
 clean:
 	docker-compose down -v
