@@ -69,20 +69,25 @@ jobs:
               - 'services/user-service/**'
             catalog-service:
               - 'services/catalog-service/**'
+              - 'shared/common-lib/**'
             search-service:
               - 'services/search-service/**'
             order-service:
               - 'services/order-service/**'
+              - 'shared/common-lib/**'
             payment-service:
               - 'services/payment-service/**'
+              - 'shared/common-lib/**'
             notification-service:
               - 'services/notification-service/**'
             feed-ingestion-service:
               - 'services/feed-ingestion-service/**'
             inventory-service:
               - 'services/inventory-service/**'
+              - 'shared/common-lib/**'
             basket-service:
               - 'services/basket-service/**'
+              - 'shared/common-lib/**'
             api-gateway:
               - 'infrastructure/api-gateway/**'
             frontend:
