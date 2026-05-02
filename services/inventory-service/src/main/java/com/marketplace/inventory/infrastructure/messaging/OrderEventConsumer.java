@@ -1,5 +1,8 @@
 package com.marketplace.inventory.infrastructure.messaging;
 
+import com.marketplace.common.events.StockReservationFailedEvent;
+import com.marketplace.common.events.StockReservedEvent;
+import com.marketplace.common.messaging.KafkaTopics;
 import com.marketplace.inventory.application.service.StockService;
 import com.marketplace.inventory.domain.model.StockReservation;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +11,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,7 +23,7 @@ public class OrderEventConsumer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final StockService stockService;
 
-    @KafkaListener(topics = "order.created", groupId = "inventory-service")
+    @KafkaListener(topics = KafkaTopics.ORDER_CREATED, groupId = "inventory-service")
     @SuppressWarnings("unchecked")
     public void handleOrderCreated(Map<String, Object> event) {
         String orderId = (String) event.get("orderId");
@@ -48,7 +50,7 @@ public class OrderEventConsumer {
         }
     }
 
-    @KafkaListener(topics = "order.cancelled", groupId = "inventory-service")
+    @KafkaListener(topics = KafkaTopics.ORDER_CANCELLED, groupId = "inventory-service")
     public void handleOrderCancelled(Map<String, Object> event) {
         String orderId = (String) event.get("orderId");
         log.info("Order cancelled event received: orderId={}", orderId);
@@ -60,18 +62,14 @@ public class OrderEventConsumer {
     }
 
     private void publishReserved(String orderId, Object userId) {
-        Map<String, Object> reservedEvent = new HashMap<>();
-        reservedEvent.put("orderId", orderId);
-        reservedEvent.put("userId", userId);
-        kafkaTemplate.send("stock.reserved", orderId, reservedEvent);
+        StockReservedEvent event = new StockReservedEvent(orderId, userId == null ? null : userId.toString());
+        kafkaTemplate.send(KafkaTopics.STOCK_RESERVED, orderId, event);
         log.info("Stock reserved for orderId={}", orderId);
     }
 
     private void publishReservationFailed(String orderId, String reason) {
-        Map<String, Object> failedEvent = new HashMap<>();
-        failedEvent.put("orderId", orderId);
-        failedEvent.put("reason", reason);
-        kafkaTemplate.send("stock.reservation.failed", orderId, failedEvent);
+        StockReservationFailedEvent event = new StockReservationFailedEvent(orderId, reason);
+        kafkaTemplate.send(KafkaTopics.STOCK_RESERVATION_FAILED, orderId, event);
         log.warn("Stock reservation failed for orderId={} reason={}", orderId, reason);
     }
 }

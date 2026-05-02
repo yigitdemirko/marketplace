@@ -19,6 +19,7 @@
     <name>Marketplace Parent</name>
 
     <modules>
+        <module>shared/common-lib</module>
         <module>infrastructure/config-server</module>
         <module>infrastructure/discovery-server</module>
         <module>infrastructure/api-gateway</module>

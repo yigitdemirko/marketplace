@@ -1,5 +1,6 @@
 package com.marketplace.inventory.integration;
 
+import com.marketplace.common.events.StockReservationFailedEvent;
 import com.marketplace.inventory.application.service.StockService;
 import com.marketplace.inventory.domain.model.ProductStock;
 import com.marketplace.inventory.domain.model.StockReservation;
@@ -101,9 +102,9 @@ class OrderEventConsumerTest {
         assertThat(after.getStock()).as("stock unchanged when reservation fails").isEqualTo(1);
         assertThat(reservationRepository.count()).isZero();
 
-        ArgumentCaptor<Map<String, Object>> payload = ArgumentCaptor.forClass(Map.class);
+        ArgumentCaptor<StockReservationFailedEvent> payload = ArgumentCaptor.forClass(StockReservationFailedEvent.class);
         verify(kafkaTemplate).send(eq("stock.reservation.failed"), eq("order-2"), payload.capture());
-        assertThat(payload.getValue().get("reason").toString()).contains("Insufficient stock");
+        assertThat(payload.getValue().reason()).contains("Insufficient stock");
     }
 
     @Test
