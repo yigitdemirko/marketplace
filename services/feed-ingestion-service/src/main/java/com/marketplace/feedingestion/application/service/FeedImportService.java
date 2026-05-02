@@ -7,7 +7,7 @@ import com.marketplace.feedingestion.api.v1.dto.response.ImportRowError;
 import com.marketplace.feedingestion.domain.model.ImportJob;
 import com.marketplace.feedingestion.domain.model.ImportStatus;
 import com.marketplace.feedingestion.domain.repository.ImportJobRepository;
-import com.marketplace.feedingestion.infrastructure.client.ProductServiceClient;
+import com.marketplace.feedingestion.infrastructure.client.CatalogGateway;
 import com.marketplace.feedingestion.infrastructure.client.dto.BatchCreateFailure;
 import com.marketplace.feedingestion.infrastructure.client.dto.BatchCreateResponse;
 import com.marketplace.feedingestion.infrastructure.client.dto.Category;
@@ -45,7 +45,7 @@ public class FeedImportService {
     private final ImportJobRepository importJobRepository;
     private final GoogleMerchantXmlParser parser;
     private final CategoryMapper categoryMapper;
-    private final ProductServiceClient productServiceClient;
+    private final CatalogGateway catalogGateway;
     private final ObjectMapper objectMapper;
 
     @Transactional
@@ -81,7 +81,7 @@ public class FeedImportService {
 
         if (!validRequests.isEmpty()) {
             try {
-                BatchCreateResponse response = productServiceClient.createBatch(sellerId, validRequests);
+                BatchCreateResponse response = catalogGateway.createBatch(sellerId, validRequests);
                 successCount = response.successCount();
                 if (response.failures() != null) {
                     for (BatchCreateFailure failure : response.failures()) {
