@@ -15,17 +15,17 @@ import {
 } from 'lucide-react'
 
 const sidebarCategories = [
-  { name: 'Electronics', icon: Cpu, category: 'ELECTRONICS' },
-  { name: 'Clothing & wear', icon: Shirt, category: 'MENS_CLOTHING' },
-  { name: 'Home & Garden', icon: Home, category: 'HOME_OUTDOOR' },
-  { name: 'Books & magazines', icon: BookOpen, category: 'BOOKS' },
-  { name: 'Tools & equipment', icon: Wrench, category: 'GARDEN' },
-  { name: 'Sports & outdoor', icon: Bike, category: 'SPORTS_FITNESS' },
-  { name: 'Watches', icon: Watch, category: 'WATCHES' },
-  { name: 'Shoes', icon: Footprints, category: 'SHOES' },
+  { name: 'Elektronik', icon: Cpu, category: 'ELECTRONICS' },
+  { name: 'Giyim', icon: Shirt, category: 'MENS_CLOTHING' },
+  { name: 'Ev & Bahçe', icon: Home, category: 'HOME_OUTDOOR' },
+  { name: 'Kitap & dergi', icon: BookOpen, category: 'BOOKS' },
+  { name: 'Aletler', icon: Wrench, category: 'GARDEN' },
+  { name: 'Spor & outdoor', icon: Bike, category: 'SPORTS_FITNESS' },
+  { name: 'Saat', icon: Watch, category: 'WATCHES' },
+  { name: 'Ayakkabı', icon: Footprints, category: 'SHOES' },
 ]
 
-const navItems = ['Hot offers', 'New arrivals', 'Bestsellers', 'Gift boxes', 'Help']
+const navItems = ['Sıcak fırsatlar', 'Yeni gelenler', 'Çok satanlar', 'Hediye kutuları', 'Yardım']
 
 export function HeroSection() {
   return (
@@ -53,7 +53,7 @@ export function HeroSection() {
             >
               <span className="flex items-center">
                 <MoreHorizontal className="h-4 w-4 text-[#6f7c8e] mr-3 shrink-0" />
-                More categories
+                Daha fazla kategori
               </span>
               <ChevronRight className="h-4 w-4 text-[#6f7c8e]" />
             </Link>
@@ -62,20 +62,20 @@ export function HeroSection() {
           {/* Center: hero banner */}
           <div className="flex-1 rounded-[6px] overflow-hidden bg-gradient-to-br from-[#c9e8f5] to-[#e8f4fb] p-6 sm:p-8 flex flex-col justify-center relative min-h-[200px]">
             <p className="text-[13px] sm:text-[15px] text-[#3348ff] font-medium mb-2 uppercase tracking-wide">
-              New trending
+              Yeni trend
             </p>
             <h2 className="text-[24px] sm:text-[28px] lg:text-[36px] font-bold text-[#14181f] leading-tight mb-2">
-              Electronic
+              Elektronik
             </h2>
             <h2 className="text-[24px] sm:text-[28px] lg:text-[36px] font-bold text-[#14181f] leading-tight mb-6">
-              items
+              ürünler
             </h2>
             <Link
               to="/search"
               search={{ ...EMPTY_SEARCH, category: 'ELECTRONICS' }}
               className="border border-[#14181f] rounded-[6px] px-5 py-2 text-[14px] text-[#14181f] flex items-center gap-2 w-fit hover:bg-[#14181f] hover:text-white transition-all bg-white/60"
             >
-              Learn more <ChevronRight className="h-4 w-4" />
+              Daha fazla <ChevronRight className="h-4 w-4" />
             </Link>
             <Smartphone className="h-36 w-36 sm:h-48 sm:w-48 lg:h-60 lg:w-60 absolute right-6 bottom-0 opacity-15 text-[#3348ff]" />
           </div>
@@ -90,7 +90,7 @@ export function HeroSection() {
             search={EMPTY_SEARCH}
             className="flex items-center gap-2 text-[14px] font-semibold text-[#14181f] whitespace-nowrap shrink-0"
           >
-            <span className="text-[20px] leading-none">≡</span> All categories
+            <span className="text-[20px] leading-none">≡</span> Tüm kategoriler
           </Link>
           {navItems.map((item) => (
             <Link

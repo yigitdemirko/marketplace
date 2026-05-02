@@ -3,18 +3,18 @@ import { Truck, Headphones, ShieldCheck } from 'lucide-react'
 const features = [
   {
     icon: Truck,
-    title: 'FREE AND FAST DELIVERY',
-    description: 'Free delivery for all orders over $140',
+    title: 'ÜCRETSİZ VE HIZLI KARGO',
+    description: '500 ₺ üzeri tüm siparişlerde ücretsiz kargo',
   },
   {
     icon: Headphones,
-    title: '24/7 CUSTOMER SERVICE',
-    description: 'Friendly 24/7 customer support',
+    title: '7/24 MÜŞTERİ HİZMETLERİ',
+    description: '7/24 dostane müşteri desteği',
   },
   {
     icon: ShieldCheck,
-    title: 'MONEY BACK GUARANTEE',
-    description: 'We return money within 30 days',
+    title: 'PARA İADE GARANTİSİ',
+    description: '30 gün içinde para iadesi',
   },
 ]
 

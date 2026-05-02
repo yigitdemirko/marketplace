@@ -4,10 +4,10 @@ import { ClipboardList, ShoppingBag, UserCircle, LogOut, Menu, X } from 'lucide-
 import { useAuthStore } from '@/store/authStore'
 import { useCartStore } from '@/store/cartStore'
 import { useCartDrawer } from '@/store/cartDrawerStore'
-import { useLocaleStore } from '@/store/localeStore'
-import { useQueryClient } from '@tanstack/react-query'
 
 const CART_DRAWER_EXCLUDED = ['/cart', '/checkout']
+
+const ALL_CATEGORIES = 'Tüm kategoriler'
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore()
@@ -16,19 +16,9 @@ export function Navbar() {
   const navigate = useNavigate()
   const { location } = useRouterState()
   const openDrawer = useCartDrawer((s) => s.open)
-  const { locale, setLocale } = useLocaleStore()
-  const queryClient = useQueryClient()
   const [query, setQuery] = useState('')
-  const [category, setCategory] = useState('All category')
+  const [category, setCategory] = useState(ALL_CATEGORIES)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  const handleLocaleToggle = () => {
-    const next = locale === 'EN' ? 'TR' : 'EN'
-    setLocale(next)
-    queryClient.invalidateQueries({ queryKey: ['products'] })
-    queryClient.invalidateQueries({ queryKey: ['search'] })
-    queryClient.invalidateQueries({ queryKey: ['seller-store-products'] })
-  }
 
   const handleCartClick = (e: React.MouseEvent) => {
     const isExcluded =
@@ -47,7 +37,7 @@ export function Navbar() {
       to: '/search',
       search: () => ({
         q: query.trim() || undefined,
-        category: category !== 'All category' ? category : undefined,
+        category: category !== ALL_CATEGORIES ? category : undefined,
         brand: undefined,
         priceMin: undefined,
         priceMax: undefined,
@@ -77,7 +67,7 @@ export function Navbar() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Find product"
+            placeholder="Ürün ara"
             className="flex-1 px-3 text-[15px] text-[#14181f] placeholder:text-[#6f7c8e] outline-none border-none bg-transparent"
           />
           <div className="w-px bg-[#dce0e5] self-stretch" />
@@ -86,42 +76,32 @@ export function Navbar() {
             onChange={(e) => setCategory(e.target.value)}
             className="border-l border-[#dce0e5] px-3 text-[15px] text-[#525e6f] bg-transparent outline-none cursor-pointer"
           >
-            <option>All category</option>
-            <option>Electronics</option>
-            <option>Clothing</option>
-            <option>Home &amp; Outdoor</option>
-            <option>Books</option>
-            <option>Sports</option>
+            <option>{ALL_CATEGORIES}</option>
+            <option>Elektronik</option>
+            <option>Giyim</option>
+            <option>Ev &amp; Bahçe</option>
+            <option>Kitap</option>
+            <option>Spor</option>
           </select>
           <button
             type="submit"
             className="bg-[#3348ff] hover:bg-[#2236e0] text-white px-5 h-full text-[15px] font-medium transition-colors"
           >
-            Search
+            Ara
           </button>
         </form>
 
         {/* Desktop right icons */}
         <div className="hidden lg:flex items-center gap-5 ml-auto shrink-0">
-          {/* Locale switcher */}
-          <button
-            onClick={handleLocaleToggle}
-            className="flex flex-col items-center gap-0.5 cursor-pointer"
-            title={locale === 'EN' ? 'Switch to Turkish catalog' : 'Switch to English catalog'}
-          >
-            <span className="text-[16px] leading-none">{locale === 'EN' ? '🇬🇧' : '🇹🇷'}</span>
-            <span className="text-[11px] text-[#6f7c8e]">{locale}</span>
-          </button>
-
           {isBuyer ? (
             <Link to="/orders" className="flex flex-col items-center gap-0.5 cursor-pointer">
               <ClipboardList className="h-5 w-5 text-[#6f7c8e]" />
-              <span className="text-[11px] text-[#6f7c8e]">Orders</span>
+              <span className="text-[11px] text-[#6f7c8e]">Siparişler</span>
             </Link>
           ) : (
             <div className="flex flex-col items-center gap-0.5">
               <ClipboardList className="h-5 w-5 text-[#6f7c8e]" />
-              <span className="text-[11px] text-[#6f7c8e]">Orders</span>
+              <span className="text-[11px] text-[#6f7c8e]">Siparişler</span>
             </div>
           )}
 
@@ -134,7 +114,7 @@ export function Navbar() {
                 </span>
               )}
             </div>
-            <span className="text-[11px] text-[#6f7c8e]">My cart</span>
+            <span className="text-[11px] text-[#6f7c8e]">Sepetim</span>
           </Link>
 
           {isBuyer ? (
@@ -150,13 +130,13 @@ export function Navbar() {
                 className="flex flex-col items-center gap-0.5 cursor-pointer"
               >
                 <LogOut className="h-5 w-5 text-[#6f7c8e]" />
-                <span className="text-[11px] text-[#6f7c8e]">Logout</span>
+                <span className="text-[11px] text-[#6f7c8e]">Çıkış</span>
               </button>
             </div>
           ) : (
             <Link to="/login" className="flex flex-col items-center gap-0.5">
               <UserCircle className="h-5 w-5 text-[#6f7c8e]" />
-              <span className="text-[11px] text-[#6f7c8e]">Sign in</span>
+              <span className="text-[11px] text-[#6f7c8e]">Giriş yap</span>
             </Link>
           )}
         </div>
@@ -174,7 +154,7 @@ export function Navbar() {
           <button
             onClick={() => setMobileMenuOpen((o) => !o)}
             className="p-1 text-[#14181f]"
-            aria-label="Toggle menu"
+            aria-label="Menüyü aç/kapat"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -189,7 +169,7 @@ export function Navbar() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Find product"
+              placeholder="Ürün ara"
               className="w-full border border-[#dce0e5] rounded-[6px] px-3 h-10 text-[15px] text-[#14181f] placeholder:text-[#6f7c8e] outline-none"
             />
             <div className="flex gap-2">
@@ -198,18 +178,18 @@ export function Navbar() {
                 onChange={(e) => setCategory(e.target.value)}
                 className="flex-1 border border-[#dce0e5] rounded-[6px] px-3 h-10 text-[15px] text-[#525e6f] bg-white outline-none"
               >
-                <option>All category</option>
-                <option>Electronics</option>
-                <option>Clothing</option>
-                <option>Home &amp; Outdoor</option>
-                <option>Books</option>
-                <option>Sports</option>
+                <option>{ALL_CATEGORIES}</option>
+                <option>Elektronik</option>
+                <option>Giyim</option>
+                <option>Ev &amp; Bahçe</option>
+                <option>Kitap</option>
+                <option>Spor</option>
               </select>
               <button
                 type="submit"
                 className="bg-[#3348ff] hover:bg-[#2236e0] text-white px-5 h-10 rounded-[6px] text-[15px] font-medium transition-colors"
               >
-                Search
+                Ara
               </button>
             </div>
           </form>
@@ -223,12 +203,12 @@ export function Navbar() {
                 className="flex flex-col items-center gap-1"
               >
                 <ClipboardList className="h-5 w-5 text-[#6f7c8e]" />
-                <span className="text-[12px] text-[#6f7c8e]">Orders</span>
+                <span className="text-[12px] text-[#6f7c8e]">Siparişler</span>
               </Link>
             ) : (
               <div className="flex flex-col items-center gap-1">
                 <ClipboardList className="h-5 w-5 text-[#6f7c8e]" />
-                <span className="text-[12px] text-[#6f7c8e]">Orders</span>
+                <span className="text-[12px] text-[#6f7c8e]">Siparişler</span>
               </div>
             )}
 
@@ -238,7 +218,7 @@ export function Navbar() {
                 className="flex flex-col items-center gap-1"
               >
                 <LogOut className="h-5 w-5 text-[#6f7c8e]" />
-                <span className="text-[12px] text-[#6f7c8e]">Logout</span>
+                <span className="text-[12px] text-[#6f7c8e]">Çıkış</span>
               </button>
             ) : (
               <Link
@@ -247,7 +227,7 @@ export function Navbar() {
                 className="flex flex-col items-center gap-1"
               >
                 <UserCircle className="h-5 w-5 text-[#6f7c8e]" />
-                <span className="text-[12px] text-[#6f7c8e]">Sign in</span>
+                <span className="text-[12px] text-[#6f7c8e]">Giriş yap</span>
               </Link>
             )}
           </div>

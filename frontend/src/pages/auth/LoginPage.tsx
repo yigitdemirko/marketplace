@@ -26,7 +26,7 @@ export function LoginPage() {
       const user = await authApi.login({ email, password })
 
       if (user.accountType !== 'BUYER') {
-        setError('This email is registered as a seller account. Please use the seller login page.')
+        setError('Bu e-posta bir satıcı hesabına kayıtlı. Lütfen satıcı giriş sayfasını kullanın.')
         return
       }
 
@@ -36,7 +36,7 @@ export function LoginPage() {
       const params = new URLSearchParams(window.location.search)
       navigate({ to: params.get('redirect') ?? '/' })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
+      setError(err instanceof Error ? err.message : 'Giriş başarısız')
     } finally {
       setLoading(false)
     }
@@ -57,15 +57,15 @@ export function LoginPage() {
       <div className="flex flex-1 flex-col justify-center overflow-y-auto bg-card px-8 py-12 lg:px-16 xl:px-24">
         <div className="w-full max-w-[445px] mx-auto space-y-8">
           <div className="space-y-1.5">
-            <h1 className="text-3xl font-bold text-foreground">Welcome 👋</h1>
-            <p className="text-base text-muted-foreground">Please login here</p>
+            <h1 className="text-3xl font-bold text-foreground">Hoş geldiniz 👋</h1>
+            <p className="text-base text-muted-foreground">Giriş yapmak için bilgilerinizi girin</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-7">
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs text-foreground">
-                  Email Address
+                  E-posta adresi
                 </Label>
                 <Input
                   id="email"
@@ -80,7 +80,7 @@ export function LoginPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="password" className="text-xs text-foreground">
-                  Password
+                  Şifre
                 </Label>
                 <Input
                   id="password"
@@ -100,13 +100,13 @@ export function LoginPage() {
                     onChange={(e) => setRememberMe(e.target.checked)}
                     className="size-5 rounded accent-primary cursor-pointer"
                   />
-                  <span className="text-base text-foreground">Remember Me</span>
+                  <span className="text-base text-foreground">Beni hatırla</span>
                 </label>
                 <a
                   href="/forgot-password"
                   className="text-sm text-foreground hover:text-primary transition-colors"
                 >
-                  Forgot Password?
+                  Şifremi unuttum?
                 </a>
               </div>
             </div>
@@ -118,20 +118,20 @@ export function LoginPage() {
               disabled={loading}
               className="w-full h-14 rounded-[10px] bg-foreground text-background hover:bg-foreground/85 text-base font-normal"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? 'Giriş yapılıyor...' : 'Giriş yap'}
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
-              Don't have an account?{' '}
+              Hesabınız yok mu?{' '}
               <a href="/register" className="text-primary hover:underline font-medium">
-                Register
+                Kayıt ol
               </a>
             </p>
 
             <p className="text-sm text-center text-muted-foreground">
-              Are you a seller?{' '}
+              Satıcı mısınız?{' '}
               <a href="/seller/login" className="text-primary hover:underline font-medium">
-                Seller Login
+                Satıcı girişi
               </a>
             </p>
           </form>

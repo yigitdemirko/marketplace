@@ -14,22 +14,23 @@ import {
 import { productsApi } from '@/api/products'
 import { ordersApi } from '@/api/orders'
 import { useAuthStore } from '@/store/authStore'
-import { useLocaleStore } from '@/store/localeStore'
 import { formatPrice } from '@/lib/formatPrice'
 import type { Order } from '@/types'
 
 const CHART_DATA = [42, 68, 55, 90, 72, 110, 95, 130, 88, 115, 145, 160]
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const MONTHS = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara']
+
+const FILTER_TABS = ['Tüm siparişler', 'Beklemede', 'Onaylandı'] as const
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { label: string; className: string; icon: React.ReactNode }> = {
-    CONFIRMED: { label: 'Confirmed', className: 'bg-[#e6f7ee] text-[#00a81c]', icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
-    SHIPPED: { label: 'Shipped', className: 'bg-[#e8eaff] text-[#3348ff]', icon: <Truck className="h-3.5 w-3.5" /> },
-    DELIVERED: { label: 'Delivered', className: 'bg-[#e6f7ee] text-[#00a81c]', icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
-    PENDING: { label: 'Pending', className: 'bg-[#fff3e0] text-[#ff9017]', icon: <Clock className="h-3.5 w-3.5" /> },
-    PAYMENT_PENDING: { label: 'Pending', className: 'bg-[#fff3e0] text-[#ff9017]', icon: <Clock className="h-3.5 w-3.5" /> },
-    CANCELLED: { label: 'Cancelled', className: 'bg-[#ffeaea] text-[#fa3434]', icon: <XCircle className="h-3.5 w-3.5" /> },
-    STOCK_RESERVING: { label: 'Processing', className: 'bg-[#e8eaff] text-[#3348ff]', icon: <Clock className="h-3.5 w-3.5" /> },
+    CONFIRMED: { label: 'Onaylandı', className: 'bg-[#e6f7ee] text-[#00a81c]', icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
+    SHIPPED: { label: 'Kargoda', className: 'bg-[#e8eaff] text-[#3348ff]', icon: <Truck className="h-3.5 w-3.5" /> },
+    DELIVERED: { label: 'Teslim edildi', className: 'bg-[#e6f7ee] text-[#00a81c]', icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
+    PENDING: { label: 'Beklemede', className: 'bg-[#fff3e0] text-[#ff9017]', icon: <Clock className="h-3.5 w-3.5" /> },
+    PAYMENT_PENDING: { label: 'Beklemede', className: 'bg-[#fff3e0] text-[#ff9017]', icon: <Clock className="h-3.5 w-3.5" /> },
+    CANCELLED: { label: 'İptal edildi', className: 'bg-[#ffeaea] text-[#fa3434]', icon: <XCircle className="h-3.5 w-3.5" /> },
+    STOCK_RESERVING: { label: 'İşleniyor', className: 'bg-[#e8eaff] text-[#3348ff]', icon: <Clock className="h-3.5 w-3.5" /> },
   }
   const c = config[status] ?? { label: status, className: 'bg-[#f6f7f9] text-[#6f7c8e]', icon: null }
   return (
@@ -44,9 +45,8 @@ const maxChart = Math.max(...CHART_DATA)
 
 export function SellerDashboardPage() {
   const { user } = useAuthStore()
-  const { locale } = useLocaleStore()
   const navigate = useNavigate()
-  const [activeFilter, setActiveFilter] = useState('All orders')
+  const [activeFilter, setActiveFilter] = useState<typeof FILTER_TABS[number]>('Tüm siparişler')
   const [searchQuery, setSearchQuery] = useState('')
 
   const { data: statsData } = useQuery({
@@ -71,8 +71,8 @@ export function SellerDashboardPage() {
     if (!ordersData) return []
     return ordersData
       .filter((o: Order) => {
-        if (activeFilter === 'Pending') return o.status === 'PENDING' || o.status === 'STOCK_RESERVING' || o.status === 'PAYMENT_PENDING'
-        if (activeFilter === 'Confirmed') return o.status === 'CONFIRMED'
+        if (activeFilter === 'Beklemede') return o.status === 'PENDING' || o.status === 'STOCK_RESERVING' || o.status === 'PAYMENT_PENDING'
+        if (activeFilter === 'Onaylandı') return o.status === 'CONFIRMED'
         return true
       })
       .filter((o: Order) => !searchQuery || o.id.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -81,19 +81,19 @@ export function SellerDashboardPage() {
 
   const stats = [
     {
-      label: 'Total orders',
+      label: 'Toplam sipariş',
       value: statsData ? String(statsData.totalOrders) : '—',
       icon: <Truck className="h-5 w-5 text-[#3348ff]" />,
     },
     {
-      label: 'Gross revenue',
+      label: 'Brüt gelir',
       value: statsData
-        ? `$${Number(statsData.grossRevenue).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        ? formatPrice(Number(statsData.grossRevenue))
         : '—',
       icon: <Banknote className="h-5 w-5 text-[#3348ff]" />,
     },
     {
-      label: 'Pending shipment',
+      label: 'Bekleyen kargo',
       value: statsData ? String(statsData.pendingShipment) : '—',
       icon: <ShieldCheck className="h-5 w-5 text-[#3348ff]" />,
     },
@@ -121,8 +121,8 @@ export function SellerDashboardPage() {
         {/* Sales chart */}
         <div className="bg-white border border-[#dce0e5] rounded-[8px] p-5">
           <div className="mb-4">
-            <h3 className="text-[16px] font-semibold text-[#14181f] mb-0.5">Sales growth chart</h3>
-            <p className="text-[13px] text-[#6f7c8e]">Sample data — analytics coming soon</p>
+            <h3 className="text-[16px] font-semibold text-[#14181f] mb-0.5">Satış grafiği</h3>
+            <p className="text-[13px] text-[#6f7c8e]">Örnek veri — analitik yakında</p>
           </div>
           <div className="flex items-end gap-1.5 h-[200px]">
             {CHART_DATA.map((val, i) => (
@@ -140,8 +140,8 @@ export function SellerDashboardPage() {
         {/* Top selling products */}
         <div className="bg-white border border-[#dce0e5] rounded-[8px] p-5">
           <div className="mb-4">
-            <h3 className="text-[16px] font-semibold text-[#14181f] mb-0.5">Top selling products</h3>
-            <p className="text-[13px] text-[#6f7c8e]">Your active listings</p>
+            <h3 className="text-[16px] font-semibold text-[#14181f] mb-0.5">En çok satan ürünler</h3>
+            <p className="text-[13px] text-[#6f7c8e]">Aktif listelemeleriniz</p>
           </div>
           <table className="w-full text-[13px]">
             <tbody className="divide-y divide-[#f6f7f9]">
@@ -153,14 +153,14 @@ export function SellerDashboardPage() {
                         <Package className="h-4 w-4 text-[#6f7c8e] shrink-0" />
                         <span className="text-[#14181f] truncate max-w-[160px]">{p.name}</span>
                       </td>
-                      <td className="py-2 text-[#6f7c8e] text-right">{p.stock} pcs</td>
-                      <td className="py-2 text-[#14181f] font-medium text-right">{formatPrice(p.price, p.locale ?? 'EN')}</td>
+                      <td className="py-2 text-[#6f7c8e] text-right">{p.stock} adet</td>
+                      <td className="py-2 text-[#14181f] font-medium text-right">{formatPrice(p.price)}</td>
                     </tr>
                   ))
                 : (
                   <tr>
                     <td colSpan={4} className="py-8 text-center text-[#6f7c8e] text-[13px]">
-                      No products yet
+                      Henüz ürün yok
                     </td>
                   </tr>
                 )}
@@ -172,10 +172,10 @@ export function SellerDashboardPage() {
       {/* Latest orders */}
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
-          <h3 className="text-[18px] font-semibold text-[#14181f]">Latest orders</h3>
+          <h3 className="text-[18px] font-semibold text-[#14181f]">Son siparişler</h3>
           <div className="flex items-center gap-2 sm:ml-auto">
             <div className="flex border border-[#dce0e5] rounded-[6px] overflow-hidden text-[13px]">
-              {['All orders', 'Pending', 'Confirmed'].map((t) => (
+              {FILTER_TABS.map((t) => (
                 <button
                   key={t}
                   onClick={() => setActiveFilter(t)}
@@ -191,7 +191,7 @@ export function SellerDashboardPage() {
             </div>
             <input
               type="search"
-              placeholder="Search by ID"
+              placeholder="ID ile ara"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-8 px-3 text-[13px] border border-[#dce0e5] rounded-[6px] bg-white focus:outline-none focus:border-[#3348ff]"
@@ -203,18 +203,18 @@ export function SellerDashboardPage() {
           <table className="w-full text-[13px]">
             <thead>
               <tr className="bg-[#f6f7f9] border-b border-[#dce0e5]">
-                <th className="text-left px-4 py-3 font-semibold text-[#6f7c8e]">Order ID</th>
-                <th className="text-left px-4 py-3 font-semibold text-[#6f7c8e]">Date</th>
-                <th className="text-left px-4 py-3 font-semibold text-[#6f7c8e]">Status</th>
-                <th className="text-right px-4 py-3 font-semibold text-[#6f7c8e]">Total sum</th>
-                <th className="text-right px-4 py-3 font-semibold text-[#6f7c8e]">Action</th>
+                <th className="text-left px-4 py-3 font-semibold text-[#6f7c8e]">Sipariş ID</th>
+                <th className="text-left px-4 py-3 font-semibold text-[#6f7c8e]">Tarih</th>
+                <th className="text-left px-4 py-3 font-semibold text-[#6f7c8e]">Durum</th>
+                <th className="text-right px-4 py-3 font-semibold text-[#6f7c8e]">Toplam</th>
+                <th className="text-right px-4 py-3 font-semibold text-[#6f7c8e]">İşlem</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#f6f7f9]">
               {filteredOrders.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-4 py-10 text-center text-[#6f7c8e]">
-                    No orders yet
+                    Henüz sipariş yok
                   </td>
                 </tr>
               ) : (
@@ -227,20 +227,20 @@ export function SellerDashboardPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-[#6f7c8e]">
-                      {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {new Date(order.createdAt).toLocaleDateString('tr-TR', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </td>
                     <td className="px-4 py-3">
                       <StatusBadge status={order.status} />
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <span className="font-medium text-[#14181f]">{formatPrice(order.totalAmount, locale)}</span>
+                      <span className="font-medium text-[#14181f]">{formatPrice(order.totalAmount)}</span>
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => navigate({ to: sellerPath('/orders') as '/seller/orders' })}
                         className="h-7 px-3 text-[12px] font-medium border border-[#dce0e5] rounded-[4px] bg-white hover:bg-[#f6f7f9] transition-colors text-[#14181f]"
                       >
-                        View detail
+                        Detay
                       </button>
                     </td>
                   </tr>

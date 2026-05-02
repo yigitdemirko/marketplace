@@ -1,5 +1,5 @@
 import { apiClient } from './client'
-import type { Product, PageResponse, SellerStats, ProductLocale } from '@/types'
+import type { Product, PageResponse, SellerStats } from '@/types'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -18,8 +18,8 @@ async function uploadImage(file: File): Promise<string> {
   })
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Upload failed' }))
-    throw new Error(error.message ?? 'Upload failed')
+    const error = await response.json().catch(() => ({ message: 'Yükleme başarısız' }))
+    throw new Error(error.message ?? 'Yükleme başarısız')
   }
 
   const data = await response.json()
@@ -32,7 +32,6 @@ export interface CreateProductRequest {
   price: number
   stock: number
   category: string
-  locale: ProductLocale
   brand?: string
   images?: string[]
   attributes?: Record<string, string>
@@ -44,7 +43,6 @@ export interface UpdateProductRequest {
   price?: number
   stock?: number
   category?: string
-  locale?: ProductLocale
   brand?: string
   images?: string[]
   attributes?: Record<string, string>
@@ -56,13 +54,11 @@ export interface SearchFilters {
   brand?: string
   priceMin?: number
   priceMax?: number
-  locale?: ProductLocale
 }
 
 export const productsApi = {
-  getAll: (page = 0, size = 20, locale?: ProductLocale) => {
+  getAll: (page = 0, size = 20) => {
     const params = new URLSearchParams({ page: String(page), size: String(size) })
-    if (locale) params.set('locale', locale)
     return apiClient.get<PageResponse<Product>>(`/api/v1/products?${params}`)
   },
 
@@ -84,9 +80,6 @@ export const productsApi = {
   getSellerCategories: (sellerId: string) =>
     apiClient.get<Array<{ categoryId: string; count: number }>>(`/api/v1/products/seller/${sellerId}/categories`),
 
-  getSellerLocales: (sellerId: string) =>
-    apiClient.get<Array<{ locale: ProductLocale; count: number }>>(`/api/v1/products/seller/${sellerId}/locales`),
-
   search: (query: string, page = 0, size = 20) =>
     apiClient.get<PageResponse<Product>>(`/api/v1/search?query=${query}&page=${page}&size=${size}`),
 
@@ -97,7 +90,6 @@ export const productsApi = {
     if (filters.brand) params.set('brand', filters.brand)
     if (filters.priceMin !== undefined && filters.priceMin > 0) params.set('priceMin', filters.priceMin.toString())
     if (filters.priceMax !== undefined && filters.priceMax < 99000) params.set('priceMax', filters.priceMax.toString())
-    if (filters.locale) params.set('locale', filters.locale)
     if (sort && sort !== 'newest') params.set('sort', sort)
     params.set('page', page.toString())
     params.set('size', size.toString())

@@ -9,7 +9,7 @@ export function useAddedToCartFeedback() {
 
   return () => {
     if (typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT) {
-      showToast('Added to cart')
+      showToast('Sepete eklendi')
     } else {
       openDrawer()
     }

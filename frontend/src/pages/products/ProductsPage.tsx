@@ -16,19 +16,19 @@ const COMMON_BRANDS = [
 ]
 
 const FILTER_COLORS = [
-  { id: 'red', label: 'Red', hex: '#ef4444' },
-  { id: 'orange', label: 'Orange', hex: '#f97316' },
-  { id: 'blue', label: 'Blue', hex: '#0099ff' },
-  { id: 'black', label: 'Black', hex: '#3f3f3f' },
-  { id: 'white', label: 'White', hex: '#e9e9e9' },
-  { id: 'purple', label: 'Purple', hex: '#ea61ea' },
-  { id: 'gray', label: 'Dark Gray', hex: '#bbbbbb' },
+  { id: 'red', label: 'Kırmızı', hex: '#ef4444' },
+  { id: 'orange', label: 'Turuncu', hex: '#f97316' },
+  { id: 'blue', label: 'Mavi', hex: '#0099ff' },
+  { id: 'black', label: 'Siyah', hex: '#3f3f3f' },
+  { id: 'white', label: 'Beyaz', hex: '#e9e9e9' },
+  { id: 'purple', label: 'Mor', hex: '#ea61ea' },
+  { id: 'gray', label: 'Koyu Gri', hex: '#bbbbbb' },
 ]
 
 const SORT_OPTIONS = [
-  { value: 'newest', label: 'New items' },
-  { value: 'price,asc', label: 'Price: Low to High' },
-  { value: 'price,desc', label: 'Price: High to Low' },
+  { value: 'newest', label: 'Yeni ürünler' },
+  { value: 'price,asc', label: 'Fiyat: Düşükten Yükseğe' },
+  { value: 'price,desc', label: 'Fiyat: Yüksekten Düşüğe' },
 ]
 
 interface Props {
@@ -74,11 +74,11 @@ function SearchProductCard({ product }: { product: Product }) {
         <div className="flex items-center gap-1.5">
           <Star className="h-[15px] w-[15px] fill-[#db6e00] text-[#db6e00]" />
           <span className="text-[13px] text-[#6f7c8e]">4.5</span>
-          <span className="text-[13px] text-[#6f7c8e]">(0 orders)</span>
+          <span className="text-[13px] text-[#6f7c8e]">(0 sipariş)</span>
         </div>
 
         <p className="text-[15px] font-semibold text-[#14181f] mt-auto">
-          {formatPrice(product.price, product.locale ?? 'EN')}
+          {formatPrice(product.price)}
         </p>
 
         <button
@@ -98,7 +98,7 @@ function SearchProductCard({ product }: { product: Product }) {
           }}
         >
           <ShoppingCart className="h-5 w-5" />
-          {isOutOfStock ? 'Out of Stock' : 'Add to cart'}
+          {isOutOfStock ? 'Stokta yok' : 'Sepete ekle'}
         </button>
       </div>
     </div>
@@ -212,14 +212,14 @@ export function ProductsPage({
   }
 
   const paginationPages = getPaginationPages(page, totalPages)
-  const currentSortLabel = SORT_OPTIONS.find((o) => o.value === sortBy)?.label ?? 'New items'
+  const currentSortLabel = SORT_OPTIONS.find((o) => o.value === sortBy)?.label ?? 'Yeni ürünler'
   const displayedBrands = showAllBrands ? COMMON_BRANDS : COMMON_BRANDS.slice(0, 6)
 
   const pageTitle = initialQuery
-    ? `Results for "${initialQuery}"`
+    ? `"${initialQuery}" için sonuçlar`
     : selectedCategory
       ? getCategoryLabel(selectedCategory)
-      : 'All Products'
+      : 'Tüm ürünler'
 
   const handleCategorySelect = (catId: string | undefined) => {
     setSelectedCategory(catId)
@@ -273,7 +273,7 @@ export function ProductsPage({
             {/* Related categories */}
             <div className="bg-white rounded-lg overflow-hidden">
               <div className="px-4 py-3 border-b border-[#dce0e5]">
-                <h3 className="text-[18px] font-semibold text-[#14181f]">Related categories</h3>
+                <h3 className="text-[18px] font-semibold text-[#14181f]">İlgili kategoriler</h3>
               </div>
               <div className="p-2 flex flex-col gap-1">
                 <button
@@ -281,7 +281,7 @@ export function ProductsPage({
                   className={`flex items-center gap-2 h-9 px-3 w-full text-left rounded-lg text-[15px] tracking-[-0.3px] ${!selectedCategory ? 'bg-[#f0f7ff] text-[#3348ff] font-medium' : 'bg-[#f6f7f9] text-[#14181f]'}`}
                 >
                   {!selectedCategory && <ChevronLeft className="h-5 w-5 shrink-0" />}
-                  All categories
+                  Tüm kategoriler
                 </button>
                 {CATEGORIES.map((cat) => (
                   <button
@@ -298,7 +298,7 @@ export function ProductsPage({
             {/* Brands */}
             <div className="bg-white rounded-lg overflow-hidden">
               <div className="px-4 py-3 border-b border-[#dce0e5]">
-                <h3 className="text-[18px] font-semibold text-[#14181f]">Brands</h3>
+                <h3 className="text-[18px] font-semibold text-[#14181f]">Markalar</h3>
               </div>
               <div className="p-4">
                 {displayedBrands.map((brand) => {
@@ -326,7 +326,7 @@ export function ProductsPage({
                   onClick={() => setShowAllBrands((p) => !p)}
                   className="flex items-center gap-1 mt-2 text-[15px] text-[#6f7c8e] underline"
                 >
-                  {showAllBrands ? 'Show less' : 'Show more'}
+                  {showAllBrands ? 'Daha az göster' : 'Daha fazla göster'}
                   <ChevronDown
                     className={`h-[18px] w-[18px] transition-transform ${showAllBrands ? 'rotate-180' : ''}`}
                   />
@@ -337,7 +337,7 @@ export function ProductsPage({
             {/* Colors */}
             <div className="bg-white rounded-lg overflow-hidden">
               <div className="px-4 py-3 border-b border-[#dce0e5]">
-                <h3 className="text-[18px] font-semibold text-[#14181f]">Colors</h3>
+                <h3 className="text-[18px] font-semibold text-[#14181f]">Renkler</h3>
               </div>
               <div className="p-4 flex flex-wrap gap-2.5">
                 {FILTER_COLORS.map((color) => {
@@ -365,7 +365,7 @@ export function ProductsPage({
             {/* Price */}
             <div className="bg-white rounded-lg overflow-hidden">
               <div className="px-4 py-3 border-b border-[#dce0e5]">
-                <h3 className="text-[18px] font-semibold text-[#14181f]">Price</h3>
+                <h3 className="text-[18px] font-semibold text-[#14181f]">Fiyat</h3>
               </div>
               <div className="p-4">
                 <div className="mb-6 mt-2">
@@ -373,7 +373,7 @@ export function ProductsPage({
                 </div>
                 <div className="flex gap-2.5 mb-3">
                   <div className="flex-1">
-                    <label className="text-[13px] text-[#14181f] mb-1.5 block">From</label>
+                    <label className="text-[13px] text-[#14181f] mb-1.5 block">Min</label>
                     <input
                       type="number"
                       min={0}
@@ -384,7 +384,7 @@ export function ProductsPage({
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="text-[13px] text-[#14181f] mb-1.5 block">To</label>
+                    <label className="text-[13px] text-[#14181f] mb-1.5 block">Maks</label>
                     <input
                       type="number"
                       min={priceMinInput}
@@ -399,7 +399,7 @@ export function ProductsPage({
                   onClick={handleApplyPrice}
                   className="w-full h-10 bg-[#e0edff] text-[#3348ff] rounded-lg text-[15px] font-medium hover:bg-[#cce0ff] transition-colors"
                 >
-                  Apply
+                  Uygula
                 </button>
               </div>
             </div>
@@ -415,7 +415,7 @@ export function ProductsPage({
                   className="flex items-center gap-2 h-10 px-2.5 border border-[#dce0e5] rounded-lg text-[15px] bg-white hover:bg-[#f6f7f9] transition-colors"
                   onClick={() => setShowSortDropdown((p) => !p)}
                 >
-                  <span className="text-[#6f7c8e]">Show by:</span>
+                  <span className="text-[#6f7c8e]">Sırala:</span>
                   <span className="text-[#14181f] tracking-[-0.3px]">{currentSortLabel}</span>
                   <ChevronDown className="h-5 w-5 text-[#14181f]" />
                 </button>
@@ -467,7 +467,7 @@ export function ProductsPage({
             {/* Error */}
             {isError && (
               <p className="text-center py-16 text-red-500 text-[15px]">
-                Failed to load products. Please try again.
+                Ürünler yüklenemedi. Lütfen tekrar deneyin.
               </p>
             )}
 
@@ -478,7 +478,7 @@ export function ProductsPage({
               <>
                 {visibleProducts.length === 0 ? (
                   <p className="text-center py-16 text-[#6f7c8e] text-[18px]">
-                    No products found for your filters.
+                    Filtrelerinize uygun ürün bulunamadı.
                   </p>
                 ) : (
                   <div className="grid grid-cols-3 gap-5">
@@ -497,7 +497,7 @@ export function ProductsPage({
                         onClick={() => setPage((p) => p + 1)}
                         className="w-full h-12 border border-[#dce0e5] rounded-lg bg-white text-[18px] font-medium text-[#14181f] flex items-center justify-center gap-2 hover:bg-[#f6f7f9] transition-colors"
                       >
-                        Show more products
+                        Daha fazla ürün göster
                         <ChevronDown className="h-5 w-5" />
                       </button>
                     )}
@@ -510,7 +510,7 @@ export function ProductsPage({
                         className={`flex items-center gap-1.5 h-10 px-3 rounded-lg border text-[15px] font-medium transition-colors ${data.first ? 'bg-[#edf0f2] border-[#dce0e5] text-[#b6c1ca] cursor-default' : 'bg-[#edf0f2] border-[#dce0e5] text-[#14181f] hover:bg-[#e2e7ec]'}`}
                       >
                         <ChevronLeft className="h-4 w-4" />
-                        Prev
+                        Önceki
                       </button>
 
                       {paginationPages.map((pg, i) =>
@@ -537,7 +537,7 @@ export function ProductsPage({
                         disabled={data.last}
                         className={`flex items-center gap-1.5 h-10 px-3 rounded-lg border text-[15px] font-medium transition-colors ${data.last ? 'border-[#dce0e5] bg-white text-[#b6c1ca] cursor-default' : 'border-[#dce0e5] bg-white text-[#14181f] hover:bg-[#f6f7f9]'}`}
                       >
-                        Next
+                        Sonraki
                         <ChevronRight className="h-4 w-4" />
                       </button>
                     </div>

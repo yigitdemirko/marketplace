@@ -26,7 +26,7 @@ export function SellerLoginPage() {
       const user = await authApi.login({ email, password })
 
       if (user.accountType !== 'SELLER') {
-        setError('This email is registered as a buyer account. Please use the buyer login page.')
+        setError('Bu e-posta bir alıcı hesabına kayıtlı. Lütfen alıcı giriş sayfasını kullanın.')
         return
       }
 
@@ -36,7 +36,7 @@ export function SellerLoginPage() {
       const params = new URLSearchParams(window.location.search)
       navigate({ to: (params.get('redirect') ?? sellerPath('')) as '/seller' })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
+      setError(err instanceof Error ? err.message : 'Giriş başarısız')
     } finally {
       setLoading(false)
     }
@@ -59,24 +59,24 @@ export function SellerLoginPage() {
               <div className="bg-[#3348ff] rounded-[6px] w-8 h-8 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">B</span>
               </div>
-              <span className="font-bold text-[#14181f] text-[16px]">Seller Panel</span>
+              <span className="font-bold text-[#14181f] text-[16px]">Satıcı Paneli</span>
             </div>
-            <h1 className="text-3xl font-bold text-foreground">Seller Login</h1>
-            <p className="text-base text-muted-foreground">Sign in to manage your store</p>
+            <h1 className="text-3xl font-bold text-foreground">Satıcı girişi</h1>
+            <p className="text-base text-muted-foreground">Mağazanızı yönetmek için giriş yapın</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-7">
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs text-foreground">
-                  Email Address
+                  E-posta adresi
                 </Label>
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="store@example.com"
+                  placeholder="magaza@ornek.com"
                   required
                   className="h-14 rounded-[10px] border-foreground/25 px-4 text-base focus-visible:ring-primary"
                 />
@@ -84,7 +84,7 @@ export function SellerLoginPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="password" className="text-xs text-foreground">
-                  Password
+                  Şifre
                 </Label>
                 <Input
                   id="password"
@@ -104,20 +104,20 @@ export function SellerLoginPage() {
               disabled={loading}
               className="w-full h-14 rounded-[10px] bg-foreground text-background hover:bg-foreground/85 text-base font-normal"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? 'Giriş yapılıyor...' : 'Giriş yap'}
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
-              Don't have a seller account?{' '}
+              Satıcı hesabınız yok mu?{' '}
               <a href="/seller/register" className="text-primary hover:underline font-medium">
-                Register as Seller
+                Satıcı olarak kayıt ol
               </a>
             </p>
 
             <p className="text-sm text-center text-muted-foreground">
-              Looking to shop?{' '}
+              Alışveriş mi yapacaksınız?{' '}
               <a href="/login" className="text-primary hover:underline font-medium">
-                Buyer Login
+                Alıcı girişi
               </a>
             </p>
           </form>

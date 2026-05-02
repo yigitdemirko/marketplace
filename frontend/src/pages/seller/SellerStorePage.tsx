@@ -46,7 +46,7 @@ export function SellerStorePage() {
   if (!sellerId) return null
 
   const totalProducts = data?.totalElements ?? 0
-  const headerTitle = selectedCategory ? getCategoryLabel(selectedCategory) : 'All products'
+  const headerTitle = selectedCategory ? getCategoryLabel(selectedCategory) : 'Tüm ürünler'
 
   const handleSelectCategory = (categoryId: string | null) => {
     setSelectedCategory(categoryId)
@@ -64,10 +64,10 @@ export function SellerStorePage() {
             className="flex items-center gap-1.5 hover:text-[#3348ff] transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to main
+            Anasayfaya dön
           </button>
           <span className="px-1">/</span>
-          <span className="text-[#14181f]">Store profile</span>
+          <span className="text-[#14181f]">Mağaza profili</span>
         </nav>
       </div>
 
@@ -98,11 +98,11 @@ export function SellerStorePage() {
                   </h1>
                   <span className="inline-flex items-center gap-1 bg-[#e6f7ee] text-[#00a81c] text-[12px] font-semibold px-2 py-0.5 rounded-full shrink-0">
                     <ShieldCheck className="h-3.5 w-3.5" />
-                    Verified Seller
+                    Onaylı Satıcı
                   </span>
                 </div>
                 <p className="text-[14px] text-[#6f7c8e] mt-0.5">
-                  {isLoading ? '...' : `${totalAcrossStore || totalProducts} product${(totalAcrossStore || totalProducts) !== 1 ? 's' : ''}`}
+                  {isLoading ? '...' : `${totalAcrossStore || totalProducts} ürün`}
                 </p>
               </div>
             </div>
@@ -119,7 +119,7 @@ export function SellerStorePage() {
             <nav className="bg-white border border-[#dce0e5] rounded-[8px] overflow-hidden">
               <div className="px-3 py-2 border-b border-[#dce0e5]">
                 <p className="text-[11px] font-semibold text-[#6f7c8e] uppercase tracking-widest">
-                  Store navigation
+                  Mağaza menüsü
                 </p>
               </div>
               <ul className="max-h-[60vh] overflow-y-auto">
@@ -134,7 +134,7 @@ export function SellerStorePage() {
                   >
                     <span className="flex items-center gap-2 min-w-0">
                       <Package className="h-4 w-4 shrink-0" />
-                      <span className="truncate">All products</span>
+                      <span className="truncate">Tüm ürünler</span>
                     </span>
                     {totalAcrossStore > 0 && (
                       <span className="text-[12px] text-[#6f7c8e] shrink-0">{totalAcrossStore}</span>
@@ -144,7 +144,7 @@ export function SellerStorePage() {
                 {categories && categories.length > 0 && (
                   <li className="border-t border-[#dce0e5] mt-1 pt-1">
                     <p className="px-4 py-1 text-[11px] font-semibold text-[#6f7c8e] uppercase tracking-widest">
-                      Categories
+                      Kategoriler
                     </p>
                   </li>
                 )}
@@ -179,7 +179,7 @@ export function SellerStorePage() {
               <h2 className="text-[18px] font-semibold text-[#14181f]">{headerTitle}</h2>
               {!isLoading && (
                 <span className="text-[14px] text-[#6f7c8e]">
-                  {totalProducts} result{totalProducts !== 1 ? 's' : ''}
+                  {totalProducts} sonuç
                 </span>
               )}
             </div>
@@ -214,7 +214,7 @@ export function SellerStorePage() {
                       onClick={() => setPage((p) => p - 1)}
                       className="px-4 h-9 rounded-[6px] border border-[#dce0e5] text-[14px] text-[#14181f] hover:bg-[#f6f7f9] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                     >
-                      Prev
+                      Önceki
                     </button>
                     {Array.from({ length: data.totalPages }, (_, i) => (
                       <button
@@ -234,7 +234,7 @@ export function SellerStorePage() {
                       onClick={() => setPage((p) => p + 1)}
                       className="px-4 h-9 rounded-[6px] border border-[#dce0e5] text-[14px] text-[#14181f] hover:bg-[#f6f7f9] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                     >
-                      Next
+                      Sonraki
                     </button>
                   </div>
                 )}
@@ -247,8 +247,8 @@ export function SellerStorePage() {
                 <Package className="h-10 w-10 text-[#dce0e5]" />
                 <p className="text-[15px]">
                   {selectedCategory
-                    ? 'No products in this category.'
-                    : 'This seller has no active products yet.'}
+                    ? 'Bu kategoride ürün yok.'
+                    : 'Bu satıcının henüz aktif ürünü yok.'}
                 </p>
               </div>
             )}

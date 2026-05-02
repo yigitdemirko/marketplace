@@ -14,7 +14,6 @@ import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
 import { productsApi } from '@/api/products'
 import type { Product } from '@/types'
-import { useLocaleStore } from '@/store/localeStore'
 import { formatPrice } from '@/lib/formatPrice'
 
 const DELIVERY_COST = 25
@@ -53,17 +52,17 @@ function SuggestedProductCard({
           {[1, 2, 3, 4, 5].map((s) => (
             <Star key={s} className={`h-3 w-3 ${s <= 4 ? 'fill-[#ff9017] text-[#ff9017]' : 'fill-gray-200 text-gray-200'}`} />
           ))}
-          <span className="text-[12px] text-[#6f7c8e] ml-1">(132 reviews)</span>
+          <span className="text-[12px] text-[#6f7c8e] ml-1">(132 değerlendirme)</span>
         </div>
 
-        <p className="text-[15px] font-semibold text-[#14181f]">{formatPrice(product.price, product.locale ?? 'EN')}</p>
+        <p className="text-[15px] font-semibold text-[#14181f]">{formatPrice(product.price)}</p>
 
         <button
           onClick={onAddToCart}
           className="mt-auto w-full h-[36px] border border-[#dce0e5] rounded-[6px] text-[14px] text-[#14181f] font-medium flex items-center justify-center gap-2 hover:bg-[#f6f7f9] transition-colors"
         >
           <ShoppingCart className="h-4 w-4 text-[#3348ff]" />
-          Add to cart
+          Sepete ekle
         </button>
       </div>
     </div>
@@ -73,7 +72,6 @@ function SuggestedProductCard({
 export function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, addItem, totalAmount, totalItems } = useCartStore()
   const { isAuthenticated } = useAuthStore()
-  const { locale } = useLocaleStore()
   const navigate = useNavigate()
   const [wishlistedItems, setWishlistedItems] = useState<Set<string>>(new Set())
 
@@ -105,7 +103,7 @@ export function CartPage() {
 
   const deliveryDate = new Date()
   deliveryDate.setDate(deliveryDate.getDate() + 5)
-  const deliveryStr = deliveryDate.toLocaleDateString('en-US', {
+  const deliveryStr = deliveryDate.toLocaleDateString('tr-TR', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
@@ -118,10 +116,10 @@ export function CartPage() {
           <div className="rounded-full bg-[#f6f7f9] p-8">
             <ShoppingBag className="h-14 w-14 text-[#6f7c8e]" />
           </div>
-          <h2 className="text-[24px] font-semibold text-[#14181f]">Your cart is empty</h2>
-          <p className="text-[15px] text-[#6f7c8e]">Add some products to get started</p>
+          <h2 className="text-[24px] font-semibold text-[#14181f]">Sepetiniz boş</h2>
+          <p className="text-[15px] text-[#6f7c8e]">Başlamak için sepete ürün ekleyin</p>
           <Link to="/" className="bg-[#3348ff] hover:bg-[#2236e0] text-white px-8 py-3 rounded-[8px] text-[15px] font-medium transition-colors">
-            Continue Shopping
+            Alışverişe devam et
           </Link>
         </div>
       </div>
@@ -132,8 +130,8 @@ export function CartPage() {
     <div className="-mx-4 -mt-8">
       <div className="max-w-[1180px] mx-auto px-4 py-8">
 
-        <h1 className="text-[24px] font-semibold text-[#14181f] mb-1">Your cart</h1>
-        <p className="text-[15px] text-[#6f7c8e] mb-6">{totalItems()} Products in Your cart</p>
+        <h1 className="text-[24px] font-semibold text-[#14181f] mb-1">Sepetiniz</h1>
+        <p className="text-[15px] text-[#6f7c8e] mb-6">Sepetinizde {totalItems()} ürün</p>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-5 items-start">
 
@@ -153,7 +151,7 @@ export function CartPage() {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-[15px] font-semibold text-[#14181f] leading-snug truncate">{item.name}</p>
-                    <p className="text-[13px] text-[#6f7c8e] mt-0.5">Price: {formatPrice(item.price, item.locale ?? 'EN')} / per item</p>
+                    <p className="text-[13px] text-[#6f7c8e] mt-0.5">Fiyat: {formatPrice(item.price)} / adet</p>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
@@ -163,14 +161,14 @@ export function CartPage() {
                       className="border border-[#dce0e5] rounded-[6px] text-[14px] text-[#14181f] px-2 py-1.5 bg-white outline-none cursor-pointer focus:border-[#3348ff]"
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                        <option key={n} value={n}>Qty: {n}</option>
+                        <option key={n} value={n}>Adet: {n}</option>
                       ))}
                     </select>
 
                     <button
                       onClick={() => handleWishlist(item.productId)}
                       className="p-1.5 rounded hover:bg-[#f6f7f9] transition-colors"
-                      aria-label="Save for later"
+                      aria-label="Daha sonra için kaydet"
                     >
                       <Heart className={`h-4 w-4 ${wishlistedItems.has(item.productId) ? 'fill-red-500 text-red-500' : 'text-[#6f7c8e]'}`} />
                     </button>
@@ -178,14 +176,14 @@ export function CartPage() {
                     <button
                       onClick={() => removeItem(item.productId)}
                       className="p-1.5 rounded hover:bg-[#f6f7f9] transition-colors"
-                      aria-label="Remove item"
+                      aria-label="Ürünü kaldır"
                     >
                       <X className="h-4 w-4 text-[#6f7c8e]" />
                     </button>
                   </div>
 
                   <div className="shrink-0 min-w-0 sm:min-w-[96px] text-right ml-auto sm:ml-0">
-                    <p className="text-[15px] font-semibold text-[#14181f]">{formatPrice(item.price * item.quantity, item.locale ?? 'EN')}</p>
+                    <p className="text-[15px] font-semibold text-[#14181f]">{formatPrice(item.price * item.quantity)}</p>
                   </div>
                 </div>
               </div>
@@ -194,7 +192,7 @@ export function CartPage() {
             <div className="h-px bg-[#dce0e5]" />
             <div className="px-4 py-3">
               <button onClick={clearCart} className="text-[14px] text-[#3348ff] hover:underline">
-                Remove all from cart
+                Sepeti boşalt
               </button>
             </div>
           </div>
@@ -203,37 +201,37 @@ export function CartPage() {
           <div className="bg-white border border-[#dce0e5] rounded-[8px] p-4 sticky top-4">
             <div className="space-y-3 mb-4">
               <div className="flex justify-between text-[15px]">
-                <span className="text-[#6f7c8e]">{totalItems()} items:</span>
-                <span className="text-[#14181f] font-medium">{formatPrice(subtotal, locale)}</span>
+                <span className="text-[#6f7c8e]">{totalItems()} ürün:</span>
+                <span className="text-[#14181f] font-medium">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-[15px]">
-                <span className="text-[#6f7c8e]">Delivery cost:</span>
-                <span className="text-[#14181f] font-medium">{formatPrice(DELIVERY_COST, locale)}</span>
+                <span className="text-[#6f7c8e]">Kargo:</span>
+                <span className="text-[#14181f] font-medium">{formatPrice(DELIVERY_COST)}</span>
               </div>
               <div className="flex justify-between text-[15px]">
-                <span className="text-[#6f7c8e]">Tax:</span>
-                <span className="text-[#14181f] font-medium">{formatPrice(tax, locale)}</span>
+                <span className="text-[#6f7c8e]">KDV:</span>
+                <span className="text-[#14181f] font-medium">{formatPrice(tax)}</span>
               </div>
             </div>
 
             <div className="h-px bg-[#dce0e5] mb-4" />
 
             <div className="flex justify-between items-center mb-5">
-              <span className="text-[16px] font-semibold text-[#14181f]">Total:</span>
-              <span className="text-[22px] font-bold text-[#14181f]">{formatPrice(total, locale)}</span>
+              <span className="text-[16px] font-semibold text-[#14181f]">Toplam:</span>
+              <span className="text-[22px] font-bold text-[#14181f]">{formatPrice(total)}</span>
             </div>
 
             <button
               onClick={handleCheckout}
               className="w-full h-[48px] bg-[#3348ff] hover:bg-[#2236e0] text-white rounded-[8px] text-[15px] font-medium flex items-center justify-center gap-2 transition-colors mb-4"
             >
-              Checkout <ArrowRight className="h-4 w-4" />
+              Ödemeye geç <ArrowRight className="h-4 w-4" />
             </button>
 
             <div className="flex items-start gap-2 bg-[#f6f7f9] rounded-[6px] px-3 py-2.5">
               <ShoppingBag className="h-4 w-4 text-[#3348ff] shrink-0 mt-0.5" />
               <p className="text-[13px] text-[#6f7c8e] leading-snug">
-                Delivered by <span className="text-[#14181f] font-medium">Morning, {deliveryStr}</span>
+                Tahmini teslimat <span className="text-[#14181f] font-medium">{deliveryStr} sabahı</span>
               </p>
             </div>
           </div>
@@ -242,7 +240,7 @@ export function CartPage() {
         {/* Customers also bought */}
         {suggestedData && suggestedData.content.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-[20px] font-semibold text-[#14181f] mb-5">Customer also bought these</h2>
+            <h2 className="text-[20px] font-semibold text-[#14181f] mb-5">Bunları da beğenebilirsiniz</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {suggestedData.content.map((product) => (
                 <SuggestedProductCard

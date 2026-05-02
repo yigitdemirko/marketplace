@@ -11,7 +11,7 @@ export function RecommendedSection() {
   return (
     <section className="bg-[#f6f7f9] py-8">
       <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
-        <h2 className="text-[24px] font-semibold text-[#14181f] mb-6">Recommended items</h2>
+        <h2 className="text-[24px] font-semibold text-[#14181f] mb-6">Önerilen ürünler</h2>
 
         {isLoading && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

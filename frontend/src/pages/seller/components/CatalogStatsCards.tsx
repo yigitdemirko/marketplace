@@ -12,28 +12,28 @@ const CARD_BASE =
 export function CatalogStatsCards({ stats, isLoading }: Props) {
   const items = [
     {
-      label: 'Total products',
+      label: 'Toplam ürün',
       value: stats?.total ?? 0,
       icon: Package,
       iconBg: 'bg-[#eef0ff]',
       iconColor: 'text-[#3348ff]',
     },
     {
-      label: 'In stock',
+      label: 'Stokta',
       value: stats?.inStock ?? 0,
       icon: CheckCircle2,
       iconBg: 'bg-[#e6f7ee]',
       iconColor: 'text-[#00a81c]',
     },
     {
-      label: 'Out of stock',
+      label: 'Stokta yok',
       value: stats?.outOfStock ?? 0,
       icon: AlertCircle,
       iconBg: 'bg-[#ffeaea]',
       iconColor: 'text-[#fa3434]',
     },
     {
-      label: 'Low stock',
+      label: 'Düşük stok',
       value: stats?.lowStock ?? 0,
       icon: AlertTriangle,
       iconBg: 'bg-[#fff4e0]',

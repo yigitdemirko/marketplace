@@ -3,13 +3,11 @@ import { useNavigate } from '@tanstack/react-router'
 import { X, Trash2, Minus, Plus } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { useCartDrawer } from '@/store/cartDrawerStore'
-import { useLocaleStore } from '@/store/localeStore'
 import { formatPrice } from '@/lib/formatPrice'
 
 export function CartDrawer() {
   const { isOpen, close } = useCartDrawer()
   const { items, removeItem, updateQuantity, totalAmount, totalItems } = useCartStore()
-  const { locale } = useLocaleStore()
   const navigate = useNavigate()
 
   // lock body scroll when open
@@ -58,7 +56,7 @@ export function CartDrawer() {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="My cart"
+        aria-label="Sepetim"
         className={`fixed right-0 top-0 z-50 flex h-screen w-full max-w-[540px] flex-col bg-white border-l border-[#b6c1ca] shadow-[0px_4px_30px_0px_rgba(0,0,0,0.1)] transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
@@ -66,11 +64,11 @@ export function CartDrawer() {
         {/* Header */}
         <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-[#dce0e5] pl-6 pr-3">
           <h2 className="text-[20px] font-semibold text-[#14181f]">
-            My cart ({totalItems()})
+            Sepetim ({totalItems()})
           </h2>
           <button
             onClick={close}
-            aria-label="Close cart"
+            aria-label="Sepeti kapat"
             className="flex size-8 items-center justify-center rounded-full bg-[#f6f7f9] text-[#525e6f] hover:bg-[#edf0f2] transition-colors"
           >
             <X className="size-4" />
@@ -81,7 +79,7 @@ export function CartDrawer() {
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-[#6f7c8e]">
-              <p className="text-base">Your cart is empty</p>
+              <p className="text-base">Sepetiniz boş</p>
             </div>
           ) : (
             <div className="flex flex-col gap-5">
@@ -112,12 +110,12 @@ export function CartDrawer() {
                           {item.name}
                         </p>
                         <p className="text-[15px] text-[#525e6f] tracking-[-0.3px]">
-                          Qty: {item.quantity}
+                          Adet: {item.quantity}
                         </p>
                       </div>
                       <button
                         onClick={() => removeItem(item.productId)}
-                        aria-label={`Remove ${item.name}`}
+                        aria-label={`${item.name} ürününü kaldır`}
                         className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-[#dce0e5] bg-white text-[#525e6f] hover:bg-[#f6f7f9] transition-colors"
                       >
                         <Trash2 className="size-4" />
@@ -130,7 +128,7 @@ export function CartDrawer() {
                       <div className="flex h-8 w-[110px] items-center justify-center gap-1 rounded-md border border-[#dce0e5] bg-white px-1">
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                          aria-label="Decrease quantity"
+                          aria-label="Adeti azalt"
                           className="flex size-[26px] shrink-0 items-center justify-center rounded-md bg-[#e0edff] text-[#3348ff] hover:bg-[#c7dfff] transition-colors"
                         >
                           <Minus className="size-3.5" strokeWidth={2.5} />
@@ -140,7 +138,7 @@ export function CartDrawer() {
                         </span>
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          aria-label="Increase quantity"
+                          aria-label="Adeti artır"
                           className="flex size-[26px] shrink-0 items-center justify-center rounded-md bg-[#e0edff] text-[#3348ff] hover:bg-[#c7dfff] transition-colors"
                         >
                           <Plus className="size-3.5" strokeWidth={2.5} />
@@ -149,7 +147,7 @@ export function CartDrawer() {
 
                       {/* Line price */}
                       <span className="text-[15px] text-[#525e6f] tracking-[-0.3px] whitespace-nowrap">
-                        {formatPrice(item.price, item.locale ?? 'EN')} × {item.quantity}
+                        {formatPrice(item.price)} × {item.quantity}
                       </span>
                     </div>
                   </div>
@@ -158,8 +156,8 @@ export function CartDrawer() {
 
               {/* Subtotal */}
               <div className="flex items-center justify-between text-[18px] font-medium text-[#14181f]">
-                <span>Subtotal:</span>
-                <span>{formatPrice(totalAmount(), locale)}</span>
+                <span>Ara toplam:</span>
+                <span>{formatPrice(totalAmount())}</span>
               </div>
             </div>
           )}
@@ -172,13 +170,13 @@ export function CartDrawer() {
             disabled={items.length === 0}
             className="flex flex-1 h-12 items-center justify-center rounded-lg bg-primary text-white text-[18px] font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Checkout now
+            Hemen öde
           </button>
           <button
             onClick={handleViewCart}
             className="flex flex-1 h-12 items-center justify-center rounded-lg border border-[#dce0e5] bg-white text-[18px] font-medium text-[#14181f] hover:bg-[#f6f7f9] transition-colors"
           >
-            View Cart
+            Sepete git
           </button>
         </div>
       </div>
