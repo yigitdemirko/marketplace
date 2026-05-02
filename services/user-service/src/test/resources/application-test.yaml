@@ -16,9 +16,20 @@ spring:
   flyway:
     enabled: true
 
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 jwt:
   secret: test-secret-key-must-be-at-least-32-characters
   expiration: 900000
+  refresh-expiration: 604800000
+
+cookie:
+  domain:
+  secure: false
 
 eureka:
   client:
