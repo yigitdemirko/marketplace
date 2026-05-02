@@ -6,6 +6,27 @@ export interface User {
     firstName?: string
     lastName?: string
   }
+
+  export interface SavedAddress {
+    id: string
+    title: string
+    fullName: string
+    city: string
+    postalCode: string
+    addressLine1: string
+    addressLine2?: string
+    isDefault: boolean
+  }
+
+  export interface SavedCard {
+    id: string
+    alias: string
+    cardHolder: string
+    last4: string
+    expireMonth: string
+    expireYear: string
+    isDefault: boolean
+  }
   
   export interface Product {
     id: string
