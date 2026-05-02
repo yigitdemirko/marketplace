@@ -66,9 +66,9 @@ management:
   tracing:
     sampling:
       probability: 1.0
-  zipkin:
+  otlp:
     tracing:
-      endpoint: http://${ZIPKIN_HOST:tempo}:9411/api/v2/spans
+      endpoint: http://:4318/v1/traces
 
 logging:
   pattern:

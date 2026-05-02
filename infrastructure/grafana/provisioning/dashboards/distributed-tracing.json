@@ -21,7 +21,7 @@
       "description": "Nodes = services, edges = calls between them. Node color = error rate (green→red). Powered by Tempo spanmetrics.",
       "datasource": { "type": "tempo", "uid": "tempo" },
       "gridPos": { "h": 14, "w": 24, "x": 0, "y": 1 },
-      "options": { "nodes": { "mainStatUnit": "short" }, "edges": { "mainStatUnit": "short" } },
+      "options": { "nodes": { "mainStatUnit": "short" }, "edges": { "mainStatUnit": "short" }, "layout": "layered" },
       "targets": [{ "queryType": "serviceMap", "refId": "A", "serviceMapQuery": "{}" }]
     },
     {
