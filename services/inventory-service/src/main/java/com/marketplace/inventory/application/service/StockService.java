@@ -1,9 +1,9 @@
-package com.marketplace.product.application.service;
+package com.marketplace.inventory.application.service;
 
-import com.marketplace.product.domain.model.Product;
-import com.marketplace.product.domain.model.StockReservation;
-import com.marketplace.product.domain.repository.StockReservationRepository;
-import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
+import com.marketplace.inventory.domain.model.ProductStock;
+import com.marketplace.inventory.domain.model.StockReservation;
+import com.marketplace.inventory.domain.repository.StockReservationRepository;
+import com.marketplace.inventory.infrastructure.messaging.InventoryEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,7 +23,7 @@ public class StockService {
 
     private final MongoTemplate mongoTemplate;
     private final StockReservationRepository reservationRepository;
-    private final ProductEventPublisher productEventPublisher;
+    private final InventoryEventPublisher eventPublisher;
 
     public Optional<String> reserve(String orderId, List<StockReservation.ReservedItem> items) {
         Optional<StockReservation> existing = reservationRepository.findById(orderId);
@@ -34,14 +34,14 @@ public class StockService {
 
         List<StockReservation.ReservedItem> decremented = new ArrayList<>();
         for (StockReservation.ReservedItem item : items) {
-            Product updated = decrementStock(item.getProductId(), item.getQuantity());
+            ProductStock updated = decrementStock(item.getProductId(), item.getQuantity());
             if (updated == null) {
                 rollback(decremented);
                 log.warn("Insufficient stock: orderId={}, productId={}", orderId, item.getProductId());
                 return Optional.of("Insufficient stock for productId=" + item.getProductId());
             }
             decremented.add(item);
-            productEventPublisher.publishProductUpdated(updated);
+            eventPublisher.publishStockChanged(updated);
         }
 
         reservationRepository.save(StockReservation.builder()
@@ -66,9 +66,9 @@ public class StockService {
         }
 
         for (StockReservation.ReservedItem item : reservation.getItems()) {
-            Product updated = incrementStock(item.getProductId(), item.getQuantity());
+            ProductStock updated = incrementStock(item.getProductId(), item.getQuantity());
             if (updated != null) {
-                productEventPublisher.publishProductUpdated(updated);
+                eventPublisher.publishStockChanged(updated);
             }
         }
         reservation.setStatus(StockReservation.Status.RELEASED);
@@ -76,23 +76,23 @@ public class StockService {
         log.info("Stock released: orderId={}, items={}", orderId, reservation.getItems().size());
     }
 
-    private Product decrementStock(String productId, int quantity) {
+    private ProductStock decrementStock(String productId, int quantity) {
         Query query = new Query(Criteria.where("_id").is(productId).and("stock").gte(quantity));
         Update update = new Update().inc("stock", -quantity);
-        return mongoTemplate.findAndModify(query, update, Product.class);
+        return mongoTemplate.findAndModify(query, update, ProductStock.class);
     }
 
-    private Product incrementStock(String productId, int quantity) {
+    private ProductStock incrementStock(String productId, int quantity) {
         Query query = new Query(Criteria.where("_id").is(productId));
         Update update = new Update().inc("stock", quantity);
-        return mongoTemplate.findAndModify(query, update, Product.class);
+        return mongoTemplate.findAndModify(query, update, ProductStock.class);
     }
 
     private void rollback(List<StockReservation.ReservedItem> decremented) {
         for (StockReservation.ReservedItem item : decremented) {
-            Product reverted = incrementStock(item.getProductId(), item.getQuantity());
+            ProductStock reverted = incrementStock(item.getProductId(), item.getQuantity());
             if (reverted != null) {
-                productEventPublisher.publishProductUpdated(reverted);
+                eventPublisher.publishStockChanged(reverted);
             }
         }
     }

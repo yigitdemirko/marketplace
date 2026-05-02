@@ -1,0 +1,66 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: inventory-service
+  config:
+    import: optional:configserver:http://localhost:8888
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_HOST:localhost}:27017/inventory_db
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+    consumer:
+      group-id: inventory-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: java.util.HashMap
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+api:
+  server-url: ${API_SERVER_URL:http://localhost:8080}
+
+inventory:
+  bootstrap:
+    enabled: ${INVENTORY_BOOTSTRAP_ENABLED:true}
+    product-mongo-uri: ${PRODUCT_MONGO_URI:mongodb://${MONGODB_HOST:localhost}:27017/product_db}
+---
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://tempo:4318/v1/traces
+
+logging:
+  pattern:
+    correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "

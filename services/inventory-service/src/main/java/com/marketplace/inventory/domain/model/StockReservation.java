@@ -1,4 +1,4 @@
-package com.marketplace.product.domain.model;
+package com.marketplace.inventory.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
