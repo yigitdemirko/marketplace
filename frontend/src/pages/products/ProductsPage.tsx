@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { ShoppingCart, ChevronDown, Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { productsApi, type SearchFilters } from '@/api/products'
-import { useCartStore } from '@/store/cartStore'
+import { useAddBasketItem } from '@/hooks/useBasket'
 import { useAddedToCartFeedback } from '@/lib/cartFeedback'
 import { CATEGORIES, getCategoryLabel } from '@/constants/categories'
 import type { Product } from '@/types'
@@ -43,7 +43,7 @@ interface Props {
 
 
 function SearchProductCard({ product }: { product: Product }) {
-  const addItem = useCartStore((state) => state.addItem)
+  const addItem = useAddBasketItem()
   const notifyAdded = useAddedToCartFeedback()
   const navigate = useNavigate()
   const mainImage = product.images?.[0]
@@ -86,13 +86,15 @@ function SearchProductCard({ product }: { product: Product }) {
           disabled={isOutOfStock}
           onClick={(e) => {
             e.stopPropagation()
-            addItem({
+            addItem.mutate({
               productId: product.id,
-              sellerId: product.sellerId,
-              name: product.name,
-              price: product.price,
               quantity: 1,
-              image: mainImage,
+              snapshot: {
+                sellerId: product.sellerId,
+                name: product.name,
+                price: product.price,
+                image: mainImage,
+              },
             })
             notifyAdded()
           }}

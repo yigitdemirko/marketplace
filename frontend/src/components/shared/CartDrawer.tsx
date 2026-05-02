@@ -1,14 +1,16 @@
 import { useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { X, Trash2, Minus, Plus } from 'lucide-react'
-import { useCartStore } from '@/store/cartStore'
+import { useBasket, useRemoveBasketItem, useSetBasketItem } from '@/hooks/useBasket'
 import { useCartDrawer } from '@/store/cartDrawerStore'
 import { useToastStore } from '@/store/toastStore'
 import { formatPrice } from '@/lib/formatPrice'
 
 export function CartDrawer() {
   const { isOpen, close } = useCartDrawer()
-  const { items, removeItem, updateQuantity, totalAmount, totalItems } = useCartStore()
+  const { items, totalItems, totalAmount } = useBasket()
+  const removeItem = useRemoveBasketItem()
+  const updateQuantity = useSetBasketItem()
   const showToast = useToastStore((s) => s.show)
   const navigate = useNavigate()
 
@@ -66,7 +68,7 @@ export function CartDrawer() {
         {/* Header */}
         <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-[#dce0e5] pl-6 pr-3">
           <h2 className="text-[20px] font-semibold text-[#14181f]">
-            Sepetim ({totalItems()})
+            Sepetim ({totalItems})
           </h2>
           <button
             onClick={close}
@@ -92,9 +94,9 @@ export function CartDrawer() {
                 >
                   {/* Product image */}
                   <div className="size-[100px] shrink-0 overflow-hidden rounded-lg bg-[#eceff2]">
-                    {item.image ? (
+                    {item.imageUrl ? (
                       <img
-                        src={item.image}
+                        src={item.imageUrl}
                         alt={item.name}
                         className="size-full object-cover"
                       />
@@ -116,7 +118,7 @@ export function CartDrawer() {
                         </p>
                       </div>
                       <button
-                        onClick={() => { removeItem(item.productId); showToast('Ürün sepetten çıkarıldı') }}
+                        onClick={() => { removeItem.mutate(item.productId); showToast('Ürün sepetten çıkarıldı') }}
                         aria-label={`${item.name} ürününü kaldır`}
                         className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-[#dce0e5] bg-white text-[#525e6f] hover:bg-[#f6f7f9] transition-colors"
                       >
@@ -129,7 +131,7 @@ export function CartDrawer() {
                       {/* Stepper */}
                       <div className="flex h-8 w-[110px] items-center justify-center gap-1 rounded-md border border-[#dce0e5] bg-white px-1">
                         <button
-                          onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                          onClick={() => updateQuantity.mutate({ productId: item.productId, quantity: item.quantity - 1 })}
                           aria-label="Adeti azalt"
                           className="flex size-[26px] shrink-0 items-center justify-center rounded-md bg-[#e0edff] text-[#3348ff] hover:bg-[#c7dfff] transition-colors"
                         >
@@ -139,7 +141,7 @@ export function CartDrawer() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                          onClick={() => updateQuantity.mutate({ productId: item.productId, quantity: item.quantity + 1 })}
                           aria-label="Adeti artır"
                           className="flex size-[26px] shrink-0 items-center justify-center rounded-md bg-[#e0edff] text-[#3348ff] hover:bg-[#c7dfff] transition-colors"
                         >
@@ -149,7 +151,7 @@ export function CartDrawer() {
 
                       {/* Line price */}
                       <span className="text-[15px] text-[#525e6f] tracking-[-0.3px] whitespace-nowrap">
-                        {formatPrice(item.price)} × {item.quantity}
+                        {formatPrice(item.currentPrice)} × {item.quantity}
                       </span>
                     </div>
                   </div>
@@ -159,7 +161,7 @@ export function CartDrawer() {
               {/* Subtotal */}
               <div className="flex items-center justify-between text-[18px] font-medium text-[#14181f]">
                 <span>Ara toplam:</span>
-                <span>{formatPrice(totalAmount())}</span>
+                <span>{formatPrice(totalAmount)}</span>
               </div>
             </div>
           )}

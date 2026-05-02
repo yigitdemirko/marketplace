@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { authApi } from '@/api/auth'
-import { useAuthStore } from '@/store/authStore'
+import { useAuthFlow } from '@/hooks/useAuthFlow'
 import { TermsModal } from '@/components/auth/TermsModal'
 
 const heroImage = 'https://www.figma.com/api/mcp/asset/4049e18f-25b0-4761-8425-d100dd14592c'
@@ -13,7 +13,7 @@ const inputClass = 'h-14 rounded-[10px] border-foreground/25 px-4 text-base focu
 
 export function RegisterPage() {
   const navigate = useNavigate()
-  const setAuth = useAuthStore((state) => state.setAuth)
+  const { onLoginSuccess } = useAuthFlow()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
@@ -40,7 +40,7 @@ export function RegisterPage() {
 
     try {
       const user = await authApi.registerBuyer(form)
-      setAuth(user)
+      await onLoginSuccess(user)
       const params = new URLSearchParams(window.location.search)
       navigate({ to: params.get('redirect') ?? '/' })
     } catch (err) {

@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Package, MapPin, CreditCard, Plus } from 'lu
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useCartStore } from '@/store/cartStore'
+import { useBasket, useClearBasket } from '@/hooks/useBasket'
 import { useAuthStore } from '@/store/authStore'
 import { ordersApi } from '@/api/orders'
 import { paymentsApi } from '@/api/payments'
@@ -14,6 +14,9 @@ import type { SaveAddressRequest, SaveCardRequest } from '@/api/profile'
 import { cn } from '@/lib/utils'
 import { formatPrice } from '@/lib/formatPrice'
 import type { SavedAddress, SavedCard } from '@/types'
+
+const PAYMENT_MAX_AMOUNT = Number(import.meta.env.VITE_PAYMENT_MAX_AMOUNT ?? 100000)
+const PAYMENT_MAX_AMOUNT_WARN = PAYMENT_MAX_AMOUNT * 0.9
 
 type CheckoutStep = 'shipping' | 'payment'
 type DeliveryMethod = 'pickup' | 'standard' | 'express'
@@ -43,7 +46,7 @@ function FormField({ label, optional, children, className }: {
 function OrderSummary({ coupon, onCouponChange, subtotal, deliveryCost }: {
   coupon: string; onCouponChange: (v: string) => void; subtotal: number; deliveryCost: number
 }) {
-  const { items } = useCartStore()
+  const { items } = useBasket()
   const tax = subtotal * TAX_RATE
 
   return (
@@ -53,8 +56,8 @@ function OrderSummary({ coupon, onCouponChange, subtotal, deliveryCost }: {
         {items.map((item) => (
           <figure key={item.productId} className="flex gap-3">
             <div className="size-[72px] shrink-0 overflow-hidden rounded-lg bg-white border border-[#dce0e5] flex items-center justify-center">
-              {item.image ? (
-                <img src={item.image} alt={item.name} className="size-full object-contain mix-blend-multiply" />
+              {item.imageUrl ? (
+                <img src={item.imageUrl} alt={item.name} className="size-full object-contain mix-blend-multiply" />
               ) : (
                 <Package className="size-6 text-[#cbd3db]" />
               )}
@@ -64,7 +67,7 @@ function OrderSummary({ coupon, onCouponChange, subtotal, deliveryCost }: {
               <p className="text-sm text-[#6f7c8e]">Adet: {item.quantity}</p>
             </figcaption>
             <div className="text-right">
-              <span className="text-sm text-[#6f7c8e] whitespace-nowrap">{formatPrice(item.price * item.quantity)}</span>
+              <span className="text-sm text-[#6f7c8e] whitespace-nowrap">{formatPrice(item.lineTotal)}</span>
             </div>
           </figure>
         ))}
@@ -198,7 +201,8 @@ function SavedCardSelector({ selected, onSelect }: { selected: string; onSelect:
 // ── Main checkout ──────────────────────────────────────────────────────────────
 
 export function CheckoutPage() {
-  const { items, totalAmount, clearCart } = useCartStore()
+  const { items, totalAmount } = useBasket()
+  const clearCart = useClearBasket()
   const { user, isAuthenticated } = useAuthStore()
   const navigate = useNavigate()
   const qc = useQueryClient()
@@ -245,9 +249,11 @@ export function CheckoutPage() {
   }
 
   const deliveryCost = DELIVERY_OPTIONS.find((o) => o.id === deliveryMethod)!.cost
-  const subtotal = totalAmount()
+  const subtotal = totalAmount
   const tax = subtotal * TAX_RATE
   const total = subtotal + deliveryCost + tax
+  const overLimit = total > PAYMENT_MAX_AMOUNT
+  const nearLimit = total > PAYMENT_MAX_AMOUNT_WARN && !overLimit
 
   const handleSelectSavedAddress = (addr: SavedAddress) => {
     setShippingForm({
@@ -265,6 +271,10 @@ export function CheckoutPage() {
     e.preventDefault()
     setError('')
     if (!user || items.length === 0) return
+    if (overLimit) {
+      setError(`Sepet tutarı ${formatPrice(PAYMENT_MAX_AMOUNT)} limitini aşıyor. Lütfen ürün çıkarın.`)
+      return
+    }
 
     setLoading(true)
     try {
@@ -307,7 +317,7 @@ export function CheckoutPage() {
         qc.invalidateQueries({ queryKey: ['profile', 'cards'] })
       }
 
-      clearCart()
+      clearCart.mutate()
       setSuccess(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ödeme başarısız')
@@ -333,6 +343,16 @@ export function CheckoutPage() {
         <div className="flex flex-col md:flex-row">
           <main className="md:basis-7/12 md:shrink-0">
             <div className="py-10 md:mr-10">
+              {overLimit && (
+                <div className="mb-5 rounded-[8px] border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-700">
+                  Sepet tutarınız {formatPrice(PAYMENT_MAX_AMOUNT)} limitini aşıyor. Sipariş oluşturulamaz.
+                </div>
+              )}
+              {nearLimit && (
+                <div className="mb-5 rounded-[8px] border border-amber-200 bg-amber-50 px-4 py-3 text-[14px] text-amber-700">
+                  Sepet tutarınız {formatPrice(PAYMENT_MAX_AMOUNT)} limitine yaklaşıyor.
+                </div>
+              )}
               {step === 'shipping' ? (
                 <form id="shipping-form" onSubmit={(e) => { e.preventDefault(); setStep('payment') }}>
                   {/* Contact */}

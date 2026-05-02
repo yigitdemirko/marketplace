@@ -19,6 +19,7 @@ import { productsApi } from '@/api/products'
 import { profileApi } from '@/api/profile'
 import type { SaveAddressRequest, SaveCardRequest } from '@/api/profile'
 import { useAuthStore } from '@/store/authStore'
+import { useAuthFlow } from '@/hooks/useAuthFlow'
 import { useToastStore } from '@/store/toastStore'
 import { authApi } from '@/api/auth'
 import { formatPrice } from '@/lib/formatPrice'
@@ -487,7 +488,8 @@ const NAV_ITEMS = [
 ] as const
 
 export function AccountPage() {
-  const { user, isAuthenticated, logout } = useAuthStore()
+  const { user, isAuthenticated } = useAuthStore()
+  const { onLogout } = useAuthFlow()
   const navigate = useNavigate()
   const showToast = useToastStore((s) => s.show)
   const [activeNav, setActiveNav] = useState<string>('orders')
@@ -504,7 +506,7 @@ export function AccountPage() {
   const handleLogout = () => {
     isLoggingOut.current = true
     authApi.logout().finally(() => {
-      logout()
+      onLogout()
       showToast('Çıkış yapıldı')
       navigate({ to: '/' })
     })

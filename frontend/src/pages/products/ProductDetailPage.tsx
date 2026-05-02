@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { productsApi } from '@/api/products'
 import { usersApi } from '@/api/users'
-import { useCartStore } from '@/store/cartStore'
+import { useAddBasketItem } from '@/hooks/useBasket'
 import { useAddedToCartFeedback } from '@/lib/cartFeedback'
 import { getCategoryLabel } from '@/constants/categories'
 import { formatPrice } from '@/lib/formatPrice'
@@ -33,7 +33,7 @@ const RATING_BARS = [
 export function ProductDetailPage() {
   const { productId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addItem = useCartStore((state) => state.addItem)
+  const addItem = useAddBasketItem()
   const notifyAdded = useAddedToCartFeedback()
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState<typeof TABS[number]>('Açıklama')
@@ -57,13 +57,15 @@ export function ProductDetailPage() {
 
   const handleAddToCart = useCallback(() => {
     if (!product) return
-    addItem({
+    addItem.mutate({
       productId: product.id,
-      sellerId: product.sellerId,
-      name: product.name,
-      price: product.price,
       quantity,
-      image: product.images?.[0],
+      snapshot: {
+        sellerId: product.sellerId,
+        name: product.name,
+        price: product.price,
+        image: product.images?.[0],
+      },
     })
     notifyAdded()
     setAdded(true)

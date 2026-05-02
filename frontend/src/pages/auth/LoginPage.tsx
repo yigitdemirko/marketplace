@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { authApi } from '@/api/auth'
-import { useAuthStore } from '@/store/authStore'
+import { useAuthFlow } from '@/hooks/useAuthFlow'
 
 const heroImage = 'https://www.figma.com/api/mcp/asset/4803ceb1-b82f-484f-8c5f-05d6e893a3b0'
 
 export function LoginPage() {
   const navigate = useNavigate()
-  const setAuth = useAuthStore((state) => state.setAuth)
+  const { onLoginSuccess } = useAuthFlow()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
@@ -31,7 +31,7 @@ export function LoginPage() {
 
     try {
       const user = await authApi.loginBuyer({ email, password })
-      setAuth(user)
+      await onLoginSuccess(user)
 
       const params = new URLSearchParams(window.location.search)
       navigate({ to: params.get('redirect') ?? '/' })

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ShoppingCart, Package, Star, Check } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
-import { useCartStore } from '@/store/cartStore'
+import { useAddBasketItem } from '@/hooks/useBasket'
 import { useAddedToCartFeedback } from '@/lib/cartFeedback'
 import type { Product } from '@/types'
 import { formatPrice } from '@/lib/formatPrice'
@@ -12,7 +12,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
-  const addItem = useCartStore((state) => state.addItem)
+  const addItem = useAddBasketItem()
   const notifyAdded = useAddedToCartFeedback()
   const navigate = useNavigate()
   const [added, setAdded] = useState(false)
@@ -27,13 +27,15 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
-    addItem({
+    addItem.mutate({
       productId: product.id,
-      sellerId: product.sellerId,
-      name: product.name,
-      price: product.price,
       quantity: 1,
-      image: mainImage,
+      snapshot: {
+        name: product.name,
+        price: product.price,
+        sellerId: product.sellerId,
+        image: mainImage,
+      },
     })
     notifyAdded()
     setAdded(true)
