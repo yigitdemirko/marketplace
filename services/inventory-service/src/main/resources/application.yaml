@@ -52,6 +52,11 @@ inventory:
   bootstrap:
     enabled: ${INVENTORY_BOOTSTRAP_ENABLED:true}
     product-mongo-uri: ${PRODUCT_MONGO_URI:mongodb://${MONGODB_HOST:localhost}:27017/product_db}
+
+app:
+  reservation:
+    ttl-minutes: ${RESERVATION_TTL_MINUTES:15}
+    cleanup-interval-ms: ${RESERVATION_CLEANUP_INTERVAL_MS:60000}
 ---
 management:
   tracing:
