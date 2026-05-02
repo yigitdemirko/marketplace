@@ -9,6 +9,7 @@ import com.marketplace.order.domain.model.Order;
 import com.marketplace.order.domain.model.OrderItem;
 import com.marketplace.order.domain.model.OrderStatus;
 import com.marketplace.order.domain.repository.OrderRepository;
+import com.marketplace.common.exception.AmountLimitExceededException;
 import com.marketplace.order.infrastructure.client.ProductValidationGateway;
 import com.marketplace.order.infrastructure.client.ValidateItem;
 import com.marketplace.order.infrastructure.client.ValidatedProduct;
@@ -63,7 +64,7 @@ public class OrderService {
         if (order.getTotalAmount().compareTo(maxAmount) > 0) {
             log.warn("Order total {} exceeds limit {}, rejecting: userId={}",
                     order.getTotalAmount(), maxAmount, userId);
-            throw new OrderAmountExceedsLimitException(order.getTotalAmount(), maxAmount);
+            throw new AmountLimitExceededException(order.getTotalAmount(), maxAmount);
         }
         order.setStatus(OrderStatus.STOCK_RESERVING);
         Order saved = orderRepository.save(order);
