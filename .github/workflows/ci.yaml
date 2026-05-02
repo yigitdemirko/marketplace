@@ -24,6 +24,9 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Install common-lib
+        run: mvn install -pl shared/common-lib -DskipTests -B
+
       - name: Run unit tests
         run: mvn test -pl services/user-service,services/catalog-service,services/search-service,services/order-service,services/payment-service,services/inventory-service,services/notification-service -Dgroups=unit
 
@@ -45,6 +48,9 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: Install common-lib
+        run: mvn install -pl shared/common-lib -DskipTests -B
 
       - name: Run integration tests
         run: mvn test -pl services/user-service,services/catalog-service,services/inventory-service,services/notification-service -Dgroups=integration
