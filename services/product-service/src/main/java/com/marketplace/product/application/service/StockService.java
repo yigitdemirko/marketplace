@@ -37,6 +37,7 @@ public class StockService {
             Product updated = decrementStock(item.getProductId(), item.getQuantity());
             if (updated == null) {
                 rollback(decremented);
+                log.warn("Insufficient stock: orderId={}, productId={}", orderId, item.getProductId());
                 return Optional.of("Insufficient stock for productId=" + item.getProductId());
             }
             decremented.add(item);
@@ -48,6 +49,7 @@ public class StockService {
                 .items(items)
                 .status(StockReservation.Status.RESERVED)
                 .build());
+        log.info("Stock reserved: orderId={}, items={}", orderId, items.size());
         return Optional.empty();
     }
 
@@ -71,6 +73,7 @@ public class StockService {
         }
         reservation.setStatus(StockReservation.Status.RELEASED);
         reservationRepository.save(reservation);
+        log.info("Stock released: orderId={}, items={}", orderId, reservation.getItems().size());
     }
 
     private Product decrementStock(String productId, int quantity) {

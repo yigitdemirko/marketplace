@@ -36,6 +36,7 @@ public class PaymentService {
                     throw new RuntimeException("Payment already processed");
                 });
 
+        log.info("Payment initiated: orderId={}, userId={}", request.orderId(), userId);
         OrderSummary order = orderServiceGateway.getOrder(request.orderId(), userId);
         if (!PAYABLE_STATUSES.contains(order.status())) {
             throw new RuntimeException("Order is not payable in status: " + order.status());
@@ -68,10 +69,12 @@ public class PaymentService {
                 payment.complete(result.getPaymentId());
                 paymentRepository.save(payment);
                 eventPublisher.publishPaymentCompleted(payment);
+                log.info("Payment completed: orderId={}, userId={}, amount={}", request.orderId(), userId, amount);
             } else {
                 payment.fail(result.getErrorMessage());
                 paymentRepository.save(payment);
                 eventPublisher.publishPaymentFailed(payment);
+                log.warn("Payment failed: orderId={}, userId={}, reason={}", request.orderId(), userId, result.getErrorMessage());
             }
         } catch (Exception e) {
             payment.fail(e.getMessage());

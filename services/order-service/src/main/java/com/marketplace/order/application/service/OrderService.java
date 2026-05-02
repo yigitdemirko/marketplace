@@ -136,6 +136,7 @@ public class OrderService {
         order.cancel("Cancelled by user");
         Order saved = orderRepository.save(order);
         eventPublisher.publishOrderCancelled(saved);
+        log.info("Order cancelled by user: orderId={}, userId={}", orderId, userId);
         return toResponse(saved);
     }
 
@@ -159,9 +160,11 @@ public class OrderService {
                 .anyMatch(item -> item.getSellerId().equals(sellerId));
         if (!sellerOwns) throw new RuntimeException("Unauthorized");
         order.markAsShipped();
+        log.info("Order shipped: orderId={}, sellerId={}", orderId, sellerId);
         return toResponse(orderRepository.save(order));
     }
 
+    @Transactional
     public OrderResponse markOrderAsDelivered(String orderId, String sellerId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -169,6 +172,7 @@ public class OrderService {
                 .anyMatch(item -> item.getSellerId().equals(sellerId));
         if (!sellerOwns) throw new RuntimeException("Unauthorized");
         order.markAsDelivered();
+        log.info("Order delivered: orderId={}, sellerId={}", orderId, sellerId);
         return toResponse(orderRepository.save(order));
     }
 
