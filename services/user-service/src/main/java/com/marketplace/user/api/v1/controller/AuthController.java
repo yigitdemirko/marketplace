@@ -9,6 +9,9 @@ import com.marketplace.user.application.service.AuthService;
 import com.marketplace.user.infrastructure.security.CookieUtil;
 import com.marketplace.user.infrastructure.security.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +27,7 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@Tag(name = "Auth")
+@Tag(name = "Auth", description = "Authentication — register, login, token rotation, and session management")
 public class AuthController {
 
     private final AuthService authService;
@@ -32,7 +35,11 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/buyer/register")
-    @Operation(summary = "Register buyer")
+    @Operation(summary = "Register buyer", description = "Creates a buyer account and returns auth cookies.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Buyer registered"),
+            @ApiResponse(responseCode = "400", description = "Validation error or email already exists")
+    })
     public ResponseEntity<AuthResponse> registerBuyer(
             @Valid @RequestBody BuyerRegisterRequest request,
             HttpServletRequest httpRequest,
@@ -43,7 +50,11 @@ public class AuthController {
     }
 
     @PostMapping("/seller/register")
-    @Operation(summary = "Register seller")
+    @Operation(summary = "Register seller", description = "Creates a seller account with store name and tax number. Returns auth cookies.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Seller registered"),
+            @ApiResponse(responseCode = "400", description = "Validation error or email already exists")
+    })
     public ResponseEntity<AuthResponse> registerSeller(
             @Valid @RequestBody SellerRegisterRequest request,
             HttpServletRequest httpRequest,
@@ -54,7 +65,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Login")
+    @Operation(summary = "Login", description = "Authenticates user and sets httpOnly access_token and refresh_token cookies.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "400", description = "Invalid email or password")
+    })
     public ResponseEntity<AuthResponse> login(
             @Valid @RequestBody LoginRequest request,
             HttpServletRequest httpRequest,
@@ -65,7 +80,15 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    @Operation(summary = "Rotate refresh token and issue new access token")
+    @Operation(
+            summary = "Rotate refresh token",
+            description = "Reads refresh_token cookie, validates it, and issues a new access+refresh token pair. " +
+                          "Old refresh token is revoked. If a revoked token is replayed, all sessions are invalidated."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tokens rotated"),
+            @ApiResponse(responseCode = "401", description = "Missing, expired, or revoked refresh token")
+    })
     public ResponseEntity<AuthResponse> refresh(HttpServletRequest httpRequest, HttpServletResponse response) {
         String rawRefreshToken = extractCookie(httpRequest, "refresh_token");
         if (rawRefreshToken == null) {
@@ -77,7 +100,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    @Operation(summary = "Logout current session")
+    @Operation(summary = "Logout current session", description = "Revokes the current refresh token and clears auth cookies.")
+    @SecurityRequirement(name = "cookieAuth")
+    @ApiResponse(responseCode = "204", description = "Logged out")
     public ResponseEntity<Void> logout(HttpServletRequest httpRequest, HttpServletResponse response) {
         String rawRefreshToken = extractCookie(httpRequest, "refresh_token");
         authService.logout(rawRefreshToken);
@@ -86,7 +111,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout-all")
-    @Operation(summary = "Logout all sessions")
+    @Operation(summary = "Logout all sessions", description = "Revokes all refresh tokens for the user across all devices.")
+    @SecurityRequirement(name = "cookieAuth")
+    @ApiResponse(responseCode = "204", description = "All sessions terminated")
     public ResponseEntity<Void> logoutAll(HttpServletRequest httpRequest, HttpServletResponse response) {
         String accessToken = extractCookie(httpRequest, "access_token");
         if (accessToken != null && jwtUtil.isTokenValid(accessToken)) {
@@ -97,7 +124,12 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    @Operation(summary = "Get current user info")
+    @Operation(summary = "Get current user info", description = "Reads the access_token cookie and returns the authenticated user's profile.")
+    @SecurityRequirement(name = "cookieAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Authenticated user info"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid access token")
+    })
     public ResponseEntity<AuthResponse> me(HttpServletRequest httpRequest) {
         String accessToken = extractCookie(httpRequest, "access_token");
         if (accessToken == null || !jwtUtil.isTokenValid(accessToken)) {
@@ -117,8 +149,8 @@ public class AuthController {
     // -------------------------------------------------------------------------
 
     private void setAuthCookies(HttpServletResponse response, AuthResult result) {
-        long accessSeconds = 900;          // 15 min
-        long refreshSeconds = 604800;      // 7 days
+        long accessSeconds = 900;
+        long refreshSeconds = 604800;
         cookieUtil.addAccessTokenCookie(response, result.accessToken(), accessSeconds);
         cookieUtil.addRefreshTokenCookie(response, result.rawRefreshToken(), refreshSeconds);
     }

@@ -6,6 +6,7 @@ import com.marketplace.user.api.v1.dto.response.SavedAddressResponse;
 import com.marketplace.user.api.v1.dto.response.SavedCardResponse;
 import com.marketplace.user.application.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/profile")
 @RequiredArgsConstructor
-@Tag(name = "Profile")
+@Tag(name = "Profile", description = "Saved addresses and cards for the authenticated buyer")
+@SecurityRequirement(name = "cookieAuth")
 public class ProfileController {
 
     private final ProfileService profileService;

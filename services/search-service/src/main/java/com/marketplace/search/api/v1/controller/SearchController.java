@@ -4,6 +4,7 @@ import com.marketplace.search.api.v1.dto.response.SearchResponse;
 import com.marketplace.search.application.service.ReindexService;
 import com.marketplace.search.application.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,14 +18,19 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/api/v1/search")
 @RequiredArgsConstructor
-@Tag(name = "Search")
+@Tag(name = "Search", description = "Full-text product search powered by Elasticsearch")
 public class SearchController {
 
     private final SearchService searchService;
     private final ReindexService reindexService;
 
     @GetMapping
-    @Operation(summary = "Search products with optional filters")
+    @Operation(
+            summary = "Search products",
+            description = "Full-text search across product name, description, and brand. " +
+                          "Supports optional filters: categoryId, brand, priceMin, priceMax. " +
+                          "Results are paginated — default page size 20."
+    )
     public ResponseEntity<Page<SearchResponse>> search(
             @RequestParam(required = false) String query,
             @RequestParam(required = false) String categoryId,
@@ -37,7 +43,7 @@ public class SearchController {
     }
 
     @GetMapping("/seller/{sellerId}")
-    @Operation(summary = "Get products by seller")
+    @Operation(summary = "Get products by seller", description = "Returns all indexed products for a given seller, paginated.")
     public ResponseEntity<Page<SearchResponse>> searchBySeller(
             @PathVariable String sellerId,
             @PageableDefault(size = 20) Pageable pageable) {
@@ -45,7 +51,12 @@ public class SearchController {
     }
 
     @PostMapping("/admin/reindex")
-    @Operation(summary = "Re-index all products from product-service into Elasticsearch")
+    @Operation(
+            summary = "Re-index all products",
+            description = "Fetches all products from product-service and rebuilds the Elasticsearch index. " +
+                          "Admin operation — run after bulk imports or index corruption."
+    )
+    @ApiResponse(responseCode = "200", description = "Re-index complete, returns count of indexed products")
     public ResponseEntity<String> reindex() {
         int count = reindexService.reindexAll();
         return ResponseEntity.ok("Reindexed " + count + " products.");
