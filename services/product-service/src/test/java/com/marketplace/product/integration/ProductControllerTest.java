@@ -1,5 +1,6 @@
 package com.marketplace.product.integration;
 
+import com.marketplace.product.infrastructure.client.InventoryClient;
 import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ class ProductControllerTest {
 
     @MockitoBean
     private ProductEventPublisher eventPublisher;
+
+    @MockitoBean
+    private InventoryClient inventoryClient;
 
     @MockitoBean
     private S3Client s3Client;

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.marketplace.inventory.domain.repository.ProductStockRepository;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,31 @@ public class StockService {
 
     private final MongoTemplate mongoTemplate;
     private final StockReservationRepository reservationRepository;
+    private final ProductStockRepository productStockRepository;
     private final InventoryEventPublisher eventPublisher;
+
+    public ProductStock setStock(String productId, String sellerId, int newStock) {
+        if (newStock < 0) {
+            throw new IllegalArgumentException("Stock cannot be negative");
+        }
+        ProductStock existing = productStockRepository.findById(productId).orElse(null);
+        if (existing == null) {
+            ProductStock created = ProductStock.builder()
+                    .productId(productId)
+                    .sellerId(sellerId)
+                    .stock(newStock)
+                    .build();
+            ProductStock saved = productStockRepository.save(created);
+            eventPublisher.publishStockChanged(saved);
+            log.info("Stock initialised via setStock: productId={} stock={}", productId, newStock);
+            return saved;
+        }
+        existing.setStock(newStock);
+        ProductStock saved = productStockRepository.save(existing);
+        eventPublisher.publishStockChanged(saved);
+        log.info("Stock set: productId={} stock={}", productId, newStock);
+        return saved;
+    }
 
     public Optional<String> reserve(String orderId, List<StockReservation.ReservedItem> items) {
         Optional<StockReservation> existing = reservationRepository.findById(orderId);

@@ -11,6 +11,9 @@ import com.marketplace.product.api.v1.dto.response.SellerStatsResponse;
 import com.marketplace.product.api.v1.dto.response.ValidatedProductResponse;
 import com.marketplace.product.domain.model.Product;
 import com.marketplace.product.domain.repository.ProductRepository;
+import com.marketplace.product.infrastructure.client.InventoryGateway;
+import com.marketplace.product.infrastructure.client.InventoryStockDto;
+import com.marketplace.product.infrastructure.client.InventoryStockStatsDto;
 import com.marketplace.product.infrastructure.messaging.ProductEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,6 +37,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductEventPublisher eventPublisher;
+    private final InventoryGateway inventoryGateway;
 
     public ProductResponse createProduct(String sellerId, CreateProductRequest request) {
         Product product = buildProduct(sellerId, request);
@@ -93,8 +99,12 @@ public class ProductService {
 
     public List<ValidatedProductResponse> validateProducts(List<ValidateProductRequest> items) {
         List<String> ids = items.stream().map(ValidateProductRequest::productId).toList();
+
         Map<String, Product> productsById = new HashMap<>();
         productRepository.findByIdInAndActiveTrue(ids).forEach(p -> productsById.put(p.getId(), p));
+
+        Map<String, Integer> stockByProductId = new HashMap<>();
+        inventoryGateway.getStockBatch(ids).forEach(s -> stockByProductId.put(s.productId(), s.stock()));
 
         List<ValidatedProductResponse> results = new ArrayList<>(items.size());
         for (ValidateProductRequest item : items) {
@@ -104,21 +114,34 @@ public class ProductService {
                         item.productId(), false, null, null, null, "Product not found or inactive"));
                 continue;
             }
-            if (product.getStock() < item.quantity()) {
+            Integer available = stockByProductId.get(item.productId());
+            if (available == null) {
                 results.add(new ValidatedProductResponse(
                         item.productId(), false, product.getSellerId(), product.getPrice(),
-                        product.getStock(), "Insufficient stock"));
+                        null, "Stock unknown for product"));
+                continue;
+            }
+            if (available < item.quantity()) {
+                results.add(new ValidatedProductResponse(
+                        item.productId(), false, product.getSellerId(), product.getPrice(),
+                        available, "Insufficient stock"));
                 continue;
             }
             results.add(new ValidatedProductResponse(
                     item.productId(), true, product.getSellerId(), product.getPrice(),
-                    product.getStock(), null));
+                    available, null));
         }
         return results;
     }
 
     public SellerStatsResponse getSellerStats(String sellerId) {
         long total = productRepository.countBySellerIdAndActiveTrue(sellerId);
+        Optional<InventoryStockStatsDto> fromInventory = inventoryGateway.getSellerStats(sellerId, total);
+        if (fromInventory.isPresent()) {
+            InventoryStockStatsDto s = fromInventory.get();
+            return new SellerStatsResponse(total, s.inStock(), s.outOfStock(), s.lowStock());
+        }
+        log.warn("Inventory unavailable, deriving seller stats from cached Product.stock for sellerId={}", sellerId);
         long outOfStock = productRepository.countBySellerIdAndActiveTrueAndStock(sellerId, 0);
         long lowStock = productRepository.countBySellerIdAndActiveTrueAndStockBetween(
                 sellerId, 1, LOW_STOCK_THRESHOLD - 1);
@@ -140,10 +163,14 @@ public class ProductService {
             throw new RuntimeException("Unauthorized");
         }
 
+        if (request.stock() != null && !Objects.equals(request.stock(), product.getStock())) {
+            InventoryStockDto applied = inventoryGateway.setStock(id, sellerId, request.stock());
+            product.setStock(applied.stock());
+        }
+
         if (request.name() != null) product.setName(request.name());
         if (request.description() != null) product.setDescription(request.description());
         if (request.price() != null) product.setPrice(request.price());
-        if (request.stock() != null) product.setStock(request.stock());
         if (request.category() != null) product.setCategoryId(request.category().name());
         if (request.brand() != null) product.setBrand(request.brand());
         if (request.images() != null) product.setImages(request.images());
