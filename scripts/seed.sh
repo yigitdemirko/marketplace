@@ -75,11 +75,12 @@ done
 # --- wait for gateway -----------------------------------------------------
 log "Waiting for gateway at $GATEWAY ..."
 for i in $(seq 1 60); do
-  if curl -sf "$GATEWAY/actuator/health" >/dev/null 2>&1; then
+  code=$(curl -s -o /dev/null -w "%{http_code}" "$GATEWAY/api/v1/products/categories" || echo "000")
+  if [ "$code" = "200" ]; then
     ok "Gateway ready"
     break
   fi
-  if [ "$i" -eq 60 ]; then fail "Gateway did not respond in 120s"; fi
+  if [ "$i" -eq 60 ]; then fail "Gateway did not respond in 120s (last HTTP $code)"; fi
   sleep 2
 done
 
