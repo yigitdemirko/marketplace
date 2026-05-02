@@ -44,6 +44,6 @@ public class OutboxPublisher {
                 return;
             }
         }
-        log.debug("Outbox published {} events", batch.size());
+        log.info("Outbox published {} events", batch.size());
     }
 }

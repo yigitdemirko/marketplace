@@ -61,6 +61,7 @@ public class AuthService {
         userRepository.save(user);
         BuyerProfile profile = BuyerProfile.create(user, request.firstName(), request.lastName());
         buyerProfileRepository.save(profile);
+        log.info("Buyer registered: userId={}, ip={}", user.getId(), ip);
         return issueTokens(user, null, request.firstName(), request.lastName(), ip, userAgent);
     }
 
@@ -73,6 +74,7 @@ public class AuthService {
         userRepository.save(user);
         SellerProfile profile = SellerProfile.create(user, request.storeName(), request.taxNumber(), request.phone());
         sellerProfileRepository.save(profile);
+        log.info("Seller registered: userId={}, storeName={}, ip={}", user.getId(), profile.getStoreName(), ip);
         return issueTokens(user, profile.getStoreName(), null, null, ip, userAgent);
     }
 
@@ -80,6 +82,7 @@ public class AuthService {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            log.warn("Login failed: email={}, ip={}", request.email(), ip);
             throw new RuntimeException("Invalid email or password");
         }
         String storeName = null;
@@ -96,7 +99,9 @@ public class AuthService {
                 lastName = profile.getLastName();
             }
         }
-        return issueTokens(user, storeName, firstName, lastName, ip, userAgent);
+        AuthResult result = issueTokens(user, storeName, firstName, lastName, ip, userAgent);
+        log.info("Login success: userId={}, type={}, ip={}", user.getId(), user.getAccountType(), ip);
+        return result;
     }
 
     @Transactional

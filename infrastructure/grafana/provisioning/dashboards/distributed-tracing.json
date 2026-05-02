@@ -1,0 +1,117 @@
+{
+  "uid": "distributed-tracing",
+  "title": "Marketplace — Distributed Tracing",
+  "description": "Service map, trace explorer, span latency and error traces via Tempo",
+  "tags": ["marketplace", "tracing"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "graphTooltip": 1,
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1, "type": "row",
+      "title": "🗺 Service Map",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+    {
+      "id": 2, "type": "nodeGraph",
+      "title": "Service Dependency Graph",
+      "description": "Nodes = services, edges = calls between them. Node color = error rate (green→red). Powered by Tempo spanmetrics.",
+      "datasource": { "type": "tempo", "uid": "tempo" },
+      "gridPos": { "h": 14, "w": 24, "x": 0, "y": 1 },
+      "options": { "nodes": { "mainStatUnit": "short" }, "edges": { "mainStatUnit": "short" } },
+      "targets": [{ "queryType": "serviceMap", "refId": "A", "serviceMapQuery": "{}" }]
+    },
+    {
+      "id": 3, "type": "row",
+      "title": "📡 Span Throughput & Latency",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 15 },
+      "collapsed": false
+    },
+    {
+      "id": 4, "type": "timeseries",
+      "title": "Span Throughput — per service",
+      "description": "Spans/sec generated per service (from Tempo spanmetrics)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] } },
+      "fieldConfig": { "defaults": { "unit": "reqps", "custom": { "lineWidth": 2 } } },
+      "targets": [
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"order-service\"}[$__rate_interval]))", "legendFormat": "order-service" },
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"payment-service\"}[$__rate_interval]))", "legendFormat": "payment-service" },
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"product-service\"}[$__rate_interval]))", "legendFormat": "product-service" },
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"user-service\"}[$__rate_interval]))", "legendFormat": "user-service" }
+      ]
+    },
+    {
+      "id": 5, "type": "timeseries",
+      "title": "Span Error Rate — per service",
+      "description": "ERROR spans / total spans (from Tempo spanmetrics)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "options": { "tooltip": { "mode": "multi", "sort": "desc" }, "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] } },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "max": 1, "custom": { "lineWidth": 2 } } },
+      "targets": [
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"order-service\",status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval])) / clamp_min(sum(rate(traces_spanmetrics_calls_total{service=\"order-service\"}[$__rate_interval])),0.001)", "legendFormat": "order-service" },
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"payment-service\",status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval])) / clamp_min(sum(rate(traces_spanmetrics_calls_total{service=\"payment-service\"}[$__rate_interval])),0.001)", "legendFormat": "payment-service" },
+        { "expr": "sum(rate(traces_spanmetrics_calls_total{service=\"product-service\",status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval])) / clamp_min(sum(rate(traces_spanmetrics_calls_total{service=\"product-service\"}[$__rate_interval])),0.001)", "legendFormat": "product-service" }
+      ]
+    },
+    {
+      "id": 6, "type": "row",
+      "title": "🔍 Trace Search",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 24 },
+      "collapsed": false
+    },
+    {
+      "id": 7, "type": "traces",
+      "title": "Recent Traces — all services",
+      "description": "Click any trace to open the full waterfall view. Use TraceQL to filter: { .http.status_code = 500 }",
+      "datasource": { "type": "tempo", "uid": "tempo" },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 25 },
+      "options": { "dedupStrategy": "none" },
+      "targets": [{
+        "queryType": "traceql",
+        "query": "{}",
+        "limit": 20,
+        "refId": "A"
+      }]
+    },
+    {
+      "id": 8, "type": "row",
+      "title": "🚨 Error Traces",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 37 },
+      "collapsed": false
+    },
+    {
+      "id": 9, "type": "traces",
+      "title": "Traces with Errors",
+      "description": "Only traces where at least one span has an error status",
+      "datasource": { "type": "tempo", "uid": "tempo" },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 38 },
+      "targets": [{
+        "queryType": "traceql",
+        "query": "{ status = error }",
+        "limit": 20,
+        "refId": "A"
+      }]
+    },
+    {
+      "id": 10, "type": "row",
+      "title": "📋 Correlated Logs",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 50 },
+      "collapsed": false
+    },
+    {
+      "id": 11, "type": "logs",
+      "title": "All Service Logs (with TraceID — click to jump to trace)",
+      "description": "JSON logs from all services. 'traceId' field links to Tempo trace waterfall.",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 51 },
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": false },
+      "targets": [{ "expr": "{service=~\".+\"} | json", "legendFormat": "" }]
+    }
+  ]
+}
