@@ -9,6 +9,7 @@ import { useToastStore } from '@/store/toastStore'
 import { searchApi } from '@/api/search'
 import { authApi } from '@/api/auth'
 import { formatPrice } from '@/lib/formatPrice'
+import { NotificationBell } from './NotificationBell'
 
 const CART_DRAWER_EXCLUDED = ['/cart', '/checkout']
 
@@ -196,6 +197,7 @@ export function Navbar() {
 
           {isBuyer ? (
             <div className="flex items-center gap-5">
+              <NotificationBell />
               <Link to="/account" className="flex flex-col items-center gap-0.5">
                 <UserCircle className="h-6 w-6 text-[#6f7c8e]" />
                 <span className="text-[11px] text-[#6f7c8e] max-w-[80px] truncate">

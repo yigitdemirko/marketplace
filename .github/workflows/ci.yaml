@@ -25,7 +25,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Run unit tests
-        run: mvn test -pl services/user-service,services/catalog-service,services/search-service,services/order-service,services/payment-service,services/inventory-service -Dgroups=unit
+        run: mvn test -pl services/user-service,services/catalog-service,services/search-service,services/order-service,services/payment-service,services/inventory-service,services/notification-service -Dgroups=unit
 
   integration-tests:
     if: contains(github.event.pull_request.labels.*.name, 'backend')
@@ -47,4 +47,4 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Run integration tests
-        run: mvn test -pl services/user-service,services/catalog-service,services/inventory-service -Dgroups=integration
+        run: mvn test -pl services/user-service,services/catalog-service,services/inventory-service,services/notification-service -Dgroups=integration

@@ -6,6 +6,7 @@ import { Toast } from '@/components/shared/Toast'
 import { NavigationProgress } from '@/components/shared/NavigationProgress'
 import { useAuthStore } from '@/store/authStore'
 import { authApi } from '@/api/auth'
+import { useNotificationStream } from '@/lib/notificationStream'
 
 const FULLSCREEN_ROUTES = ['/login', '/register']
 const NO_CONTAINER_ROUTES = ['/', '/checkout', '/search', '/account']
@@ -22,6 +23,9 @@ export function Layout() {
       .then((user) => setAuth(user))
       .catch(() => setRestoring(false))
   }, [])
+
+  // Subscribe to live notifications when authenticated as buyer
+  useNotificationStream()
 
   if (isFullscreen) {
     return (

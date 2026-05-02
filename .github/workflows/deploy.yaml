@@ -114,7 +114,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull config-server
-            docker compose up -d --no-deps config-server
+            docker compose up -d --no-deps --remove-orphans config-server
 
   deploy-discovery-server:
     needs: [detect-changes, sync]
@@ -146,7 +146,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull discovery-server
-            docker compose up -d --no-deps discovery-server
+            docker compose up -d --no-deps --remove-orphans discovery-server
 
   deploy-api-gateway:
     needs: [detect-changes, sync]
@@ -178,7 +178,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull api-gateway
-            docker compose up -d --no-deps api-gateway
+            docker compose up -d --no-deps --remove-orphans api-gateway
 
   deploy-user-service:
     needs: [detect-changes, sync]
@@ -210,7 +210,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull user-service
-            docker compose up -d --no-deps user-service
+            docker compose up -d --no-deps --remove-orphans user-service
 
   deploy-catalog-service:
     needs: [detect-changes, sync]
@@ -242,7 +242,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull catalog-service
-            docker compose up -d --no-deps catalog-service
+            docker compose up -d --no-deps --remove-orphans catalog-service
 
   deploy-search-service:
     needs: [detect-changes, sync]
@@ -274,7 +274,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull search-service
-            docker compose up -d --no-deps search-service
+            docker compose up -d --no-deps --remove-orphans search-service
 
   deploy-order-service:
     needs: [detect-changes, sync]
@@ -306,7 +306,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull order-service
-            docker compose up -d --no-deps order-service
+            docker compose up -d --no-deps --remove-orphans order-service
 
   deploy-payment-service:
     needs: [detect-changes, sync]
@@ -338,7 +338,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull payment-service
-            docker compose up -d --no-deps payment-service
+            docker compose up -d --no-deps --remove-orphans payment-service
 
   deploy-notification-service:
     needs: [detect-changes, sync]
@@ -370,7 +370,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull notification-service
-            docker compose up -d --no-deps notification-service
+            docker compose up -d --no-deps --remove-orphans notification-service
 
   deploy-feed-ingestion-service:
     needs: [detect-changes, sync]
@@ -402,7 +402,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull feed-ingestion-service
-            docker compose up -d --no-deps feed-ingestion-service
+            docker compose up -d --no-deps --remove-orphans feed-ingestion-service
 
   deploy-inventory-service:
     needs: [detect-changes, sync]
@@ -434,7 +434,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull inventory-service
-            docker compose up -d --no-deps inventory-service
+            docker compose up -d --no-deps --remove-orphans inventory-service
 
   deploy-frontend:
     needs: [detect-changes, sync]
