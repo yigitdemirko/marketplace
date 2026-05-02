@@ -407,8 +407,7 @@ SELLER_URL=https://seller.bilbos-shop.com
 API_SERVER_URL=https://api.bilbos-shop.com
 ```
 
-> Not: Tam liste için `.env.example` dosyasına bakın. Notification servisi PR-132 ile in-app inbox + SSE'ye geçtiğinden e-posta (SMTP) ortam değişkenleri kaldırıldı.
-
+> Not: Tam liste için `.env.example` dosyasına bakın.
 **Makefile komutları**
 
 ```bash
@@ -938,7 +937,7 @@ SELLER_URL=https://seller.bilbos-shop.com
 API_SERVER_URL=https://api.bilbos-shop.com
 ```
 
-> Note: see `.env.example` for the full list. Email/SMTP variables were removed when notification-service pivoted to in-app inbox + SSE in PR-132.
+> Note: see `.env.example` for the full list.
 
 **Makefile Commands**
 
