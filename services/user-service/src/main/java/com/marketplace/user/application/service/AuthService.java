@@ -56,7 +56,7 @@ public class AuthService {
     @Transactional
     public AuthResult registerBuyer(BuyerRegisterRequest request, String ip, String userAgent) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException("Bu e-posta zaten kayıtlı");
         }
         User user = User.create(request.email(), passwordEncoder.encode(request.password()), AccountType.BUYER);
         userRepository.save(user);
@@ -69,7 +69,7 @@ public class AuthService {
     @Transactional
     public AuthResult registerSeller(SellerRegisterRequest request, String ip, String userAgent) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException("Bu e-posta zaten kayıtlı");
         }
         User user = User.create(request.email(), passwordEncoder.encode(request.password()), AccountType.SELLER);
         userRepository.save(user);
@@ -93,14 +93,14 @@ public class AuthService {
 
     private AuthResult loginInternal(LoginRequest request, AccountType expectedType, String ip, String userAgent) {
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new AuthenticationException("Invalid email or password"));
+                .orElseThrow(() -> new AuthenticationException("E-posta veya şifre hatalı"));
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             log.warn("Login failed: email={}, ip={}", request.email(), ip);
-            throw new AuthenticationException("Invalid email or password");
+            throw new AuthenticationException("E-posta veya şifre hatalı");
         }
         if (expectedType != null && user.getAccountType() != expectedType) {
             log.warn("Login type mismatch: email={}, ip={}", request.email(), ip);
-            throw new AuthenticationException("Invalid email or password");
+            throw new AuthenticationException("E-posta veya şifre hatalı");
         }
         String storeName = null;
         String firstName = null;
@@ -135,16 +135,16 @@ public class AuthService {
                     revokeAllSessions(stored.getUserId());
                 }
             });
-            throw new RuntimeException("Invalid or expired refresh token");
+            throw new RuntimeException("Geçersiz veya süresi dolmuş oturum");
         }
 
         RefreshToken stored = refreshTokenRepository.findByTokenHash(tokenHash)
-                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+                .orElseThrow(() -> new RuntimeException("Oturum bulunamadı"));
 
         if (stored.isRevoked()) {
             log.warn("Replay attack detected for user {}: revoking all sessions", userId);
             revokeAllSessions(userId);
-            throw new RuntimeException("Refresh token already revoked");
+            throw new RuntimeException("Oturum zaten sonlandırılmış");
         }
 
         // Rotate: revoke old token
@@ -154,7 +154,7 @@ public class AuthService {
 
         // Issue new pair
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
         String storeName = null;
         String firstName = null;
         String lastName = null;
