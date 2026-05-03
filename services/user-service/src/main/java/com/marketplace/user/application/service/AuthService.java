@@ -1,5 +1,8 @@
 package com.marketplace.user.application.service;
 
+import com.marketplace.common.exception.ConflictException;
+import com.marketplace.common.exception.NotFoundException;
+import com.marketplace.common.exception.UnauthorizedException;
 import com.marketplace.user.api.v1.dto.request.BuyerRegisterRequest;
 import com.marketplace.user.domain.exception.AuthenticationException;
 import com.marketplace.user.api.v1.dto.request.LoginRequest;
@@ -56,7 +59,7 @@ public class AuthService {
     @Transactional
     public AuthResult registerBuyer(BuyerRegisterRequest request, String ip, String userAgent) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Bu e-posta zaten kayıtlı");
+            throw new ConflictException("EMAIL_ALREADY_EXISTS", "Bu e-posta zaten kayıtlı");
         }
         User user = User.create(request.email(), passwordEncoder.encode(request.password()), AccountType.BUYER);
         userRepository.save(user);
@@ -69,7 +72,7 @@ public class AuthService {
     @Transactional
     public AuthResult registerSeller(SellerRegisterRequest request, String ip, String userAgent) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Bu e-posta zaten kayıtlı");
+            throw new ConflictException("EMAIL_ALREADY_EXISTS", "Bu e-posta zaten kayıtlı");
         }
         User user = User.create(request.email(), passwordEncoder.encode(request.password()), AccountType.SELLER);
         userRepository.save(user);
@@ -135,16 +138,16 @@ public class AuthService {
                     revokeAllSessions(stored.getUserId());
                 }
             });
-            throw new RuntimeException("Geçersiz veya süresi dolmuş oturum");
+            throw new UnauthorizedException("INVALID_REFRESH_TOKEN", "Geçersiz veya süresi dolmuş oturum");
         }
 
         RefreshToken stored = refreshTokenRepository.findByTokenHash(tokenHash)
-                .orElseThrow(() -> new RuntimeException("Oturum bulunamadı"));
+                .orElseThrow(() -> new UnauthorizedException("REFRESH_TOKEN_NOT_FOUND", "Oturum bulunamadı"));
 
         if (stored.isRevoked()) {
             log.warn("Replay attack detected for user {}: revoking all sessions", userId);
             revokeAllSessions(userId);
-            throw new RuntimeException("Oturum zaten sonlandırılmış");
+            throw new UnauthorizedException("REFRESH_TOKEN_REVOKED", "Oturum zaten sonlandırılmış");
         }
 
         // Rotate: revoke old token
@@ -154,7 +157,7 @@ public class AuthService {
 
         // Issue new pair
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "Kullanıcı bulunamadı"));
         String storeName = null;
         String firstName = null;
         String lastName = null;

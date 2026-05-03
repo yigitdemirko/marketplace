@@ -1,5 +1,7 @@
 package com.marketplace.user.unit;
 
+import com.marketplace.common.exception.ConflictException;
+import com.marketplace.common.exception.UnauthorizedException;
 import com.marketplace.user.api.v1.dto.request.BuyerRegisterRequest;
 import com.marketplace.user.api.v1.dto.request.LoginRequest;
 import com.marketplace.user.api.v1.dto.request.SellerRegisterRequest;
@@ -92,7 +94,7 @@ class AuthServiceTest {
         when(userRepository.existsByEmail(anyString())).thenReturn(true);
 
         assertThatThrownBy(() -> authService.registerBuyer(request, "127.0.0.1", "test-agent"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessage("Bu e-posta zaten kayıtlı");
     }
 
@@ -123,7 +125,7 @@ class AuthServiceTest {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
         assertThatThrownBy(() -> authService.login(request, "127.0.0.1", "test-agent"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(AuthenticationException.class)
                 .hasMessage("E-posta veya şifre hatalı");
     }
 
@@ -134,7 +136,7 @@ class AuthServiceTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> authService.login(request, "127.0.0.1", "test-agent"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(AuthenticationException.class)
                 .hasMessage("E-posta veya şifre hatalı");
     }
 
@@ -214,7 +216,7 @@ class AuthServiceTest {
         when(refreshTokenRepository.findByTokenHash(anyString())).thenReturn(Optional.of(stored));
 
         assertThatThrownBy(() -> authService.refresh(rawToken, "attacker-ip", "attacker-ua"))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(UnauthorizedException.class);
 
         verify(refreshTokenRepository).revokeAllByUserId("victim-user");
         verify(refreshTokenRedisRepository).revokeAllForUser("victim-user");
@@ -231,7 +233,7 @@ class AuthServiceTest {
         when(refreshTokenRepository.findByTokenHash(anyString())).thenReturn(Optional.of(stored));
 
         assertThatThrownBy(() -> authService.refresh(rawToken, "ip", "ua"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(UnauthorizedException.class)
                 .hasMessage("Oturum zaten sonlandırılmış");
 
         verify(refreshTokenRepository).revokeAllByUserId("victim-user");
@@ -243,7 +245,7 @@ class AuthServiceTest {
         when(refreshTokenRepository.findByTokenHash(anyString())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> authService.refresh("ghost", "ip", "ua"))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(UnauthorizedException.class);
 
         verify(refreshTokenRepository, never()).revokeAllByUserId(anyString());
     }
