@@ -19,6 +19,7 @@ import { productsApi } from '@/api/products'
 import { profileApi } from '@/api/profile'
 import type { SaveAddressRequest, SaveCardRequest } from '@/api/profile'
 import { useAuthStore } from '@/store/authStore'
+import { useRequireAuth } from '@/hooks/useRequireAuth'
 import { useAuthFlow } from '@/hooks/useAuthFlow'
 import { useToastStore } from '@/store/toastStore'
 import { authApi } from '@/api/auth'
@@ -488,7 +489,8 @@ const NAV_ITEMS = [
 ] as const
 
 export function AccountPage() {
-  const { user, isAuthenticated } = useAuthStore()
+  const { ready, isAuthenticated } = useRequireAuth()
+  const { user } = useAuthStore()
   const { onLogout } = useAuthFlow()
   const navigate = useNavigate()
   const showToast = useToastStore((s) => s.show)
@@ -498,10 +500,10 @@ export function AccountPage() {
 
   useEffect(() => {
     if (isLoggingOut.current) return
-    if (!isAuthenticated || user?.accountType !== 'BUYER') {
+    if (ready && isAuthenticated && user?.accountType !== 'BUYER') {
       navigate({ to: '/login' })
     }
-  }, [isAuthenticated, user?.accountType])
+  }, [ready, isAuthenticated, user?.accountType, navigate])
 
   const handleLogout = () => {
     isLoggingOut.current = true
@@ -525,6 +527,10 @@ export function AccountPage() {
     { key: 'completed', label: 'Tamamlananlar' },
     { key: 'all', label: 'Tüm siparişler' },
   ]
+
+  if (!ready) {
+    return <div className="h-64 bg-muted animate-pulse rounded-lg mx-auto max-w-[1280px] my-10" />
+  }
 
   return (
     <div className="min-h-screen bg-[#f7f8f9]">
