@@ -6,7 +6,7 @@ inputs:
     description: Service name being deployed
     required: true
   status:
-    description: Job status (success, failure, cancelled) — pass ${{ job.status }}
+    description: Job status — caller passes job.status (success / failure / cancelled)
     required: true
   webhook-url:
     description: Slack incoming webhook URL
