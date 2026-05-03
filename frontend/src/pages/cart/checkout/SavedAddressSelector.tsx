@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { MapPin } from 'lucide-react'
 import { profileApi } from '@/api/profile'
@@ -10,10 +10,17 @@ export function SavedAddressSelector({ onSelect }: { onSelect: (addr: SavedAddre
     queryKey: ['profile', 'addresses'],
     queryFn: profileApi.getAddresses,
   })
-  const [selected, setSelected] = useState<string>(() => {
-    const def = addresses.find((a: SavedAddress) => a.isDefault)
-    return def?.id ?? addresses[0]?.id ?? ''
-  })
+  const [selected, setSelected] = useState<string>('')
+
+  // When addresses load (or change), auto-apply the default and notify the parent
+  // so shippingForm is populated even before the user touches the radio.
+  useEffect(() => {
+    if (addresses.length === 0) return
+    if (selected && addresses.some((a: SavedAddress) => a.id === selected)) return
+    const def = addresses.find((a: SavedAddress) => a.isDefault) ?? addresses[0]
+    setSelected(def.id)
+    onSelect(def)
+  }, [addresses])
 
   if (addresses.length === 0) return null
 
