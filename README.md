@@ -539,6 +539,8 @@ mvn test -pl services/user-service,services/catalog-service,services/inventory-s
 - **Deploy** — `main`'e her push'ta çalışır, sadece değişen servisleri deploy eder
 - **Slack bildirimi** — her deploy job'ı sonunda (`success` / `failure` / `cancelled`) servis adı, commit ve run linkiyle Slack'e mesaj gönderilir; `.github/actions/notify-slack` composite action ile, `SLACK_WEBHOOK_URL` secret'ı kullanılarak
 
+![Slack deploy notifications](docs/screenshots/slack-deploy-notifications.png)
+
 ### Proje Yapısı
 
 ```
@@ -1079,6 +1081,8 @@ mvn test -pl services/user-service,services/catalog-service,services/inventory-s
     - Frontend: TypeScript check + production build
 - **Deploy** — Runs on every push to `main`, deploys only changed services
 - **Slack notification** — every deploy job posts its result (`success` / `failure` / `cancelled`) to Slack with service name, commit, and run link; uses `.github/actions/notify-slack` composite action and the `SLACK_WEBHOOK_URL` secret
+
+![Slack deploy notifications](docs/screenshots/slack-deploy-notifications.png)
 
 ### Project Structure
 
