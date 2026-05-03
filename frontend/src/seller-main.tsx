@@ -5,11 +5,9 @@ import {
   createRouter,
   createRoute,
   createRootRoute,
-  redirect,
   Outlet,
 } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useAuthStore } from '@/store/authStore'
 import { SellerLayout } from '@/components/layout/SellerLayout'
 import { SellerDashboardPage } from '@/pages/seller/SellerDashboardPage'
 import { SellerCatalogPage } from '@/pages/seller/SellerCatalogPage'
@@ -46,12 +44,6 @@ const layoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: 'seller-layout',
   component: SellerLayout,
-  beforeLoad: () => {
-    const { isAuthenticated, user } = useAuthStore.getState()
-    if (!isAuthenticated || user?.accountType !== 'SELLER') {
-      throw redirect({ to: '/login' })
-    }
-  },
 })
 
 const dashboardRoute = createRoute({

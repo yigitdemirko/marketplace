@@ -6,6 +6,7 @@ import {
   Package2,
   UserCircle,
 } from 'lucide-react'
+import { authApi } from '@/api/auth'
 import { useAuthStore } from '@/store/authStore'
 
 const NAV_ITEMS = [
@@ -23,16 +24,26 @@ const PAGE_TITLES: Record<string, string> = {
 
 export function SellerLayout() {
   const { location } = useRouterState()
-  const { user, isAuthenticated, logout } = useAuthStore()
+  const { user, isAuthenticated, restoring, setAuth, setRestoring, logout } = useAuthStore()
   const navigate = useNavigate()
   const isSeller = isAuthenticated && user?.accountType === 'SELLER'
 
+  // Restore session from httpOnly cookie on first load (seller app has no top-level Layout)
   useEffect(() => {
-    if (!isSeller) {
+    authApi.me()
+      .then((u) => setAuth(u))
+      .catch(() => setRestoring(false))
+  }, [])
+
+  useEffect(() => {
+    if (!restoring && !isSeller) {
       navigate({ to: '/login', replace: true })
     }
-  }, [isSeller, navigate])
+  }, [restoring, isSeller, navigate])
 
+  if (restoring) {
+    return <div className="h-64 bg-muted animate-pulse rounded-lg mx-auto max-w-[1280px] my-10" />
+  }
   if (!isSeller) return null
 
   const pathname = location.pathname
