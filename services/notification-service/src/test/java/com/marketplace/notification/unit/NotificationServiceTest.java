@@ -1,5 +1,6 @@
 package com.marketplace.notification.unit;
 
+import com.marketplace.common.exception.UnauthorizedException;
 import com.marketplace.notification.application.service.NotificationService;
 import com.marketplace.notification.domain.model.Notification;
 import com.marketplace.notification.domain.repository.NotificationRepository;
@@ -58,7 +59,7 @@ class NotificationServiceTest {
         when(repository.findById(id)).thenReturn(Optional.of(owned));
 
         assertThatThrownBy(() -> service.markRead("attacker", id))
-                .isInstanceOf(SecurityException.class);
+                .isInstanceOf(UnauthorizedException.class);
 
         verify(repository, never()).save(any());
     }

@@ -2,6 +2,7 @@ package com.marketplace.feedingestion.application.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.common.exception.NotFoundException;
 import com.marketplace.feedingestion.api.v1.dto.response.ImportJobResponse;
 import com.marketplace.feedingestion.api.v1.dto.response.ImportRowError;
 import com.marketplace.feedingestion.domain.model.ImportJob;
@@ -116,9 +117,9 @@ public class FeedImportService {
     @Transactional(readOnly = true)
     public ImportJobResponse getImport(UUID jobId, String sellerId) {
         ImportJob job = importJobRepository.findById(jobId)
-                .orElseThrow(() -> new IllegalArgumentException("Import job not found: " + jobId));
+                .orElseThrow(() -> new NotFoundException("IMPORT_JOB_NOT_FOUND", "İçe aktarma işi bulunamadı: " + jobId));
         if (!job.getSellerId().equals(sellerId)) {
-            throw new IllegalArgumentException("Import job not found: " + jobId);
+            throw new NotFoundException("IMPORT_JOB_NOT_FOUND", "İçe aktarma işi bulunamadı: " + jobId);
         }
         return toResponse(job, deserializeErrors(job.getErrors()));
     }

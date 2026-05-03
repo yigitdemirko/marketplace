@@ -1,8 +1,8 @@
-package com.marketplace.order.config;
+package com.marketplace.feedingestion.config;
 
 import com.marketplace.common.api.ErrorResponse;
-import com.marketplace.common.exception.AmountLimitExceededException;
 import com.marketplace.common.exception.BusinessException;
+import com.marketplace.feedingestion.infrastructure.client.CatalogUnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +18,12 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * Service-specific code (ORDER_AMOUNT_LIMIT_EXCEEDED) takes precedence over the generic
-     * AMOUNT_LIMIT_EXCEEDED that AmountLimitExceededException carries by default.
-     */
-    @ExceptionHandler(AmountLimitExceededException.class)
-    public ResponseEntity<ErrorResponse> handleAmountLimit(AmountLimitExceededException ex) {
-        Map<String, Object> details = new HashMap<>();
-        details.put("totalAmount", ex.getAmount());
-        details.put("maxAmount", ex.getMaxAmount());
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-                .body(ErrorResponse.of(HttpStatus.UNPROCESSABLE_ENTITY.value(),
-                        "ORDER_AMOUNT_LIMIT_EXCEEDED", ex.getMessage(), details));
+    @ExceptionHandler(CatalogUnavailableException.class)
+    public ResponseEntity<ErrorResponse> handleCatalogDown(CatalogUnavailableException ex) {
+        log.warn("Catalog unavailable: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(ErrorResponse.of(HttpStatus.SERVICE_UNAVAILABLE.value(),
+                        "DOWNSTREAM_UNAVAILABLE", ex.getMessage()));
     }
 
     @ExceptionHandler(BusinessException.class)

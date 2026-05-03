@@ -1,5 +1,7 @@
 package com.marketplace.catalog.unit;
 
+import com.marketplace.common.exception.NotFoundException;
+import com.marketplace.common.exception.UnauthorizedException;
 import com.marketplace.catalog.api.v1.dto.request.CreateProductRequest;
 import com.marketplace.catalog.api.v1.dto.request.UpdateProductRequest;
 import com.marketplace.catalog.api.v1.dto.request.ValidateProductRequest;
@@ -93,8 +95,8 @@ class ProductServiceTest {
         when(productRepository.findById("non-existent")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> productService.getProduct("non-existent"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Product not found");
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("Ürün bulunamadı");
     }
 
     @Test
@@ -105,8 +107,8 @@ class ProductServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.of(mockProduct));
 
         assertThatThrownBy(() -> productService.deleteProduct("product-id", "other-seller"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Unauthorized");
+                .isInstanceOf(UnauthorizedException.class)
+                .hasMessage("Bu ürüne erişim yetkiniz yok");
     }
 
     @Test

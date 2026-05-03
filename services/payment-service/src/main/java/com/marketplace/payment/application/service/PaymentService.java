@@ -2,6 +2,9 @@ package com.marketplace.payment.application.service;
 
 import com.iyzipay.model.PaymentCard;
 import com.marketplace.common.exception.AmountLimitExceededException;
+import com.marketplace.common.exception.BadRequestException;
+import com.marketplace.common.exception.ConflictException;
+import com.marketplace.common.exception.NotFoundException;
 import com.marketplace.payment.api.v1.dto.request.ProcessPaymentRequest;
 import com.marketplace.payment.api.v1.dto.response.PaymentResponse;
 import com.marketplace.payment.domain.model.Payment;
@@ -38,13 +41,13 @@ public class PaymentService {
     public PaymentResponse processPayment(String userId, ProcessPaymentRequest request) {
         paymentRepository.findByIdempotencyKey(request.idempotencyKey())
                 .ifPresent(existing -> {
-                    throw new RuntimeException("Payment already processed");
+                    throw new ConflictException("PAYMENT_DUPLICATE", "Bu ödeme zaten işlenmiş");
                 });
 
         log.info("Payment initiated: orderId={}, userId={}", request.orderId(), userId);
         OrderSummary order = orderServiceGateway.getOrder(request.orderId(), userId);
         if (!PAYABLE_STATUSES.contains(order.status())) {
-            throw new RuntimeException("Order is not payable in status: " + order.status());
+            throw new BadRequestException("ORDER_NOT_PAYABLE", "Sipariş şu anki durumunda ödenemez: " + order.status());
         }
         BigDecimal amount = order.totalAmount();
         if (amount.compareTo(maxAmount) > 0) {
@@ -98,7 +101,7 @@ public class PaymentService {
 
     public PaymentResponse getPaymentByOrderId(String orderId) {
         Payment payment = paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+                .orElseThrow(() -> new NotFoundException("PAYMENT_NOT_FOUND", "Ödeme bulunamadı"));
         return toResponse(payment);
     }
 

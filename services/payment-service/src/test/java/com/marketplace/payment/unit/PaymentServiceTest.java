@@ -1,6 +1,9 @@
 package com.marketplace.payment.unit;
 
 import com.iyzipay.model.Payment;
+import com.marketplace.common.exception.BadRequestException;
+import com.marketplace.common.exception.ConflictException;
+import com.marketplace.common.exception.NotFoundException;
 import com.marketplace.payment.api.v1.dto.request.ProcessPaymentRequest;
 import com.marketplace.payment.api.v1.dto.response.PaymentResponse;
 import com.marketplace.payment.application.service.PaymentService;
@@ -118,8 +121,8 @@ class PaymentServiceTest {
         when(orderServiceGateway.getOrder(eq("order-001"), eq("user-123"))).thenReturn(order);
 
         assertThatThrownBy(() -> paymentService.processPayment("user-123", request))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Order is not payable");
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("ödenemez");
 
         verify(iyzicoGateway, never()).processPayment(anyString(), anyString(), any(), any());
         verify(eventPublisher, never()).publishPaymentCompleted(any());
@@ -138,8 +141,8 @@ class PaymentServiceTest {
         when(paymentRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.of(existing));
 
         assertThatThrownBy(() -> paymentService.processPayment("user-123", request))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Payment already processed");
+                .isInstanceOf(ConflictException.class)
+                .hasMessage("Bu ödeme zaten işlenmiş");
 
         verify(orderServiceGateway, never()).getOrder(anyString(), anyString());
     }
@@ -149,7 +152,7 @@ class PaymentServiceTest {
         when(paymentRepository.findByOrderId(anyString())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> paymentService.getPaymentByOrderId("non-existent"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Payment not found");
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("Ödeme bulunamadı");
     }
 }
