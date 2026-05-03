@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import { authApi } from '@/api/auth'
 import { useAuthFlow } from '@/hooks/useAuthFlow'
 import { TermsModal } from '@/components/auth/TermsModal'
+import { isValidName } from '@/lib/validation'
 
 const heroImage = 'https://www.figma.com/api/mcp/asset/4049e18f-25b0-4761-8425-d100dd14592c'
 
@@ -34,6 +35,11 @@ export function RegisterPage() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
     if (!emailRegex.test(form.email)) {
       setError('Geçerli bir e-posta adresi girin')
+      setLoading(false)
+      return
+    }
+    if (!isValidName(form.firstName) || !isValidName(form.lastName)) {
+      setError('Ad ve soyad sadece harf, boşluk, tire (-) ve kesme işareti (’) içerebilir')
       setLoading(false)
       return
     }

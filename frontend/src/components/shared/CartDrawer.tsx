@@ -61,7 +61,7 @@ export function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Sepetim"
-        className={`fixed right-0 top-0 z-50 flex h-screen w-full max-w-[540px] flex-col bg-white border-l border-[#b6c1ca] shadow-[0px_4px_30px_0px_rgba(0,0,0,0.1)] transition-transform duration-300 ${
+        className={`fixed right-0 top-0 z-50 flex h-[100dvh] w-full max-w-[540px] flex-col bg-white border-l border-[#b6c1ca] shadow-[0px_4px_30px_0px_rgba(0,0,0,0.1)] transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -141,7 +141,7 @@ export function CartDrawer() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity.mutate({ productId: item.productId, quantity: item.quantity + 1 })}
+                          onClick={() => { updateQuantity.mutate({ productId: item.productId, quantity: item.quantity + 1 }); showToast('Adet artırıldı') }}
                           aria-label="Adeti artır"
                           className="flex size-[26px] shrink-0 items-center justify-center rounded-md bg-[#e0edff] text-[#3348ff] hover:bg-[#c7dfff] transition-colors"
                         >
@@ -168,7 +168,7 @@ export function CartDrawer() {
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 border-t border-[#dce0e5] bg-[#f6f7f9] px-6 py-4 flex gap-3">
+        <div className="shrink-0 border-t border-[#dce0e5] bg-[#f6f7f9] px-6 py-4 flex flex-col sm:flex-row gap-3">
           <button
             onClick={handleCheckout}
             disabled={items.length === 0}

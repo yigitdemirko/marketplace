@@ -198,11 +198,7 @@ export function SellerStorePage() {
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                   {data.content.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      onClick={() => navigate({ to: '/products/$productId', params: { productId: product.id } })}
-                    />
+                    <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
 
