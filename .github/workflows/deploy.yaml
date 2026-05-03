@@ -124,6 +124,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull config-server
             docker compose up -d --no-deps --remove-orphans config-server
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: config-server
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-discovery-server:
     needs: [detect-changes, sync]
@@ -156,6 +162,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull discovery-server
             docker compose up -d --no-deps --remove-orphans discovery-server
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: discovery-server
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-api-gateway:
     needs: [detect-changes, sync]
@@ -188,6 +200,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull api-gateway
             docker compose up -d --no-deps --remove-orphans api-gateway
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: api-gateway
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-user-service:
     needs: [detect-changes, sync]
@@ -220,6 +238,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull user-service
             docker compose up -d --no-deps --remove-orphans user-service
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: user-service
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-catalog-service:
     needs: [detect-changes, sync]
@@ -256,6 +280,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull catalog-service
             docker compose up -d --no-deps --remove-orphans catalog-service
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: catalog-service
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-search-service:
     needs: [detect-changes, sync]
@@ -288,6 +318,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull search-service
             docker compose up -d --no-deps --remove-orphans search-service
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: search-service
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-order-service:
     needs: [detect-changes, sync]
@@ -324,6 +360,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull order-service
             docker compose up -d --no-deps --remove-orphans order-service
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: order-service
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-payment-service:
     needs: [detect-changes, sync]
@@ -360,6 +402,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull payment-service
             docker compose up -d --no-deps --remove-orphans payment-service
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: payment-service
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-notification-service:
     needs: [detect-changes, sync]
@@ -392,6 +440,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull notification-service
             docker compose up -d --no-deps --remove-orphans notification-service
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: notification-service
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-feed-ingestion-service:
     needs: [detect-changes, sync]
@@ -424,6 +478,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull feed-ingestion-service
             docker compose up -d --no-deps --remove-orphans feed-ingestion-service
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: feed-ingestion-service
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-inventory-service:
     needs: [detect-changes, sync]
@@ -460,6 +520,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull inventory-service
             docker compose up -d --no-deps --remove-orphans inventory-service
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: inventory-service
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-basket-service:
     needs: [detect-changes, sync]
@@ -496,6 +562,12 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose pull basket-service
             docker compose up -d --no-deps --remove-orphans basket-service
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: basket-service
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deploy-frontend:
     needs: [detect-changes, sync]
@@ -505,6 +577,7 @@ jobs:
       github.event.inputs.service == 'all'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Deploy frontend
         uses: appleboy/ssh-action@v1
         with:
@@ -516,3 +589,9 @@ jobs:
             pnpm install
             VITE_API_BASE_URL=https://api.bilbos-shop.com pnpm build
             cp -r dist/* /var/www/html/
+      - if: always()
+        uses: ./.github/actions/notify-slack
+        with:
+          service: frontend
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
