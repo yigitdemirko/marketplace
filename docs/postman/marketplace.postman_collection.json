@@ -1,0 +1,749 @@
+{
+  "info": {
+    "name": "Marketplace Platform",
+    "description": "All REST endpoints for the Marketplace microservices platform.\n\nAll requests go through the API Gateway on `{{baseUrl}}` (default `http://localhost:8080`).\n\n**Auth model:** Cookie-based.\n- `POST /api/v1/auth/buyer/login` (or seller/register variants) sets `access_token` and `refresh_token` httpOnly cookies.\n- Postman's cookie jar will pick them up automatically when `withCredentials` is enabled (default).\n- For seller-only endpoints, log in with a seller account first.\n\n**Server-authoritative fields:** Order item `unitPrice` and Payment `amount` are ignored by the server — values come from catalog/order respectively.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "buyerEmail", "value": "buyer1@example.com", "type": "string" },
+    { "key": "buyerPassword", "value": "password123", "type": "string" },
+    { "key": "sellerEmail", "value": "seller1@example.com", "type": "string" },
+    { "key": "sellerPassword", "value": "password123", "type": "string" },
+    { "key": "productId", "value": "REPLACE_WITH_PRODUCT_ID", "type": "string" },
+    { "key": "sellerId", "value": "REPLACE_WITH_SELLER_ID", "type": "string" },
+    { "key": "userId", "value": "REPLACE_WITH_USER_ID", "type": "string" },
+    { "key": "orderId", "value": "REPLACE_WITH_ORDER_ID", "type": "string" },
+    { "key": "addressId", "value": "REPLACE_WITH_ADDRESS_ID", "type": "string" },
+    { "key": "cardId", "value": "REPLACE_WITH_CARD_ID", "type": "string" },
+    { "key": "categoryId", "value": "ELECTRONICS", "type": "string" },
+    { "key": "notificationId", "value": "REPLACE_WITH_NOTIFICATION_ID", "type": "string" },
+    { "key": "jobId", "value": "REPLACE_WITH_JOB_ID", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth (user-service)",
+      "item": [
+        {
+          "name": "Register Buyer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{buyerEmail}}\",\n  \"password\": \"{{buyerPassword}}\",\n  \"firstName\": \"Ada\",\n  \"lastName\": \"Lovelace\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/buyer/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "buyer", "register"] }
+          }
+        },
+        {
+          "name": "Register Seller",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{sellerEmail}}\",\n  \"password\": \"{{sellerPassword}}\",\n  \"storeName\": \"Acme Store\",\n  \"taxNumber\": \"1234567890\",\n  \"phone\": \"+905551112233\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/seller/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "seller", "register"] }
+          }
+        },
+        {
+          "name": "Login (generic)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{buyerEmail}}\",\n  \"password\": \"{{buyerPassword}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Login (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{buyerEmail}}\",\n  \"password\": \"{{buyerPassword}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/buyer/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "buyer", "login"] }
+          }
+        },
+        {
+          "name": "Login (seller)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{sellerEmail}}\",\n  \"password\": \"{{sellerPassword}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/seller/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "seller", "login"] }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/refresh", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "refresh"] },
+            "description": "Reads `refresh_token` cookie, rotates the token pair."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/logout", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "logout"] }
+          }
+        },
+        {
+          "name": "Logout All Sessions",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/logout-all", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "logout-all"] }
+          }
+        },
+        {
+          "name": "Me (current user)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users (user-service)",
+      "item": [
+        {
+          "name": "Get Seller Public Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/seller/{{sellerId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "seller", "{{sellerId}}"] }
+          }
+        },
+        {
+          "name": "Get User Contact (internal)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/{{userId}}/contact", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "{{userId}}", "contact"] },
+            "description": "Internal endpoint used by notification-service."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile (user-service)",
+      "item": [
+        {
+          "name": "List Addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/profile/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "profile", "addresses"] }
+          }
+        },
+        {
+          "name": "Save Address",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Home\",\n  \"fullName\": \"Ada Lovelace\",\n  \"city\": \"Istanbul\",\n  \"postalCode\": \"34000\",\n  \"addressLine1\": \"Bagdat Cad. No 123\",\n  \"addressLine2\": \"Apt 4\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/profile/addresses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "profile", "addresses"] }
+          }
+        },
+        {
+          "name": "Delete Address",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/profile/addresses/{{addressId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "profile", "addresses", "{{addressId}}"] }
+          }
+        },
+        {
+          "name": "Set Default Address",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/profile/addresses/{{addressId}}/default", "host": ["{{baseUrl}}"], "path": ["api", "v1", "profile", "addresses", "{{addressId}}", "default"] }
+          }
+        },
+        {
+          "name": "List Cards",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/profile/cards", "host": ["{{baseUrl}}"], "path": ["api", "v1", "profile", "cards"] }
+          }
+        },
+        {
+          "name": "Save Card",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alias\": \"My Visa\",\n  \"cardHolder\": \"Ada Lovelace\",\n  \"last4\": \"0008\",\n  \"expireMonth\": \"12\",\n  \"expireYear\": \"2030\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/profile/cards", "host": ["{{baseUrl}}"], "path": ["api", "v1", "profile", "cards"] }
+          }
+        },
+        {
+          "name": "Delete Card",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/profile/cards/{{cardId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "profile", "cards", "{{cardId}}"] }
+          }
+        },
+        {
+          "name": "Set Default Card",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/profile/cards/{{cardId}}/default", "host": ["{{baseUrl}}"], "path": ["api", "v1", "profile", "cards", "{{cardId}}", "default"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products (catalog-service)",
+      "item": [
+        {
+          "name": "Upload Product Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": [] }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/products/images/upload", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", "images", "upload"] },
+            "description": "Multipart file upload (max 5MB, JPEG/PNG/WebP/GIF)."
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sony WH-1000XM5\",\n  \"description\": \"Industry-leading noise cancelling wireless headphones.\",\n  \"price\": 8999.90,\n  \"stock\": 25,\n  \"category\": \"AUDIO\",\n  \"brand\": \"Sony\",\n  \"images\": [\"https://example.com/img/wh1000xm5.jpg\"],\n  \"attributes\": { \"color\": \"black\", \"warranty\": \"24 months\" }\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/products", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products"] }
+          }
+        },
+        {
+          "name": "Batch Create Products",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"name\": \"Product A\",\n    \"description\": \"Description A\",\n    \"price\": 199.00,\n    \"stock\": 10,\n    \"category\": \"ELECTRONICS\",\n    \"brand\": \"BrandA\"\n  },\n  {\n    \"name\": \"Product B\",\n    \"description\": \"Description B\",\n    \"price\": 299.00,\n    \"stock\": 5,\n    \"category\": \"ELECTRONICS\",\n    \"brand\": \"BrandB\"\n  }\n]"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/products/batch", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", "batch"] }
+          }
+        },
+        {
+          "name": "Validate Products (internal)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  { \"productId\": \"{{productId}}\", \"quantity\": 2 }\n]"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/products/validate", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", "validate"] }
+          }
+        },
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/products/categories", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", "categories"] }
+          }
+        },
+        {
+          "name": "List Products by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/category/{{categoryId}}?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "category", "{{categoryId}}"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Products by Seller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/seller/{{sellerId}}?categoryId={{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", "seller", "{{sellerId}}"],
+              "query": [
+                { "key": "categoryId", "value": "{{categoryId}}", "description": "Optional" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Seller Catalog Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/products/seller/{{sellerId}}/stats", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", "seller", "{{sellerId}}", "stats"] }
+          }
+        },
+        {
+          "name": "Seller Active Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/products/seller/{{sellerId}}/categories", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", "seller", "{{sellerId}}", "categories"] }
+          }
+        },
+        {
+          "name": "Get Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", "{{productId}}"] }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 7999.90,\n  \"stock\": 30\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", "{{productId}}"] }
+          }
+        },
+        {
+          "name": "Delete (Deactivate) Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", "{{productId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory (inventory-service)",
+      "item": [
+        {
+          "name": "Get Stock by Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/inventory/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "inventory", "{{productId}}"] }
+          }
+        },
+        {
+          "name": "Batch Get Stock",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  \"{{productId}}\"\n]"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/inventory/batch", "host": ["{{baseUrl}}"], "path": ["api", "v1", "inventory", "batch"] }
+          }
+        },
+        {
+          "name": "Seller Stock Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/inventory/seller/{{sellerId}}/stats?totalActive=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "inventory", "seller", "{{sellerId}}", "stats"],
+              "query": [
+                { "key": "totalActive", "value": "10", "description": "Active product count from catalog (used to derive in-stock)" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Set Product Stock",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sellerId\": \"{{sellerId}}\",\n  \"stock\": 50\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/inventory/{{productId}}/stock", "host": ["{{baseUrl}}"], "path": ["api", "v1", "inventory", "{{productId}}", "stock"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Basket (basket-service)",
+      "item": [
+        {
+          "name": "Get Basket",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/basket", "host": ["{{baseUrl}}"], "path": ["api", "v1", "basket"] }
+          }
+        },
+        {
+          "name": "Add Item",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 1\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/basket/items", "host": ["{{baseUrl}}"], "path": ["api", "v1", "basket", "items"] }
+          }
+        },
+        {
+          "name": "Set Item Quantity",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/basket/items/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "basket", "items", "{{productId}}"] }
+          }
+        },
+        {
+          "name": "Remove Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/basket/items/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "basket", "items", "{{productId}}"] }
+          }
+        },
+        {
+          "name": "Clear Basket",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/basket", "host": ["{{baseUrl}}"], "path": ["api", "v1", "basket"] }
+          }
+        },
+        {
+          "name": "Merge Anonymous Basket",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"productId\": \"{{productId}}\", \"quantity\": 2 }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/basket/merge", "host": ["{{baseUrl}}"], "path": ["api", "v1", "basket", "merge"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search (search-service)",
+      "item": [
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/search?query=headphones&categoryId=AUDIO&brand=Sony&priceMin=1000&priceMax=10000&page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "search"],
+              "query": [
+                { "key": "query", "value": "headphones" },
+                { "key": "categoryId", "value": "AUDIO" },
+                { "key": "brand", "value": "Sony" },
+                { "key": "priceMin", "value": "1000" },
+                { "key": "priceMax", "value": "10000" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Seller Indexed Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/search/seller/{{sellerId}}?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "search", "seller", "{{sellerId}}"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin Reindex",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/search/admin/reindex", "host": ["{{baseUrl}}"], "path": ["api", "v1", "search", "admin", "reindex"] },
+            "description": "Rebuilds the Elasticsearch index from catalog-service."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders (order-service)",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"productId\": \"{{productId}}\", \"quantity\": 1 }\n  ],\n  \"shippingAddress\": \"Bagdat Cad. No 123, Istanbul\",\n  \"idempotencyKey\": \"{{$guid}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/orders", "host": ["{{baseUrl}}"], "path": ["api", "v1", "orders"] }
+          }
+        },
+        {
+          "name": "Get Order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "orders", "{{orderId}}"] }
+          }
+        },
+        {
+          "name": "List My Orders (buyer)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/orders", "host": ["{{baseUrl}}"], "path": ["api", "v1", "orders"] }
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "orders", "{{orderId}}"] }
+          }
+        },
+        {
+          "name": "List Seller Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/seller?status=CONFIRMED",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", "seller"],
+              "query": [
+                { "key": "status", "value": "CONFIRMED", "description": "Optional: STOCK_RESERVING | PAYMENT_PENDING | CONFIRMED | SHIPPED | DELIVERED | CANCELLED" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Order Shipped",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}/ship", "host": ["{{baseUrl}}"], "path": ["api", "v1", "orders", "{{orderId}}", "ship"] }
+          }
+        },
+        {
+          "name": "Mark Order Delivered",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}/deliver", "host": ["{{baseUrl}}"], "path": ["api", "v1", "orders", "{{orderId}}", "deliver"] }
+          }
+        },
+        {
+          "name": "Seller Order Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/orders/seller/stats", "host": ["{{baseUrl}}"], "path": ["api", "v1", "orders", "seller", "stats"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments (payment-service)",
+      "item": [
+        {
+          "name": "Process Payment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"cardHolderName\": \"Ada Lovelace\",\n  \"cardNumber\": \"5528790000000008\",\n  \"expireMonth\": \"12\",\n  \"expireYear\": \"2030\",\n  \"cvc\": \"123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/payments", "host": ["{{baseUrl}}"], "path": ["api", "v1", "payments"] },
+            "description": "Iyzico sandbox test card pre-filled. Server fetches authoritative amount from order-service."
+          }
+        },
+        {
+          "name": "Get Payment by Order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/payments/order/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "payments", "order", "{{orderId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications (notification-service)",
+      "item": [
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications?unread=false&page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "notifications"],
+              "query": [
+                { "key": "unread", "value": "false" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/notifications/unread-count", "host": ["{{baseUrl}}"], "path": ["api", "v1", "notifications", "unread-count"] }
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/notifications/{{notificationId}}/read", "host": ["{{baseUrl}}"], "path": ["api", "v1", "notifications", "{{notificationId}}", "read"] }
+          }
+        },
+        {
+          "name": "Mark All Read",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/notifications/read-all", "host": ["{{baseUrl}}"], "path": ["api", "v1", "notifications", "read-all"] }
+          }
+        },
+        {
+          "name": "SSE Stream",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "text/event-stream" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/notifications/stream", "host": ["{{baseUrl}}"], "path": ["api", "v1", "notifications", "stream"] },
+            "description": "Server-Sent Events stream. Postman keeps the connection open and shows pushed events."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Feeds (feed-ingestion-service)",
+      "item": [
+        {
+          "name": "Import Feed (XML upload)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": [], "description": "XML product feed file" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/feeds/import", "host": ["{{baseUrl}}"], "path": ["api", "v1", "feeds", "import"] }
+          }
+        },
+        {
+          "name": "List Import Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/feeds/imports?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "feeds", "imports"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Import Job",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/feeds/imports/{{jobId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "feeds", "imports", "{{jobId}}"] }
+          }
+        }
+      ]
+    }
+  ]
+}
