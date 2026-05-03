@@ -16,6 +16,7 @@ export function useAddedToCartFeedback() {
       })
     } else {
       openDrawer()
+      showToast('Sepete eklendi')
     }
   }
 }

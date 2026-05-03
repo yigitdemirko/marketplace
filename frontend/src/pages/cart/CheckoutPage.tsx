@@ -13,6 +13,7 @@ import { profileApi } from '@/api/profile'
 import type { SaveAddressRequest, SaveCardRequest } from '@/api/profile'
 import { cn } from '@/lib/utils'
 import { formatPrice } from '@/lib/formatPrice'
+import { isValidName } from '@/lib/validation'
 import type { SavedAddress, SavedCard } from '@/types'
 
 const PAYMENT_MAX_AMOUNT = Number(import.meta.env.VITE_PAYMENT_MAX_AMOUNT ?? 100000)
@@ -354,7 +355,16 @@ export function CheckoutPage() {
                 </div>
               )}
               {step === 'shipping' ? (
-                <form id="shipping-form" onSubmit={(e) => { e.preventDefault(); setStep('payment') }}>
+                <form id="shipping-form" onSubmit={(e) => {
+                  e.preventDefault()
+                  if (!isValidName(contact.name) || !isValidName(contact.surname)) {
+                    setError('Ad ve soyad sadece harf içerebilir'); return
+                  }
+                  if ((!hasAddresses || showNewAddress) && !isValidName(shippingForm.city)) {
+                    setError('Şehir sadece harf içerebilir'); return
+                  }
+                  setError(''); setStep('payment')
+                }}>
                   {/* Contact */}
                   <article className="mb-5">
                     <h4 className="mb-5 text-xl font-semibold text-[#14181f]">İletişim bilgileri</h4>
@@ -451,6 +461,8 @@ export function CheckoutPage() {
                       })}
                     </fieldset>
                   </article>
+
+                  {error && <p className="text-sm text-destructive mt-2">{error}</p>}
 
                   <hr className="my-6 border-[#dce0e5]" />
 
