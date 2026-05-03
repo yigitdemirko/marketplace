@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ordersApi } from '@/api/orders'
 import { useAuthStore } from '@/store/authStore'
+import { useRequireAuth } from '@/hooks/useRequireAuth'
 import { useToastStore } from '@/store/toastStore'
 import { formatPrice } from '@/lib/formatPrice'
 import type { Order } from '@/types'
@@ -33,14 +33,11 @@ const STATUS_LABELS: Record<Order['status'], string> = {
 const CANCELLABLE: Order['status'][] = ['PENDING', 'STOCK_RESERVING']
 
 export function OrdersPage() {
-  const { user, isAuthenticated } = useAuthStore()
+  const { ready } = useRequireAuth()
+  const { user } = useAuthStore()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const showToast = useToastStore((s) => s.show)
-
-  useEffect(() => {
-    if (!isAuthenticated) navigate({ to: '/login' })
-  }, [isAuthenticated])
 
   const { data: orders, isLoading, isError } = useQuery({
     queryKey: ['orders', user?.userId],
@@ -57,7 +54,7 @@ export function OrdersPage() {
     onError: () => showToast('İptal başarısız, tekrar dene', { type: 'error' }),
   })
 
-  if (isLoading) {
+  if (!ready || isLoading) {
     return (
       <div className="space-y-4">
         {Array.from({ length: 3 }).map((_, i) => (

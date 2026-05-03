@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useBasket, useClearBasket } from '@/hooks/useBasket'
+import { useRequireAuth } from '@/hooks/useRequireAuth'
 import { useAuthStore } from '@/store/authStore'
 import { ordersApi } from '@/api/orders'
 import { paymentsApi } from '@/api/payments'
@@ -19,9 +20,10 @@ const PAYMENT_MAX_AMOUNT_WARN = PAYMENT_MAX_AMOUNT * 0.9
 type CheckoutStep = 'shipping' | 'payment'
 
 export function CheckoutPage() {
+  const { ready, isAuthenticated } = useRequireAuth()
   const { items, totalAmount } = useBasket()
   const clearCart = useClearBasket()
-  const { user, isAuthenticated } = useAuthStore()
+  const { user } = useAuthStore()
   const navigate = useNavigate()
   const qc = useQueryClient()
 
@@ -61,10 +63,10 @@ export function CheckoutPage() {
   const hasAddresses = savedAddresses.length > 0
   const hasCards = savedCards.length > 0
 
-  if (!isAuthenticated) {
-    navigate({ to: '/login' })
-    return null
+  if (!ready) {
+    return <div className="h-64 bg-muted animate-pulse rounded-lg mx-auto max-w-[1280px] my-10" />
   }
+  if (!isAuthenticated) return null
 
   const deliveryCost = DELIVERY_OPTIONS.find((o) => o.id === deliveryMethod)!.cost
   const subtotal = totalAmount
