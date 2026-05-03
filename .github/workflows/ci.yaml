@@ -95,7 +95,7 @@ jobs:
           mvn install -pl shared/common-lib -DskipTests -B
 
       - name: Run all tests + jacoco check + aggregate report
-        run: mvn verify -pl services/user-service,services/catalog-service,services/search-service,services/order-service,services/payment-service,services/inventory-service,services/notification-service,services/feed-ingestion-service,services/basket-service,coverage-aggregate -am -B
+        run: mvn verify -T 1C -pl services/user-service,services/catalog-service,services/search-service,services/order-service,services/payment-service,services/inventory-service,services/notification-service,services/feed-ingestion-service,services/basket-service,coverage-aggregate -am -B
 
       - name: Generate coverage badge
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
