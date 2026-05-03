@@ -66,7 +66,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void should_Return400_When_EmailAlreadyExists() throws Exception {
+    void should_Return409_When_EmailAlreadyExists() throws Exception {
         String requestBody = """
                 {
                     "email": "duplicate@test.com",
@@ -84,7 +84,8 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/v1/auth/buyer/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("EMAIL_ALREADY_EXISTS"));
     }
 
     @Test
