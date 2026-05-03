@@ -21,7 +21,7 @@ scrape_configs:
         target_label: container
       # Only collect logs from marketplace business services
       - source_labels: [__meta_docker_container_label_com_docker_compose_service]
-        regex: (user-service|catalog-service|inventory-service|order-service|payment-service|notification-service|search-service|feed-ingestion-service|api-gateway)
+        regex: (user-service|catalog-service|inventory-service|order-service|payment-service|notification-service|search-service|feed-ingestion-service|basket-service|api-gateway)
         action: keep
     pipeline_stages:
       - json:
