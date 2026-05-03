@@ -93,7 +93,7 @@ class AuthServiceTest {
 
         assertThatThrownBy(() -> authService.registerBuyer(request, "127.0.0.1", "test-agent"))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("Email already exists");
+                .hasMessage("Bu e-posta zaten kayıtlı");
     }
 
     @Test
@@ -124,7 +124,7 @@ class AuthServiceTest {
 
         assertThatThrownBy(() -> authService.login(request, "127.0.0.1", "test-agent"))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("Invalid email or password");
+                .hasMessage("E-posta veya şifre hatalı");
     }
 
     @Test
@@ -135,7 +135,7 @@ class AuthServiceTest {
 
         assertThatThrownBy(() -> authService.login(request, "127.0.0.1", "test-agent"))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("Invalid email or password");
+                .hasMessage("E-posta veya şifre hatalı");
     }
 
     @Test
@@ -166,7 +166,7 @@ class AuthServiceTest {
 
         assertThatThrownBy(() -> authService.loginSeller(request, "ip", "ua"))
                 .isInstanceOf(AuthenticationException.class)
-                .hasMessage("Invalid email or password");
+                .hasMessage("E-posta veya şifre hatalı");
     }
 
     @Test
@@ -178,7 +178,7 @@ class AuthServiceTest {
 
         assertThatThrownBy(() -> authService.loginBuyer(request, "ip", "ua"))
                 .isInstanceOf(AuthenticationException.class)
-                .hasMessage("Invalid email or password");
+                .hasMessage("E-posta veya şifre hatalı");
     }
 
     @Test
@@ -232,7 +232,7 @@ class AuthServiceTest {
 
         assertThatThrownBy(() -> authService.refresh(rawToken, "ip", "ua"))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("Refresh token already revoked");
+                .hasMessage("Oturum zaten sonlandırılmış");
 
         verify(refreshTokenRepository).revokeAllByUserId("victim-user");
     }

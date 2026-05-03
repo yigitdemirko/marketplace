@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record BuyerRegisterRequest(
-        @NotBlank @Email String email,
-        @NotBlank @Size(min = 6) String password,
-        @NotBlank String firstName,
-        @NotBlank String lastName
+        @NotBlank(message = "E-posta zorunlu") @Email(message = "Geçerli bir e-posta girin") String email,
+        @NotBlank(message = "Şifre zorunlu") @Size(min = 6, message = "Şifre en az 6 karakter olmalı") String password,
+        @NotBlank(message = "Ad zorunlu") String firstName,
+        @NotBlank(message = "Soyad zorunlu") String lastName
 ) {}

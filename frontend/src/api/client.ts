@@ -1,3 +1,5 @@
+import { translateError } from '@/lib/translateError'
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 interface RequestOptions {
@@ -27,8 +29,8 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   }
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'An error occurred' }))
-    throw new Error(error.message ?? 'An error occurred')
+    const error = await response.json().catch(() => ({}))
+    throw new Error(translateError(error.message))
   }
 
   if (response.status === 204) {
@@ -66,7 +68,7 @@ async function handle401<T>(endpoint: string, options: RequestOptions): Promise<
       const { useAuthStore } = await import('@/store/authStore')
       useAuthStore.getState().logout()
       window.location.href = '/login'
-      throw new Error('Session expired')
+      throw new Error('Oturumunuz sona erdi')
     }
   } finally {
     isRefreshing = false
