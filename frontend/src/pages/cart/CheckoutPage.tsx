@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useBasket, useClearBasket } from '@/hooks/useBasket'
 import { useRequireAuth } from '@/hooks/useRequireAuth'
@@ -24,7 +23,6 @@ export function CheckoutPage() {
   const { items, totalAmount } = useBasket()
   const clearCart = useClearBasket()
   const { user } = useAuthStore()
-  const navigate = useNavigate()
   const qc = useQueryClient()
 
   const [step, setStep] = useState<CheckoutStep>('shipping')
