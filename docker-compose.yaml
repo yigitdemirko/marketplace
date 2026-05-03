@@ -182,6 +182,8 @@ services:
     image: ghcr.io/yigitdemirko/marketplace/discovery-server:latest
     ports:
       - "8761:8761"
+    environment:
+      CONFIG_SERVER_URL: http://config-server:8888
     depends_on:
       config-server:
         condition: service_healthy
@@ -197,6 +199,7 @@ services:
     ports:
       - "8080:8080"
     environment:
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       FRONTEND_URL: ${FRONTEND_URL}
       SELLER_URL: ${SELLER_URL}
@@ -218,6 +221,7 @@ services:
       REDIS_HOST: redis
       COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
       COOKIE_SECURE: "true"
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
@@ -241,6 +245,7 @@ services:
     environment:
       MONGODB_HOST: mongodb
       REDIS_HOST: redis
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       S3_URL: ${S3_URL}
@@ -265,6 +270,7 @@ services:
       - "8083:8083"
     environment:
       ELASTICSEARCH_HOST: elasticsearch
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       API_SERVER_URL: ${API_SERVER_URL}
@@ -285,6 +291,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       REDIS_HOST: redis
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       API_SERVER_URL: ${API_SERVER_URL}
@@ -306,6 +313,7 @@ services:
       DB_HOST: postgres
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       IYZICO_API_KEY: ${IYZICO_API_KEY}
@@ -328,6 +336,7 @@ services:
       DB_HOST: postgres
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       API_SERVER_URL: ${API_SERVER_URL}
@@ -347,6 +356,7 @@ services:
       DB_HOST: postgres
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       API_SERVER_URL: ${API_SERVER_URL}
     depends_on:
@@ -361,6 +371,7 @@ services:
       - "8088:8088"
     environment:
       MONGODB_HOST: mongodb
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       API_SERVER_URL: ${API_SERVER_URL}
@@ -379,6 +390,7 @@ services:
       - "8089:8089"
     environment:
       REDIS_HOST: redis
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_HOST: discovery-server
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       API_SERVER_URL: ${API_SERVER_URL}
