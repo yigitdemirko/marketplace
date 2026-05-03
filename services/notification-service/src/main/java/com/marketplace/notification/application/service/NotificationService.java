@@ -1,5 +1,6 @@
 package com.marketplace.notification.application.service;
 
+import com.marketplace.common.exception.UnauthorizedException;
 import com.marketplace.notification.api.v1.dto.NotificationResponse;
 import com.marketplace.notification.domain.model.Notification;
 import com.marketplace.notification.domain.repository.NotificationRepository;
@@ -45,7 +46,7 @@ public class NotificationService {
     public void markRead(String userId, UUID notificationId) {
         repository.findById(notificationId).ifPresent(n -> {
             if (!n.getUserId().equals(userId)) {
-                throw new SecurityException("Not the owner of this notification");
+                throw new UnauthorizedException("NOTIFICATION_FORBIDDEN", "Bu bildirime erişim yetkiniz yok");
             }
             if (!n.isRead()) {
                 n.setRead(true);

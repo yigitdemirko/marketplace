@@ -10,6 +10,10 @@ import com.marketplace.order.domain.model.OrderItem;
 import com.marketplace.order.domain.model.OrderStatus;
 import com.marketplace.order.domain.repository.OrderRepository;
 import com.marketplace.common.exception.AmountLimitExceededException;
+import com.marketplace.common.exception.BadRequestException;
+import com.marketplace.common.exception.ConflictException;
+import com.marketplace.common.exception.NotFoundException;
+import com.marketplace.common.exception.UnauthorizedException;
 import com.marketplace.order.infrastructure.client.ProductValidationGateway;
 import com.marketplace.order.infrastructure.client.ValidateItem;
 import com.marketplace.order.infrastructure.client.ValidatedProduct;
@@ -41,7 +45,7 @@ public class OrderService {
     public OrderResponse createOrder(String userId, CreateOrderRequest request) {
         orderRepository.findByIdempotencyKey(request.idempotencyKey())
                 .ifPresent(existing -> {
-                    throw new RuntimeException("Order already exists with this idempotency key");
+                    throw new ConflictException("ORDER_DUPLICATE_IDEMPOTENCY", "Bu idempotency anahtarı ile zaten bir sipariş var");
                 });
 
         Map<String, ValidatedProduct> validated = validateItems(request.items());
@@ -83,7 +87,7 @@ public class OrderService {
         Map<String, ValidatedProduct> byId = new HashMap<>();
         for (ValidatedProduct r : results) {
             if (!r.valid()) {
-                throw new RuntimeException("Item " + r.productId() + " invalid: " + r.reason());
+                throw new BadRequestException("PRODUCT_INVALID", "Ürün " + r.productId() + " geçersiz: " + r.reason());
             }
             byId.put(r.productId(), r);
         }
@@ -93,7 +97,7 @@ public class OrderService {
     @Transactional
     public void confirmStock(String orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND", "Sipariş bulunamadı"));
         order.confirmStock();
         orderRepository.save(order);
         log.info("Stock confirmed for orderId={}", orderId);
@@ -102,7 +106,7 @@ public class OrderService {
     @Transactional
     public void confirmPayment(String orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND", "Sipariş bulunamadı"));
         order.confirmPayment();
         orderRepository.save(order);
         log.info("Payment confirmed for orderId={}", orderId);
@@ -111,7 +115,7 @@ public class OrderService {
     @Transactional
     public void cancelOrderBySaga(String orderId, String reason) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND", "Sipariş bulunamadı"));
         order.cancel(reason);
         orderRepository.save(order);
         eventPublisher.publishOrderCancelled(order);
@@ -121,9 +125,9 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderResponse getOrder(String orderId, String userId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND", "Sipariş bulunamadı"));
         if (!order.getUserId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
+            throw new UnauthorizedException("ORDER_FORBIDDEN", "Bu siparişe erişim yetkiniz yok");
         }
         return toResponse(order);
     }
@@ -139,9 +143,9 @@ public class OrderService {
     @Transactional
     public OrderResponse cancelOrder(String orderId, String userId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND", "Sipariş bulunamadı"));
         if (!order.getUserId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
+            throw new UnauthorizedException("ORDER_FORBIDDEN", "Bu siparişe erişim yetkiniz yok");
         }
         order.cancel("Cancelled by user");
         Order saved = orderRepository.save(order);
@@ -165,10 +169,10 @@ public class OrderService {
     @Transactional
     public OrderResponse markOrderAsShipped(String orderId, String sellerId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND", "Sipariş bulunamadı"));
         boolean sellerOwns = order.getItems().stream()
                 .anyMatch(item -> item.getSellerId().equals(sellerId));
-        if (!sellerOwns) throw new RuntimeException("Unauthorized");
+        if (!sellerOwns) throw new UnauthorizedException("ORDER_FORBIDDEN", "Bu siparişe erişim yetkiniz yok");
         order.markAsShipped();
         log.info("Order shipped: orderId={}, sellerId={}", orderId, sellerId);
         return toResponse(orderRepository.save(order));
@@ -177,10 +181,10 @@ public class OrderService {
     @Transactional
     public OrderResponse markOrderAsDelivered(String orderId, String sellerId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND", "Sipariş bulunamadı"));
         boolean sellerOwns = order.getItems().stream()
                 .anyMatch(item -> item.getSellerId().equals(sellerId));
-        if (!sellerOwns) throw new RuntimeException("Unauthorized");
+        if (!sellerOwns) throw new UnauthorizedException("ORDER_FORBIDDEN", "Bu siparişe erişim yetkiniz yok");
         order.markAsDelivered();
         log.info("Order delivered: orderId={}, sellerId={}", orderId, sellerId);
         return toResponse(orderRepository.save(order));

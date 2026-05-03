@@ -180,7 +180,7 @@ class FeedImportServiceTest {
         when(importJobRepository.findById(job.getId())).thenReturn(Optional.of(job));
 
         assertThatThrownBy(() -> service.getImport(job.getId(), "attacker"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(com.marketplace.common.exception.NotFoundException.class);
     }
 
     @Test
@@ -189,7 +189,7 @@ class FeedImportServiceTest {
         when(importJobRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getImport(id, "seller-1"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(com.marketplace.common.exception.NotFoundException.class);
     }
 
     @Test

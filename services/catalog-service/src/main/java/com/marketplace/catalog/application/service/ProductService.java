@@ -1,5 +1,7 @@
 package com.marketplace.catalog.application.service;
 
+import com.marketplace.common.exception.NotFoundException;
+import com.marketplace.common.exception.UnauthorizedException;
 import com.marketplace.catalog.api.v1.dto.request.CreateProductRequest;
 import com.marketplace.catalog.api.v1.dto.request.UpdateProductRequest;
 import com.marketplace.catalog.api.v1.dto.request.ValidateProductRequest;
@@ -158,15 +160,15 @@ public class ProductService {
     public ProductResponse getProduct(String id) {
         return productRepository.findById(id)
                 .map(this::toResponse)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND", "Ürün bulunamadı"));
     }
 
     public ProductResponse updateProduct(String id, String sellerId, UpdateProductRequest request) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND", "Ürün bulunamadı"));
 
         if (!product.getSellerId().equals(sellerId)) {
-            throw new RuntimeException("Unauthorized");
+            throw new UnauthorizedException("PRODUCT_FORBIDDEN", "Bu ürüne erişim yetkiniz yok");
         }
 
         if (request.stock() != null && !Objects.equals(request.stock(), product.getStock())) {
@@ -189,10 +191,10 @@ public class ProductService {
 
     public void deleteProduct(String id, String sellerId) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new NotFoundException("PRODUCT_NOT_FOUND", "Ürün bulunamadı"));
 
         if (!product.getSellerId().equals(sellerId)) {
-            throw new RuntimeException("Unauthorized");
+            throw new UnauthorizedException("PRODUCT_FORBIDDEN", "Bu ürüne erişim yetkiniz yok");
         }
 
         product.setActive(false);

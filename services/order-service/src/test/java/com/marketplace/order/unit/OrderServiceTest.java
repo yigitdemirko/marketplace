@@ -1,5 +1,9 @@
 package com.marketplace.order.unit;
 
+import com.marketplace.common.exception.BadRequestException;
+import com.marketplace.common.exception.ConflictException;
+import com.marketplace.common.exception.NotFoundException;
+import com.marketplace.common.exception.UnauthorizedException;
 import com.marketplace.order.api.v1.dto.request.CreateOrderRequest;
 import com.marketplace.order.api.v1.dto.request.OrderItemRequest;
 import com.marketplace.order.api.v1.dto.response.OrderResponse;
@@ -89,7 +93,7 @@ class OrderServiceTest {
         ));
 
         assertThatThrownBy(() -> orderService.createOrder("user-123", request))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Insufficient stock");
         verify(eventPublisher, never()).publishOrderCreated(any());
     }
@@ -106,8 +110,8 @@ class OrderServiceTest {
         when(orderRepository.findByIdempotencyKey(anyString())).thenReturn(Optional.of(existing));
 
         assertThatThrownBy(() -> orderService.createOrder("user-123", request))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Order already exists with this idempotency key");
+                .isInstanceOf(ConflictException.class)
+                .hasMessage("Bu idempotency anahtarı ile zaten bir sipariş var");
     }
 
     @Test
@@ -115,8 +119,8 @@ class OrderServiceTest {
         when(orderRepository.findById(anyString())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.getOrder("non-existent", "user-123"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Order not found");
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("Sipariş bulunamadı");
     }
 
     @Test
@@ -125,8 +129,8 @@ class OrderServiceTest {
         when(orderRepository.findById(anyString())).thenReturn(Optional.of(order));
 
         assertThatThrownBy(() -> orderService.getOrder("order-id", "other-user"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Unauthorized");
+                .isInstanceOf(UnauthorizedException.class)
+                .hasMessage("Bu siparişe erişim yetkiniz yok");
     }
 
     @Test

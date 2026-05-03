@@ -74,6 +74,7 @@ class ProductControllerTest {
     @Test
     void should_Return404_When_ProductNotFound() throws Exception {
         mockMvc.perform(get("/api/v1/products/non-existent-id"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("PRODUCT_NOT_FOUND"));
     }
 }

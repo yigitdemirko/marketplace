@@ -1,5 +1,6 @@
 package com.marketplace.order.domain.model;
 
+import com.marketplace.common.exception.BadRequestException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -68,35 +69,35 @@ public class Order {
 
     public void confirmStock() {
         if (this.status != OrderStatus.STOCK_RESERVING) {
-            throw new RuntimeException("Invalid status transition");
+            throw new BadRequestException("INVALID_STATUS_TRANSITION", "Geçersiz sipariş durum geçişi");
         }
         this.status = OrderStatus.PAYMENT_PENDING;
     }
 
     public void confirmPayment() {
         if (this.status != OrderStatus.PAYMENT_PENDING) {
-            throw new RuntimeException("Invalid status transition");
+            throw new BadRequestException("INVALID_STATUS_TRANSITION", "Geçersiz sipariş durum geçişi");
         }
         this.status = OrderStatus.CONFIRMED;
     }
 
     public void markAsShipped() {
         if (this.status != OrderStatus.CONFIRMED) {
-            throw new RuntimeException("Order must be CONFIRMED to mark as shipped");
+            throw new BadRequestException("ORDER_NOT_CONFIRMED", "Kargoya verilmek için sipariş onaylanmış olmalı");
         }
         this.status = OrderStatus.SHIPPED;
     }
 
     public void markAsDelivered() {
         if (this.status != OrderStatus.SHIPPED) {
-            throw new RuntimeException("Order must be SHIPPED to mark as delivered");
+            throw new BadRequestException("ORDER_NOT_SHIPPED", "Teslim edilmek için sipariş kargoda olmalı");
         }
         this.status = OrderStatus.DELIVERED;
     }
 
     public void cancel(String reason) {
         if (this.status == OrderStatus.CONFIRMED || this.status == OrderStatus.SHIPPED || this.status == OrderStatus.DELIVERED) {
-            throw new RuntimeException("Order cannot be cancelled");
+            throw new BadRequestException("ORDER_NOT_CANCELLABLE", "Bu sipariş iptal edilemez");
         }
         this.status = OrderStatus.CANCELLED;
     }
